@@ -31,17 +31,6 @@ def count_sum_of_negative(lst : list[float]) -> float:
     return count
 
 
-# def check_list_size(func : Callable) -> Callable:
-#     def wrapper(lst, *args, **kwargs):
-#         if len(lst) < 2:
-#             raise ValueError("Can't Calculate Multiplication: List Size Must Be More Then 1")
-        
-#         return func(lst, *args, **kwargs)
-    
-#     return wrapper
-
-
-# @check_list_size
 def count_multiplication(lst : list[float], count_first_appearance : bool = True) -> float:
     """
     Counts Multiplication Between Max and Min Elements

@@ -32,13 +32,11 @@ def calculation_checker(func : Callable) -> Callable:
     """
     Decorator to Check that abs(x) > 1.
     """
-    def wrapper(*args, **kwargs):
-        x = func(*args, **kwargs)
-
+    def wrapper(x, *args, **kwargs):
         if math.fabs(x <= 1):
             raise ValueError(f"Function Argument Module Must be Greater then 1 (abs(x) > 1)!")
         
-        return x
+        return func(x, *args, **kwargs)
     
     return wrapper
 
