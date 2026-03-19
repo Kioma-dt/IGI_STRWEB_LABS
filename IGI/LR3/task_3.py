@@ -31,7 +31,7 @@ def count_capital_letters(string : str) -> int:
     return count
 
 
-def menu():
+def menu() -> None:
     """
     Menu for Task_3
     """

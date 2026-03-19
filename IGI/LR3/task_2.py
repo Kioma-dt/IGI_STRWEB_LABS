@@ -25,7 +25,7 @@ def sum_squares(lst : list[int]) -> int:
     return sum((x ** 2 for x in lst))
 
 
-def menu():
+def menu() -> None:
     """
     Menu for Task_2
     """
