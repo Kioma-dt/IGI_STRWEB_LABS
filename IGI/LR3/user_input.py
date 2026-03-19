@@ -2,6 +2,28 @@ from typing import Generator, Callable
 import random as rnd
 
 
+def repeat_input (func : Callable) -> Callable:
+    """
+    Decorator to Repeat Input Request if It Was Incorrect
+    """
+
+    def wrapper(*args, **kwargs):
+        while True:
+            try:
+                val = func(*args, **kwargs)
+
+                return val
+            
+            except ValueError as error:
+                print(f"Invalid Input: {error}") 
+
+            except Exception as error:
+                print(f"Error: {error}")
+
+    return wrapper
+
+
+@repeat_input
 def get_float(prompt: str, min : float = None, max : float = None) -> float:
     """
     Get Float Number from User
@@ -15,21 +37,18 @@ def get_float(prompt: str, min : float = None, max : float = None) -> float:
         float: Float Number
     """
 
-    while True:
-        try:
-            value = float(input(prompt))
+    value = float(input(prompt))
 
-            if min is not None and value <= min:
-                raise ValueError(f"Value Must be Greater than {min}")
+    if min is not None and value <= min:
+        raise ValueError(f"Value Must be Greater than {min}")
             
-            if max is not None and value >= max:
-                raise ValueError(f"Value Must be Less than {max}")
+    if max is not None and value >= max:
+        raise ValueError(f"Value Must be Less than {max}")
 
-            return value
-        except ValueError as error:
-            print(f"Invalid Input: {error}") 
+    return value
 
 
+@repeat_input
 def get_yes_or_no(prompt: str) -> bool:
     """
     Get User Answer Yes or No
@@ -41,18 +60,18 @@ def get_yes_or_no(prompt: str) -> bool:
         bool: User Answer
     """
 
-    while True:
-        answer = input(prompt).lower()
-        if answer == "yes" or answer == "y":
-            return True
+    answer = input(prompt).lower()
+    if answer == "yes" or answer == "y":
+        return True
         
-        if answer == "no" or answer == "n":
-            return False
+    if answer == "no" or answer == "n":
+        return False
         
-        print("Wrong Answer! Enter yes(y) or no(n)")
+    raise ValueError("Wrong Answer! Enter yes(y) or no(n)")
 
 
-def get_pos_int(prompt: str) -> int:
+@repeat_input
+def get_pos_int(prompt: str,  min : int = None, max : int = None) -> int:
     """
     Get Positive Integer from User
     
@@ -63,20 +82,23 @@ def get_pos_int(prompt: str) -> int:
         int: Positive Integer
     """
 
-    while True:
-        try:
-            value = int(input(prompt))
+    value = int(input(prompt))
 
-            if (value <= 0):
-                raise ValueError("Value Must be Positive!")
-
-            return value
-        
-        except ValueError as error:
-            print(f"Invalid input: {error}") 
+    if min is not None and value <= min:
+        raise ValueError(f"Value Must be Greater than {min}")
+            
+    if max is not None and value >= max:
+        raise ValueError(f"Value Must be Less than {max}")
 
 
-def get_int(prompt : str) -> int:
+    if (value <= 0):
+        raise ValueError("Value Must be Positive!")
+
+    return value
+
+
+@repeat_input
+def get_int(prompt : str,  min : int = None, max : int = None) -> int:
     """
     Get Integer from User
     
@@ -87,15 +109,18 @@ def get_int(prompt : str) -> int:
         int: Integer Number
     """
 
-    while True:
-        try:
-            value = int(input(prompt))
-            return value
-        
-        except ValueError as error:
-            print(f"Invalid Input: {error}") 
+    value = int(input(prompt))
+
+    if min is not None and value <= min:
+        raise ValueError(f"Value Must be Greater than {min}")
+            
+    if max is not None and value >= max:
+        raise ValueError(f"Value Must be Less than {max}")
+
+    return value
 
 
+@repeat_input
 def get_int_list(prompt : str, stop_number : int = 0) -> list[int]:
     """
     Get List of Integers from User
@@ -120,6 +145,29 @@ def get_int_list(prompt : str, stop_number : int = 0) -> list[int]:
 
     return lst
 
+@repeat_input
+def get_float_list(prompt : str, list_size : int) -> list[float]:
+    """
+    Get List of Float Numbers from User
+    
+    Args:
+        prompt: Message for User
+        list_size: Size of the List
+
+    Returns:
+        list: Float List
+    """
+
+    print(prompt)
+
+    lst = []
+
+    for x in range(list_size):
+        x = get_float("Input Float Value: ")
+        lst.append(x)
+
+    return lst
+
 
 def generator_int_list(size : int, min_value : int = -10, max_value : int = 10) -> Generator[int, None, None]:
     """
@@ -135,5 +183,22 @@ def generator_int_list(size : int, min_value : int = -10, max_value : int = 10) 
     """
 
     for _ in range(size):
-        yield rnd.randint(-10, 10)
+        yield rnd.randint(min_value, max_value)
+
+def generator_float_list(size : int, min_value : float = -10, max_value : float = 10) -> Generator[float, None, None]:
+    """
+    Generate List of Float Numbers
+    
+    Args:
+        size: List Size
+        min_value: Minimum Value for List
+        max_value: Maximum Value for List
+
+    Yields:
+        float: List Element
+    """
+
+    for _ in range(size):
+        yield rnd.uniform(min_value, max_value)
+
 
