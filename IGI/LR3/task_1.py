@@ -26,15 +26,17 @@ def series_generator(x : float, max_series_len : int) -> Generator[float, None, 
     for n in range(0, max_series_len):
         yield 2 * (1 / (2 * n + 1) / math.pow(x, 2 * n + 1))
 
-
 def calculation_checker(func : Callable) -> Callable:
     """
     Decorator to check that abs(x) > 1.
     """
-    def wrapper(x : float, *args, **kwargs):
+    def wrapper(*args, **kwargs):
+        x = func(*args, **kwargs)
+
         if math.fabs(x <= 1):
             raise ValueError(f"Function argument module should be greater 1 (abs(x) > 1)!")
-        return func(x, *args, **kwargs)
+        
+        return x
     
     return wrapper
 
