@@ -1,0 +1,12 @@
+Name,ExportCountry,Amount
+Wheat,Germany,1200
+Wheat,France,800
+Wheat,Italy,950
+Oil,China,5000
+Oil,India,4200
+Oil,USA,6100
+Natural_Gas,Germany,3000
+Natural_Gas,Poland,1500
+Cars,USA,700
+Cars,Canada,400
+Cars,UK,350
