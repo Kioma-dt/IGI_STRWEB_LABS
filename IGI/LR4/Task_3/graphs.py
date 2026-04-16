@@ -33,6 +33,8 @@ class Graph:
              xytext=(1.1, 4),
              arrowprops=dict(facecolor="black", shrink=0.01))
 
+        ax.text(3, 1, "Graphics Are Close Enough")
+
         ax.legend()
 
         ax.grid(True)
