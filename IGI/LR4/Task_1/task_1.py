@@ -7,41 +7,9 @@ Date: 15-04-2026
 """
 
 import user_input
-from product import Product
+from product import Product, ProductAnalyzer
 import file_service
 from os import system
-
-def get_product_info(products : list[Product], product_name: str) -> tuple[list[str], int]:
-    """Getting Product Info By Name.
-        
-        Args:
-            products: List of Products
-            product_name: Name of Searching Product
-
-        Returns:
-            tuple: (List of Export Countries, Total Export Amount)
-    """
-    countries = []
-    total_amount = 0
-
-    for product in products:
-        if product.name == product_name:
-            countries.append(product.export_country)
-            total_amount += product.amount
-
-    return countries, total_amount
-
-def sort_by_amount(products : list[Product]) -> list[Product]:
-    """Sorting Products By Amount.
-        
-        Args:
-            products: List of Products
-
-        Returns:
-            list: Sorted Products
-    """
-
-    return sorted(products, key=lambda k: k.amount)
 
 
 products = [
@@ -121,7 +89,7 @@ def menu() -> None:
             print("Loaded Successfully!\n")
 
             if(user_input.get_yes_or_no("Would You Like to Sort by Amount? (yes / no)")):
-                loaded_products = sort_by_amount(products)
+                loaded_products = ProductAnalyzer.sort_by_amount(products)
 
             print()
 
@@ -133,7 +101,7 @@ def menu() -> None:
             print("Input Product Name: ")
             product_name = input()
 
-            countries, amount = get_product_info(loaded_products, product_name)
+            countries, amount = ProductAnalyzer.get_product_info(loaded_products, product_name)
 
             print("Countries: ", end='')
             print(*countries, sep=', ')
