@@ -6,7 +6,7 @@ Developer: Avramenko Roman Aleksandrovich
 Date: 16-04-2026
 """
 
-import user_input
+from user_input import UserInput
 import pandas as pd
 import numpy as np
 from IPython.display import display
@@ -66,7 +66,7 @@ def menu() -> None:
         except Exception as e:
             print(f"Error: {e}")
         finally:
-            if not user_input.get_yes_or_no("\nWould You Like to Try Again? (yes / no)"):
+            if not UserInput.get_yes_or_no("\nWould You Like to Try Again? (yes / no)"):
                 break
         
 

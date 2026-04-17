@@ -7,11 +7,9 @@ Date: 16-04-2026
 """
 
 from median import ManualMedian
-import user_input
+from user_input import UserInput
 import numpy as np
 from os import system
-
-
 
 
 def menu() -> None:
@@ -30,10 +28,10 @@ def menu() -> None:
             print("Date: 16-04-2026")
             print()
 
-            n = user_input.get_pos_int("Input First Dimension: ")
-            m = user_input.get_pos_int("Input Second Dimension: ")
-            min_element = user_input.get_int("Input Min Element: ")
-            max_element = user_input.get_int("Input Max Element: ")
+            n = UserInput.get_pos_int("Input First Dimension: ")
+            m = UserInput.get_pos_int("Input Second Dimension: ")
+            min_element = UserInput.get_int("Input Min Element: ")
+            max_element = UserInput.get_int("Input Max Element: ")
 
             A = np.random.randint(min_element, max_element + 1, size=(n, m))
 
@@ -71,14 +69,12 @@ def menu() -> None:
             print(f"NumPy Median of Column with Min Sum: {median_numpy}")
 
 
-
-
         except ValueError as e:
             print(f"Value Error: {e}")
         except Exception as e:
             print(f"Error: {e}")
         finally:
-            if not user_input.get_yes_or_no("\nWould You Like to Try Again? (yes / no)"):
+            if not UserInput.get_yes_or_no("\nWould You Like to Try Again? (yes / no)"):
                 break
         
 

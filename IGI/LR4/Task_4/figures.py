@@ -3,24 +3,33 @@ from color import Color
 import matplotlib.pyplot as plt
 
 class Figure(ABC):
+    """Abstract Figure Class"""
     _name = "Figure"
 
     @abstractmethod
     def area(self):
+        """Find Area of Figure"""
+        pass
+
+    @abstractmethod
+    def draw(self):
+        """Draw Figure"""
         pass
 
     @classmethod
     def get_name(cls):
+        """Get Figure Name"""
         return cls._name
     
 
 class IsoscelesTriangle(Figure):
+    """Class of Isosceles Triangle"""
     _name = "Isosceles Triangle"
 
-    def __init__(self, a, h, color):
+    def __init__(self, a: float, h: float, color: str):
         self.a = a
         self.h = h
-        self.color = color
+        self.color = Color(color)
 
     def area(self):
         return self.a * self.h / 2

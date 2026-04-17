@@ -4,8 +4,20 @@ from typing import Generator, Callable
 from series import Series
 
 class Graph:
+    """Graphical Rendering of Results"""
     @staticmethod
-    def draw(function: Callable, series_func: Callable, x_start: float, x_end: float, step: float, eps: float, max_iter: int):
+    def draw(function: Callable, series_func: Callable, x_start: float, x_end: float, step: float, eps: float, max_iter: int) -> None:
+        """Draw Result Graphs
+        
+        Args:
+            function: Approximating Function 
+            series_func: Series Member Function
+            x_start: Start Point
+            x_end: End Point
+            step: Step
+            eps: Accuracy
+            max_iter: Max Number of Iterations
+        """
         series = Series(function, series_func)
 
         x_values = []
@@ -29,9 +41,9 @@ class Graph:
         ax.set_title("Series vs Math")
 
         ax.annotate("Approaching Infinity",
-             xy=(1, function(1.01)),
-             xytext=(1.1, 4),
-             arrowprops=dict(facecolor="black", shrink=0.01))
+            xy=(1, function(1.01)),
+            xytext=(1.1, 4),
+            arrowprops=dict(facecolor="black", shrink=0.01))
 
         ax.text(3, 1, "Graphics Are Close Enough")
 
@@ -45,8 +57,7 @@ class Graph:
 
     @staticmethod
     def print_results(x : float, eps : float, math_res : float, results : tuple[float, int]) -> None:
-        """
-        Print Results Table
+        """Print Results Table
         
         Args:
             x: Function Argument

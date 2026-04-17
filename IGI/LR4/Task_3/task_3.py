@@ -11,7 +11,7 @@ from series import Series
 from series_stats import SeriesStats
 import math
 from os import system
-import user_input
+from user_input import UserInput
 
 
 
@@ -35,9 +35,9 @@ def menu() -> None:
             print()
 
             # Get user input
-            x = user_input.get_float("Input Function Argument: ")
-            eps = user_input.get_float("Input Precision (eps > 0): ", 0)
-            max_iter = user_input.get_pos_int("Input Max Iterations: ")
+            x = UserInput.get_float("Input Function Argument: ")
+            eps = UserInput.get_float("Input Precision (eps > 0): ", 0)
+            max_iter = UserInput.get_pos_int("Input Max Iterations: ")
 
             # Calculate
             results = series.calculate(x, eps, max_iter)
@@ -52,11 +52,11 @@ def menu() -> None:
 
             print("\nGraphical:")
 
-            x_start = user_input.get_float("Input Start Function Argument: ")
-            x_end = user_input.get_float("Input End Function Argument: ")
-            step = user_input.get_float("Input Step: ", 0)
-            eps = user_input.get_float("Input Precision (eps > 0): ", 0)
-            max_iter = user_input.get_pos_int("Input Max Iterations: ")
+            x_start = UserInput.get_float("Input Start Function Argument: ")
+            x_end = UserInput.get_float("Input End Function Argument: ")
+            step = UserInput.get_float("Input Step: ", 0)
+            eps = UserInput.get_float("Input Precision (eps > 0): ", 0)
+            max_iter = UserInput.get_pos_int("Input Max Iterations: ")
 
             Graph.draw(function, series_func, x_start, x_end, step, eps, max_iter)
 
@@ -65,7 +65,7 @@ def menu() -> None:
         except Exception as e:
             print(f"Error: {e}")
         finally:
-            if not user_input.get_yes_or_no("\nWould You Like to Try Again? (yes / no)"):
+            if not UserInput.get_yes_or_no("\nWould You Like to Try Again? (yes / no)"):
                 break
         
 

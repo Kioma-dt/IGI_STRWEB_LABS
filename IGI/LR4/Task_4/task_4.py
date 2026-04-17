@@ -10,7 +10,7 @@ from color import Color
 from figures import IsoscelesTriangle
 import math
 from os import system
-import user_input
+from user_input import UserInput
 
 
 
@@ -30,10 +30,10 @@ def menu() -> None:
             print("Date: 16-04-2026")
             print()
 
-            a = user_input.get_float("Input Side: ", 0)
-            h = user_input.get_float("Input Height: ", 0)
+            a = UserInput.get_float("Input Side: ", 0)
+            h = UserInput.get_float("Input Height: ", 0)
             print("Input Color: ", end='')
-            color = Color(input())
+            color = input()
 
             triangle = IsoscelesTriangle(a, h, color)
             print()
@@ -45,7 +45,7 @@ def menu() -> None:
         except Exception as e:
             print(f"Error: {e}")
         finally:
-            if not user_input.get_yes_or_no("\nWould You Like to Try Again? (yes / no)"):
+            if not UserInput.get_yes_or_no("\nWould You Like to Try Again? (yes / no)"):
                 break
         
 
