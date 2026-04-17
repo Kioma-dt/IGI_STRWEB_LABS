@@ -6,7 +6,7 @@ Developer: Avramenko Roman Aleksandrovich
 Date: 15-04-2026
 """
 
-import user_input
+from user_input import ProductUserInput
 from product import Product, ProductAnalyzer
 import file_service
 from os import system
@@ -46,7 +46,8 @@ def menu() -> None:
             print("Date: 15-04-2026")
             print()
 
-            print("Input Saving File Name: ")
+            file_ser = file_service.FileService
+            print("Input File Name: ")
             filename = input()
             print()
 
@@ -58,37 +59,20 @@ def menu() -> None:
 
             match answer:
                 case "1":
-                    file_service.CsvService.save(products, filename)
+                    file_ser = file_service.CsvService(filename)
                 case "2":
-                    file_service.PickleService.save(products, filename)
+                    file_ser = file_service.PickleService(filename)
                 case _:
                     raise Exception("Wrong Option Format")
+                
+            file_ser.save(products)
                 
             print("Saved Successfully!\n")
-
-            print("Input Loading File Name: ")
-            filename = input()
-            print()
-
-            print("Load Options: ")
-            print("1. CSV")
-            print("2. Pickle")
-
-            loaded_products = None
-            answer = input()
-
-
-            match answer:
-                case "1":
-                    loaded_products = file_service.CsvService.load(filename)
-                case "2":
-                    loaded_products = file_service.PickleService.load(filename)
-                case _:
-                    raise Exception("Wrong Option Format")
-                
+            
+            loaded_products = file_ser.load()
             print("Loaded Successfully!\n")
 
-            if(user_input.get_yes_or_no("Would You Like to Sort by Amount? (yes / no)")):
+            if(ProductUserInput.get_yes_or_no("Would You Like to Sort by Amount? (yes / no)")):
                 loaded_products = ProductAnalyzer.sort_by_amount(products)
 
             print()
@@ -98,8 +82,7 @@ def menu() -> None:
 
             print()
 
-            print("Input Product Name: ")
-            product_name = input()
+            product_name = ProductUserInput.get_product_name("Input Product Name: ", products)
 
             countries, amount = ProductAnalyzer.get_product_info(loaded_products, product_name)
 
@@ -113,7 +96,7 @@ def menu() -> None:
         except Exception as e:
             print(f"Error: {e}")
         finally:
-            if not user_input.get_yes_or_no("\nWould You Like to Try Again? (yes / no)"):
+            if not ProductUserInput.get_yes_or_no("\nWould You Like to Try Again? (yes / no)"):
                 break
         
 

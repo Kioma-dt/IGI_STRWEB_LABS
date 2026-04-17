@@ -2,25 +2,44 @@ from product import Product
 import csv
 import pickle
 import re
+from abc import ABC, abstractmethod
 
-class CsvService:
+class FileService(ABC):
+    """Abstract Class That Works with Files."""
+    def __init__(self, filename):
+        self.filename = filename
+
+    @abstractmethod
+    def save(products: list[Product]) -> None:
+        """Abstract Method To Save To File"""
+        pass
+
+    @abstractmethod
+    def load() -> list[Product]:
+        """Abstract Method To Load From File"""
+        pass
+    
+
+class CsvService(FileService):
     """Class That Works with CSV Files."""
-    @staticmethod
-    def save(products : list[Product], filename : str) -> None:
+    def __init__(self, filename):
+        super().__init__(filename)
+
+
+    def save(self, products : list[Product]) -> None:
         """Saving Products Info to CSV File.
         
         Args:
             products: List with Products
-            filename: Name of Saving File
 
         Raises:
             IOError: File Saving Problems
         """
         try:
-            if not re.search(r"\.csv$", filename):
-                filename += '.csv'
+            if not re.search(r"\.csv$", self.filename):
+                self.filename += '.csv'
 
-            with open(filename, 'w', newline='', encoding='utf-8') as file:
+            with open(self.filename, 'w', newline='', encoding='utf-8') as file:
                 writer = csv.writer(file)
                 writer.writerow(["Name", "ExportCountry", "Amount"])
                 for product in products:
@@ -28,8 +47,7 @@ class CsvService:
         except IOError as ex:
             raise IOError(f"CSV File Write Error: {ex}")
         
-    @staticmethod
-    def load(filename : str) -> list[Product]:
+    def load(self) -> list[Product]:
         """Loading Products from CSV File.
         
         Args:
@@ -42,10 +60,10 @@ class CsvService:
             IOError: File Loading Problems"""
         products = []
         try:
-            if not re.search(r"\.csv$", filename):
-                filename += '.csv'
+            if not re.search(r"\.csv$", self.filename):
+                self.filename += '.csv'
 
-            with open(filename, 'r', encoding='utf-8') as file:
+            with open(self.filename, 'r', encoding='utf-8') as file:
                 reader = csv.DictReader(file)
                 for row in reader:
                     products.append(Product(row["Name"], row["ExportCountry"], int(row["Amount"])))
@@ -56,45 +74,38 @@ class CsvService:
             raise IOError(f"CSV File Read Error: {ex}")
         
 
-class PickleService:
+class PickleService(FileService):
     """Class That Works with Pickle Serialization."""
 
-    @staticmethod
-    def save(products : list[Product], filename : str) -> None:
+    def save(self, products : list[Product]) -> None:
         """Saving Products Info to File Using Pickle.
         
         Args:
             products: List with Products
-            filename: Name of Saving File
 
         Raises:
             IOError: File Saving Problems
         """
-        if not re.search(r"\.(pkl|pickle)$", filename):
-                filename += '.pkl'
+        if not re.search(r"\.(pkl|pickle)$", self.filename):
+                self.filename += '.pkl'
         try:
-            with open(filename, 'wb') as file:
+            with open(self.filename, 'wb') as file:
                 pickle.dump(products, file)
         except IOError as ex:
             raise IOError(f"Pickle File Write Error: {ex}")
 
         
-    @staticmethod
-    def load(filename : str) -> list[Product]:
+    def load(self) -> list[Product]:
         """Loading Products from File Using Pickle.
-        
-        Args:
-            filename: Name of Loading File
-
         Returns:
             list: Loaded Products
 
         Raises:
             IOError: File Loading Problems"""
-        if not re.search(r"\.(pkl|pickle)$", filename):
-                filename += '.pkl'
+        if not re.search(r"\.(pkl|pickle)$", self.filename):
+                self.filename += '.pkl'
         try:
-            with open(filename, 'rb') as file:
+            with open(self.filename, 'rb') as file:
                 return pickle.load(file)
         except IOError as ex:
             raise IOError(f"Pickle File Read Error: {ex}")

@@ -7,8 +7,8 @@ Date: 15-04-2026
 """
 
 from string_service import Analyzer
-from file_service import FileService
-import user_input
+from file_service import ZipFileService
+from user_input import FilesUserInput
 from os import system
 
 def menu() -> None:
@@ -27,10 +27,15 @@ def menu() -> None:
             print("Date: 15-04-2026")
             print()
 
-            print("Input Text File Name: ")
-            text_filename = input()
+            input_filename = FilesUserInput.get_file_name("Input Input File Name: ", "txt")
 
-            text = FileService.read(text_filename)
+            output_filename = FilesUserInput.get_file_name("Input Output File Name: ", "txt")
+            
+            zip_filename = FilesUserInput.get_file_name("Input Zip File Name: ", "zip")
+
+            file_service = ZipFileService(input_filename, output_filename, zip_filename)
+
+            text = file_service.read()
             print("Text Read Successfully!")
             print(text)
             print()
@@ -40,27 +45,23 @@ def menu() -> None:
             print(analyzer)
             print()
 
-            print("Input Output File Name: ")
-            output_filename = input()
-            FileService.write(output_filename, analyzer.__str__())
+            file_service.write(analyzer.__str__())
             print("Result Write Successfully!")
 
-            print("Input Zip File Name: ")
-            zip_filename = input()
 
-            FileService.zip_file(zip_filename, output_filename)
+            file_service.zip_file()
             print("Result Zipped Successfully!")
             print()
 
             print("Zip Info: ")
-            print(FileService.zipped_file_info(zip_filename, output_filename))
+            print(file_service.zipped_file_info())
 
         except IOError as e:
             print(f"Input Output Error: {e}")
         except Exception as e:
             print(f"Error: {e}")
         finally:
-            if not user_input.get_yes_or_no("\nWould You Like to Try Again? (yes / no)"):
+            if not FilesUserInput.get_yes_or_no("\nWould You Like to Try Again? (yes / no)"):
                 break
         
 

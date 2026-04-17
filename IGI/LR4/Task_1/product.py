@@ -12,6 +12,7 @@ class Product:
         return  f"Product Name: {self.name}, Exports into Country: {self.export_country}, Amount: {self.amount}"   
     
 class ProductAnalyzer:
+    """Class To Analyze Product"""
     @staticmethod
     def get_product_info(products : list[Product], product_name: str) -> tuple[list[str], int]:
         """Getting Product Info By Name.
@@ -31,8 +32,13 @@ class ProductAnalyzer:
                 countries.append(product.export_country)
                 total_amount += product.amount
 
+        if len(countries) == 0:
+            raise ValueError(f"No Such Product: {product_name}")
+
         return countries, total_amount
 
+class SortMixin:
+    """Mixin To Add Sort"""
     @staticmethod
     def sort_by_amount(products : list[Product]) -> list[Product]:
         """Sorting Products By Amount.
@@ -45,3 +51,7 @@ class ProductAnalyzer:
         """
 
         return sorted(products, key=lambda k: k.amount)
+    
+class ProductSortAnalyzer(ProductAnalyzer, SortMixin):
+    """Class To Analyze Product + Sort"""
+    pass    
