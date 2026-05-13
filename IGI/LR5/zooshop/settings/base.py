@@ -104,6 +104,8 @@ REST_FRAMEWORK = {
     "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
     "DEFAULT_FILTER_BACKENDS": [
         "django_filters.rest_framework.DjangoFilterBackend",
+        "rest_framework.filters.SearchFilter",
+        "rest_framework.filters.OrderingFilter",
     ],
     "DEFAULT_PERMISSION_CLASSES": [
         "rest_framework.permissions.AllowAny",
@@ -112,8 +114,26 @@ REST_FRAMEWORK = {
         "rest_framework.authentication.SessionAuthentication",
         "rest_framework_simplejwt.authentication.JWTAuthentication",
     ],
-    "DEFAULT_PAGINATION_CLASS": "rest_framework.pagination.PageNumberPagination",
+    "DEFAULT_PAGINATION_CLASS": "presentation.api.pagination.ZoomShopPageNumberPagination",
     "PAGE_SIZE": 20,
+    "DEFAULT_VERSIONING_CLASS": "rest_framework.versioning.QueryParameterVersioning",
+    "DEFAULT_VERSION": "1",
+    "ALLOWED_VERSIONS": ("1",),
+    "VERSION_PARAM": "version",
+    "DEFAULT_THROTTLE_CLASSES": [
+        "rest_framework.throttling.ScopedRateThrottle",
+    ],
+    "DEFAULT_THROTTLE_RATES": {
+        "anon": "120/hour",
+        "user": "600/hour",
+        "categories": "300/hour",
+        "products": "300/hour",
+        "orders": "200/hour",
+        "reviews": "200/hour",
+        "news": "200/hour",
+        "promocodes": "200/hour",
+    },
+    "EXCEPTION_HANDLER": "presentation.api.exceptions.zoomshop_exception_handler",
 }
 
 SIMPLE_JWT = {
@@ -127,8 +147,9 @@ SIMPLE_JWT = {
 
 SPECTACULAR_SETTINGS = {
     "TITLE": "ZoomShop API",
-    "DESCRIPTION": "ZoomShop web backend (infrastructure scaffold).",
-    "VERSION": "0.1.0",
+    "DESCRIPTION": "ZoomShop REST API (catalog, orders, reviews, news, promotions). "
+    "Versioning: pass query parameter ``version=1`` (default). JWT: ``Authorization: Bearer <access>``.",
+    "VERSION": "1.0.0",
     "SERVE_INCLUDE_SCHEMA": False,
     "COMPONENT_SPLIT_REQUEST": True,
     "SECURITY": [{"bearerAuth": []}],

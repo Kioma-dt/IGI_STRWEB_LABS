@@ -1,0 +1,58 @@
+# ZoomShop REST API — example requests (HTTPie / curl)
+# Base URL (adjust host/port): http://127.0.0.1:8000
+# Versioning: add query parameter version=1 (default if omitted for many clients).
+
+### JWT: obtain access + refresh (auth remains under /api/v1/auth/)
+POST http://127.0.0.1:8000/api/v1/auth/jwt/create/
+Content-Type: application/json
+
+{"username": "staff@example.com", "password": "your-password"}
+
+### Products: paginated list (anonymous), search + ordering + version
+GET http://127.0.0.1:8000/api/products/?version=1&search=kibble&ordering=name&page=1&page_size=10
+
+### Products: filter by category + active flag
+GET http://127.0.0.1:8000/api/products/?version=1&category=<CATEGORY_UUID>&is_active=true
+
+### Categories: list with filters
+GET http://127.0.0.1:8000/api/categories/?version=1&name=dog
+
+### Product detail
+GET http://127.0.0.1:8000/api/products/<PRODUCT_UUID>/?version=1
+
+### Product create (staff / manage_products / full_access) — Bearer JWT required
+POST http://127.0.0.1:8000/api/products/?version=1
+Authorization: Bearer <ACCESS_TOKEN>
+Content-Type: application/json
+
+{
+  "name": "Cat toy",
+  "sku": "TOY-001",
+  "category": "<CATEGORY_UUID>",
+  "description": "",
+  "base_price": "9.99",
+  "age_restriction": 0,
+  "is_active": true,
+  "initial_stock": 12
+}
+
+### Orders: list (requires users.view_sales or staff / full_access)
+GET http://127.0.0.1:8000/api/orders/?version=1&ordering=-ordered_at
+Authorization: Bearer <ACCESS_TOKEN>
+
+### Reviews: public list
+GET http://127.0.0.1:8000/api/reviews/?version=1
+
+### Promo codes: public list (active-only for anonymous)
+GET http://127.0.0.1:8000/api/promocodes/?version=1&is_active=true
+
+### News: public list (published-only for anonymous)
+GET http://127.0.0.1:8000/api/news/?version=1&is_published=true
+
+### OpenAPI schema + Swagger UI
+GET http://127.0.0.1:8000/api/schema/
+GET http://127.0.0.1:8000/api/docs/
+
+### Equivalent curl (JWT + products list)
+# curl -s "http://127.0.0.1:8000/api/products/?version=1" | jq .
+# curl -s -H "Authorization: Bearer $TOKEN" "http://127.0.0.1:8000/api/orders/?version=1" | jq .
