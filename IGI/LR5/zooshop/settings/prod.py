@@ -52,6 +52,19 @@ DATABASES = {
 SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
 SESSION_COOKIE_SECURE = True
 CSRF_COOKIE_SECURE = True
+SESSION_COOKIE_HTTPONLY = True
+CSRF_COOKIE_HTTPONLY = True
+SESSION_COOKIE_SAMESITE = "Lax"
+CSRF_COOKIE_SAMESITE = "Lax"
+
+_csrf_origins_raw = os.environ.get("CSRF_TRUSTED_ORIGINS", "").strip()
+CSRF_TRUSTED_ORIGINS = [
+    o.strip() for o in _csrf_origins_raw.split(",") if o.strip()
+]
+if not CSRF_TRUSTED_ORIGINS:
+    raise ImproperlyConfigured(
+        "CSRF_TRUSTED_ORIGINS is required in production (comma-separated HTTPS origins)."
+    )
 SECURE_BROWSER_XSS_FILTER = True
 SECURE_CONTENT_TYPE_NOSNIFF = True
 X_FRAME_OPTIONS = "DENY"

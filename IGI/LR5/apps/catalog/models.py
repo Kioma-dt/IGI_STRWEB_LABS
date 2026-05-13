@@ -90,3 +90,25 @@ class Product(SoftDeleteModel):
 
     def __str__(self) -> str:
         return f"{self.name} ({self.sku})"
+
+
+class ProductStock(SoftDeleteModel):
+    """Physical stock for a product (quantity on hand)."""
+
+    product = models.OneToOneField(
+        Product,
+        on_delete=models.CASCADE,
+        related_name="stock",
+        verbose_name="product",
+    )
+    quantity_on_hand = models.PositiveIntegerField("quantity on hand", default=0)
+
+    class Meta:
+        verbose_name = "product stock"
+        verbose_name_plural = "product stock"
+        indexes = [
+            models.Index(fields=["quantity_on_hand"], name="stock_qty_idx"),
+        ]
+
+    def __str__(self) -> str:
+        return f"Stock({self.product_id})={self.quantity_on_hand}"

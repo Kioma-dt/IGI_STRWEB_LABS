@@ -68,3 +68,25 @@ class EmployeeProfile(SoftDeleteModel):
 
     def __str__(self) -> str:
         return f"{self.full_name} ({self.position})"
+
+
+class ShopPermission(models.Model):
+    """
+    Permission anchor for RBAC (no business data; Django auth.Permission rows only).
+    """
+
+    class Meta:
+        default_permissions = ()
+        permissions = [
+            ("place_order", "Place orders as customer"),
+            ("view_own_orders", "View own customer orders"),
+            ("view_active_promotions", "View active promotional codes"),
+            ("submit_product_review", "Submit product reviews"),
+            ("view_suppliers", "View supplier directory"),
+            ("view_sales", "View sales information"),
+            ("manage_products", "Manage catalog products"),
+            ("full_access", "Full administrative access to shop APIs"),
+        ]
+
+    def __str__(self) -> str:
+        return "ShopPermission"

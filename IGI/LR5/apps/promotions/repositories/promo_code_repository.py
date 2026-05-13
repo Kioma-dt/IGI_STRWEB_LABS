@@ -43,6 +43,13 @@ class PromoCodeRepository(DjangoModelRepository[PromoCode]):
         qs = self._alive_qs(self._qs()).prefetch_related("customers")
         return qs.filter(pk=entity_id).first()
 
+    def get_by_code(self, code: str) -> PromoCode | None:
+        normalized = code.strip()
+        if not normalized:
+            return None
+        qs = self._alive_qs(self._qs()).prefetch_related("customers")
+        return qs.filter(code=normalized).first()
+
     def list(
         self,
         page: int = 1,

@@ -77,3 +77,20 @@ class OrderRepository(DjangoModelRepository[Order]):
         )
         qs = qs.search(text)
         return paginate_queryset(qs.order_by(ordering), page, page_size)
+
+    def get_by_id_with_items(self, entity_id: UUID | str) -> Order | None:
+        from django.db.models import Prefetch
+
+        from apps.orders.models import OrderItem
+
+        qs = self._alive_qs(self._qs())
+        qs = qs.select_related("customer", "created_by", "promo_code")
+        qs = qs.prefetch_related(
+            Prefetch(
+                "items",
+                queryset=OrderItem.objects.filter(is_deleted=False).select_related(
+                    "product",
+                ),
+            ),
+        )
+        return qs.filter(pk=entity_id).first()

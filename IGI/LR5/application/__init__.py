@@ -1,1 +1,1 @@
-"""Services and use-cases orchestration between the domain and interfaces."""
+"""Application layer: use-case services and DTOs (no HTTP or transport concerns)."""

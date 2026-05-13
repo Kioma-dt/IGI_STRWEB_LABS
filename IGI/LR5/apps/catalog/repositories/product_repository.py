@@ -7,6 +7,7 @@ from uuid import UUID
 from django.apps import apps as django_apps
 
 from apps.catalog.models import Category, Product
+from core.exceptions import ProductNotFoundError
 from core.repositories.django_model_repository import DjangoModelRepository
 from core.repositories.pagination import RepositoryPage, paginate_queryset
 
@@ -115,3 +116,21 @@ class ProductRepository(DjangoModelRepository[Product]):
         qs = qs.select_related("category").prefetch_related("suppliers")
         popular_qs = qs.popular_products(limit=limit)
         return list(popular_qs)
+
+    def lock_active_by_ids(self, ids: list[UUID]) -> dict[UUID, Product]:
+        """Lock active products for update; used by transactional order placement."""
+        if not ids:
+            return {}
+        unique_ids = list(dict.fromkeys(ids))
+        rows = list(
+            self._alive_qs(self._qs())
+            .filter(id__in=unique_ids, is_active=True)
+            .select_related("category")
+            .select_for_update(),
+        )
+        found: dict[UUID, Product] = {p.id: p for p in rows}
+        if len(found) != len(unique_ids):
+            raise ProductNotFoundError(
+                "One or more products are missing, inactive, or deleted.",
+            )
+        return found

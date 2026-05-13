@@ -80,3 +80,129 @@ class Order(SoftDeleteModel):
 
     def __str__(self) -> str:
         return self.reference_number
+
+
+class Purchase(SoftDeleteModel):
+    supplier = models.ForeignKey(
+        "suppliers.Supplier",
+        on_delete=models.PROTECT,
+        related_name="purchases",
+        verbose_name="supplier",
+    )
+    created_by = models.ForeignKey(
+        "users.EmployeeProfile",
+        on_delete=models.SET_NULL,
+        related_name="created_purchases",
+        null=True,
+        blank=True,
+        verbose_name="created by",
+    )
+    ordered_at = models.DateTimeField("ordered at", auto_now_add=True)
+    delivered_at = models.DateTimeField(
+        "delivered at",
+        null=True,
+        blank=True,
+    )
+    reference_number = models.CharField(
+        "reference number",
+        max_length=64,
+        unique=True,
+        db_index=True,
+        default=_generate_order_reference,
+        editable=False,
+    )
+
+    class Meta:
+        verbose_name = "purchase"
+        verbose_name_plural = "purchases"
+        indexes = [
+            models.Index(
+                fields=["supplier", "ordered_at"],
+                name="purchase_supplier_ordered_idx",
+            ),
+        ]
+
+    def __str__(self) -> str:
+        return self.reference_number
+
+
+class PurchaseItem(SoftDeleteModel):
+    purchase = models.ForeignKey(
+        Purchase,
+        on_delete=models.CASCADE,
+        related_name="items",
+        verbose_name="purchase",
+    )
+    product = models.ForeignKey(
+        "catalog.Product",
+        on_delete=models.PROTECT,
+        related_name="purchase_items",
+        verbose_name="product",
+    )
+    quantity = models.PositiveIntegerField("quantity")
+    purchase_price = models.DecimalField(
+        "purchase price",
+        max_digits=10,
+        decimal_places=2,
+        help_text="Unit purchase price for this inbound shipment line.",
+    )
+
+    class Meta:
+        verbose_name = "purchase item"
+        verbose_name_plural = "purchase items"
+        constraints = [
+            models.UniqueConstraint(
+                fields=["purchase", "product"],
+                name="uniq_purchase_product_item",
+            ),
+        ]
+        indexes = [
+            models.Index(fields=["purchase"], name="purchaseitem_purchase_idx"),
+            models.Index(fields=["product"], name="purchaseitem_product_idx"),
+        ]
+
+    def __str__(self) -> str:
+        return f"{self.purchase_id} x {self.product_id} ({self.quantity})"
+
+
+class OrderItem(SoftDeleteModel):
+    order = models.ForeignKey(
+        Order,
+        on_delete=models.CASCADE,
+        related_name="items",
+        verbose_name="order",
+    )
+    product = models.ForeignKey(
+        "catalog.Product",
+        on_delete=models.PROTECT,
+        related_name="order_items",
+        verbose_name="product",
+    )
+    quantity = models.PositiveIntegerField("quantity")
+    unit_price = models.DecimalField(
+        "unit price",
+        max_digits=10,
+        decimal_places=2,
+    )
+    line_total = models.DecimalField(
+        "line total",
+        max_digits=12,
+        decimal_places=2,
+    )
+
+    class Meta:
+        verbose_name = "order item"
+        verbose_name_plural = "order items"
+        constraints = [
+            models.UniqueConstraint(
+                fields=["order", "product"],
+                name="uniq_order_product_item",
+            ),
+        ]
+        indexes = [
+            models.Index(fields=["order"], name="orderitem_order_idx"),
+            models.Index(fields=["product"], name="orderitem_product_idx"),
+        ]
+
+    def __str__(self) -> str:
+        return f"{self.order_id} x {self.product_id} ({self.quantity})"
