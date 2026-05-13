@@ -1,0 +1,44 @@
+services:
+  db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-zoomag_db}
+      POSTGRES_USER: ${POSTGRES_USER:-zoomag_user}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-zoomag_secret}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-zoomag_user} -d ${POSTGRES_DB:-zoomag_db}"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  web:
+    build: .
+    command: >
+      gunicorn zooshop.wsgi:application
+      --bind 0.0.0.0:8000
+      --workers 3
+    env_file:
+      - .env
+    environment:
+      DJANGO_SETTINGS_MODULE: zooshop.settings.prod
+      POSTGRES_HOST: db
+      POSTGRES_PORT: 5432
+      # Локально по умолчанию * — в проде задайте ALLOWED_HOSTS в .env
+      ALLOWED_HOSTS: ${ALLOWED_HOSTS:-*}
+    depends_on:
+      db:
+        condition: service_healthy
+    ports:
+      - "8000:8000"
+    volumes:
+      - static_volume:/app/staticfiles
+      - media_volume:/app/media
+
+volumes:
+  postgres_data:
+  static_volume:
+  media_volume:
