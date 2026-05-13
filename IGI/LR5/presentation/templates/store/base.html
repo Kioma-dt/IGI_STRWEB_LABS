@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}Зоомагазин{% endblock %}</title>
+</head>
+<body>
+<header role="banner">
+  <p><strong>Зоомагазин</strong> — зоотовары</p>
+  {% include "store/includes/nav.html" %}
+</header>
+
+<hr>
+
+<main role="main">
+  {% include "store/includes/messages.html" %}
+  {% block content %}{% endblock %}
+</main>
+
+<hr>
+
+<footer role="contentinfo">
+  {% include "store/includes/footer.html" %}
+</footer>
+</body>
+</html>

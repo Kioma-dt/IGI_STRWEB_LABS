@@ -2,7 +2,7 @@
 {% block title %}Product form · ZoomShop{% endblock %}
 {% block content %}
 <h1>{% if object %}Edit product{% else %}New product{% endif %}</h1>
-<form method="post">{% csrf_token %}
+<form method="post" enctype="multipart/form-data">{% csrf_token %}
   {{ form.as_p }}
   <p><button type="submit" class="btn">Save</button>
   <a class="btn btn-secondary" href="{% url 'web_shop:product-list' %}">Cancel</a></p>

@@ -1,0 +1,11 @@
+{% extends "store/base.html" %}
+{% block title %}Вход · Зоомагазин{% endblock %}
+{% block content %}
+<h1>Вход</h1>
+<form method="post" action="">
+  {% csrf_token %}
+  <table>{{ form.as_table }}</table>
+  <p><button type="submit">Войти</button></p>
+</form>
+<p>Нет аккаунта? <a href="{% url 'store:signup' %}">Регистрация</a></p>
+{% endblock %}

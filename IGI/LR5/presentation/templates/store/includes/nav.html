@@ -1,0 +1,28 @@
+<nav aria-label="Основное меню">
+  <ul>
+    <li><a href="{% url 'store:home' %}">Главная</a></li>
+    <li><a href="{% url 'store:about' %}">О компании</a></li>
+    <li><a href="{% url 'store:news-list' %}">Новости</a></li>
+    <li><a href="{% url 'store:faq' %}">FAQ</a></li>
+    <li><a href="{% url 'store:contacts' %}">Контакты</a></li>
+    <li><a href="{% url 'store:privacy' %}">Конфиденциальность</a></li>
+    <li><a href="{% url 'store:vacancy-list' %}">Вакансии</a></li>
+    <li><a href="{% url 'store:catalog' %}">Каталог</a></li>
+    <li><a href="{% url 'store:reviews' %}">Отзывы</a></li>
+    <li><a href="{% url 'store:promos' %}">Промокоды</a></li>
+    <li><a href="{% url 'store:cart' %}">Корзина{% if cart_items %} ({{ cart_items }}){% endif %}</a></li>
+    {% if user.is_authenticated %}
+      <li><a href="{% url 'store:account' %}">Личный кабинет</a></li>
+      <li>
+        <form action="{% url 'store:logout' %}" method="post">
+          {% csrf_token %}
+          <button type="submit">Выйти</button>
+        </form>
+      </li>
+    {% else %}
+      <li><a href="{% url 'store:login' %}">Вход</a></li>
+      <li><a href="{% url 'store:signup' %}">Регистрация</a></li>
+    {% endif %}
+    <li><a href="{% url 'web_shop:home' %}">Сотрудникам (staff)</a></li>
+  </ul>
+</nav>

@@ -1,0 +1,43 @@
+{% extends "store/base.html" %}
+{% block title %}Корзина · Зоомагазин{% endblock %}
+{% block content %}
+<h1>Корзина</h1>
+{% if lines %}
+  <form method="post" action="">
+    {% csrf_token %}
+    <table>
+      <thead>
+        <tr>
+          <th scope="col">Товар</th>
+          <th scope="col">SKU</th>
+          <th scope="col">Цена</th>
+          <th scope="col">Кол-во</th>
+          <th scope="col">Сумма</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for line in lines %}
+          <tr>
+            <td>{{ line.product_name }}</td>
+            <td>{{ line.sku }}</td>
+            <td>{{ line.unit_price }}</td>
+            <td><label>Кол-во <input type="number" name="qty_{{ line.product_id }}" min="0" max="999" value="{{ line.quantity }}"></label></td>
+            <td>{{ line.line_total }}</td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    <p><button type="submit" name="update" value="1">Сохранить количества</button>
+    <button type="submit" name="clear" value="1">Очистить корзину</button></p>
+  </form>
+  <p><strong>Итого:</strong> {{ subtotal }}</p>
+  {% if user.is_authenticated %}
+    <p><a href="{% url 'store:checkout' %}">Оформить заказ</a></p>
+  {% else %}
+    {% url 'store:checkout' as checkout_url %}
+    <p>Для оформления заказа <a href="{% url 'store:login' %}?next={{ checkout_url|urlencode }}">войдите</a> или <a href="{% url 'store:signup' %}">зарегистрируйтесь</a>.</p>
+  {% endif %}
+{% else %}
+  <p>Корзина пуста. <a href="{% url 'store:catalog' %}">В каталог</a></p>
+{% endif %}
+{% endblock %}

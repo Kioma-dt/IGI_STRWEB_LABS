@@ -57,6 +57,12 @@ class Product(SoftDeleteModel):
         verbose_name="category",
     )
     description = models.TextField("description", blank=True)
+    image = models.ImageField(
+        "image",
+        upload_to="products/",
+        blank=True,
+        null=True,
+    )
     base_price = models.DecimalField(
         "base price",
         max_digits=10,

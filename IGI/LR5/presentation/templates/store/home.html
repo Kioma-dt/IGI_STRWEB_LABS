@@ -1,0 +1,23 @@
+{% extends "store/base.html" %}
+{% block title %}Главная · Зоомагазин{% endblock %}
+{% block content %}
+<h1>Добро пожаловать</h1>
+<p>Интернет-витрина зоомагазина: каталог, корзина, новости и отзывы.</p>
+<section aria-labelledby="feat">
+  <h2 id="feat">Недавние товары</h2>
+  {% if featured_products %}
+    <ul>
+      {% for p in featured_products %}
+        <li>
+          <a href="{% url 'store:product-detail' p.pk %}">{{ p.name }}</a>
+          — {{ p.base_price }} (арт. {{ p.sku }})
+          {% if p.category %} · {{ p.category.name }}{% endif %}
+        </li>
+      {% endfor %}
+    </ul>
+  {% else %}
+    <p>Пока нет товаров в каталоге.</p>
+  {% endif %}
+</section>
+<p><a href="{% url 'store:catalog' %}">Перейти в каталог</a></p>
+{% endblock %}

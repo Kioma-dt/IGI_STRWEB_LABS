@@ -1,0 +1,18 @@
+{% extends "store/base.html" %}
+{% block title %}Отзывы · Зоомагазин{% endblock %}
+{% block content %}
+<h1>Отзывы покупателей</h1>
+<ul>
+  {% for r in reviews %}
+    <li>
+      <strong>{{ r.title }}</strong> ({{ r.rating }}/5) —
+      <a href="{% url 'store:product-detail' r.product_id %}">{{ r.product.name }}</a>
+      <p>{{ r.body|truncatewords:25 }}</p>
+      <p><small>{{ r.customer.full_name }} · {{ r.created_at|date:"d.m.Y" }}</small></p>
+    </li>
+  {% empty %}
+    <li>Нет опубликованных отзывов.</li>
+  {% endfor %}
+</ul>
+{% include "store/includes/pagination.html" %}
+{% endblock %}

@@ -1,1 +1,1 @@
-"""Admin registration will be added once domain models are implemented."""
+"""Django admin is configured per app under ``apps/*/admin.py``."""

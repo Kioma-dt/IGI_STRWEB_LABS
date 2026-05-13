@@ -1,0 +1,13 @@
+{% extends "store/base.html" %}
+{% block title %}FAQ · Зоомагазин{% endblock %}
+{% block content %}
+<h1>Частые вопросы</h1>
+<dl>
+  {% for row in faq_list %}
+    <dt><strong>{{ row.question }}</strong></dt>
+    <dd>{{ row.answer|linebreaks }}</dd>
+  {% empty %}
+    <p>Раздел пуст.</p>
+  {% endfor %}
+</dl>
+{% endblock %}

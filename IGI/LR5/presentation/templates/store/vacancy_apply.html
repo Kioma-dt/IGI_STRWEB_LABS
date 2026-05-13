@@ -1,0 +1,14 @@
+{% extends "store/base.html" %}
+{% block title %}Заявка: {{ vacancy.title }} · Зоомагазин{% endblock %}
+{% block content %}
+<h1>Заявка на вакансию</h1>
+<p>Вакансия: <strong>{{ vacancy.title }}</strong></p>
+<form method="post" action="">
+  {% csrf_token %}
+  <table>
+    {{ form.as_table }}
+  </table>
+  <p><button type="submit">Отправить заявку</button></p>
+</form>
+<p><a href="{% url 'store:vacancy-list' %}">Назад к списку</a></p>
+{% endblock %}

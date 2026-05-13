@@ -1,0 +1,30 @@
+{% extends "store/base.html" %}
+{% block title %}Промокоды · Зоомагазин{% endblock %}
+{% block content %}
+<h1>Активные промокоды</h1>
+<p>Список действующих на сегодня предложений (при оформлении заказа введите код в поле «Промокод»).</p>
+{% if promos %}
+  <table>
+    <thead>
+      <tr>
+        <th scope="col">Код</th>
+        <th scope="col">Скидка, %</th>
+        <th scope="col">Действует с</th>
+        <th scope="col">До</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for p in promos %}
+        <tr>
+          <td><code>{{ p.code }}</code></td>
+          <td>{{ p.discount_percent }}</td>
+          <td>{{ p.valid_from|date:"d.m.Y" }}</td>
+          <td>{% if p.valid_until %}{{ p.valid_until|date:"d.m.Y" }}{% else %}без срока{% endif %}</td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+{% else %}
+  <p>Сейчас нет активных промокодов.</p>
+{% endif %}
+{% endblock %}

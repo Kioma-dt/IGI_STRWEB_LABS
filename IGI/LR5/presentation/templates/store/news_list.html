@@ -1,0 +1,16 @@
+{% extends "store/base.html" %}
+{% block title %}Новости · Зоомагазин{% endblock %}
+{% block content %}
+<h1>Новости</h1>
+{% for a in articles %}
+  <article>
+    <h2><a href="{% url 'store:news-detail' a.pk %}">{{ a.title }}</a></h2>
+    <p><time datetime="{{ a.published_at|date:'c' }}">{{ a.published_at|date:"d.m.Y H:i" }}</time></p>
+    <p>{{ a.body|truncatewords:40 }}</p>
+  </article>
+  <hr>
+{% empty %}
+  <p>Нет опубликованных новостей.</p>
+{% endfor %}
+{% include "store/includes/pagination.html" %}
+{% endblock %}

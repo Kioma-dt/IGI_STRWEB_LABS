@@ -1,0 +1,19 @@
+{% extends "store/base.html" %}
+{% block title %}Личный кабинет · Зоомагазин{% endblock %}
+{% block content %}
+<h1>Личный кабинет</h1>
+<p>Пользователь: <strong>{{ user.username }}</strong>{% if user.email %} ({{ user.email }}){% endif %}</p>
+{% if profile %}
+  <section>
+    <h2>Профиль клиента</h2>
+    <ul>
+      <li>ФИО: {{ profile.full_name }}</li>
+      <li>Телефон: {{ profile.phone }}</li>
+      <li>VIP: {% if profile.is_vip %}да{% else %}нет{% endif %}</li>
+    </ul>
+  </section>
+{% else %}
+  <p>У учётной записи нет профиля клиента (оформление заказов недоступно).</p>
+{% endif %}
+<p><a href="{% url 'store:account-orders' %}">Мои заказы</a></p>
+{% endblock %}

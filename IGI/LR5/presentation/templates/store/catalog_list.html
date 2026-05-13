@@ -1,0 +1,35 @@
+{% extends "store/base.html" %}
+{% block title %}Каталог · Зоомагазин{% endblock %}
+{% block content %}
+<h1>Каталог товаров</h1>
+<form method="get" action="">
+  <fieldset>
+    <legend>Фильтр</legend>
+    {{ filter.form.as_p }}
+    <p><button type="submit">Применить</button></p>
+  </fieldset>
+</form>
+<table>
+  <thead>
+    <tr>
+      <th scope="col">Товар</th>
+      <th scope="col">Категория</th>
+      <th scope="col">Цена</th>
+      <th scope="col">SKU</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for p in products %}
+      <tr>
+        <td><a href="{% url 'store:product-detail' p.pk %}">{{ p.name }}</a></td>
+        <td>{% if p.category %}{{ p.category.name }}{% else %}—{% endif %}</td>
+        <td>{{ p.base_price }}</td>
+        <td>{{ p.sku }}</td>
+      </tr>
+    {% empty %}
+      <tr><td colspan="4">Ничего не найдено.</td></tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% include "store/includes/pagination.html" %}
+{% endblock %}

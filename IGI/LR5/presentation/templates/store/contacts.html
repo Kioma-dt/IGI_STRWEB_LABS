@@ -1,0 +1,31 @@
+{% extends "store/base.html" %}
+{% block title %}Контакты · Зоомагазин{% endblock %}
+{% block content %}
+<h1>Контакты</h1>
+{% if company %}
+  <section aria-labelledby="co">
+    <h2 id="co">{{ company.name }}</h2>
+    <p>Телефон: {{ company.phone }}, e-mail: {{ company.support_email }}</p>
+  </section>
+{% endif %}
+<section aria-labelledby="lst">
+  <h2 id="lst">Контактные данные</h2>
+  <ul>
+    {% for c in contacts %}
+      <li>{{ c.get_type_display }}: {{ c.value }}{% if c.is_primary %} (основной){% endif %}</li>
+    {% empty %}
+      <li>Нет записей.</li>
+    {% endfor %}
+  </ul>
+</section>
+<section aria-labelledby="fb">
+  <h2 id="fb">Написать нам</h2>
+  <form method="post" action="">
+    {% csrf_token %}
+    <table>
+      {{ form.as_table }}
+    </table>
+    <p><button type="submit">Отправить</button></p>
+  </form>
+</section>
+{% endblock %}

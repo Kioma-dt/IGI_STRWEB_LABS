@@ -1,0 +1,50 @@
+{% extends "store/base.html" %}
+{% block title %}{{ product.name }} · Зоомагазин{% endblock %}
+{% block content %}
+<article>
+  <h1>{{ product.name }}</h1>
+  <p>SKU: {{ product.sku }} · Цена: {{ product.base_price }}</p>
+  {% if product.category %}<p>Категория: {{ product.category.name }}</p>{% endif %}
+  {% if product.image %}
+    <p><img src="{{ product.image.url }}" alt=""></p>
+  {% endif %}
+  <section>
+    <h2>Описание</h2>
+    <p>{{ product.description|linebreaksbr }}</p>
+  </section>
+</article>
+
+<section aria-labelledby="cart-h">
+  <h2 id="cart-h">В корзину</h2>
+  <form method="post" action="{% url 'store:cart-add' product.pk %}">
+    {% csrf_token %}
+    <input type="hidden" name="next" value="{% url 'store:product-detail' product.pk %}">
+    <table>{{ form.as_table }}</table>
+    <p><button type="submit">Добавить</button></p>
+  </form>
+</section>
+
+<section aria-labelledby="rev-h">
+  <h2 id="rev-h">Отзывы</h2>
+  {% for r in reviews %}
+    <article>
+      <h3>{{ r.title }} — {{ r.rating }}/5</h3>
+      <p><small>{{ r.customer.full_name }} · {{ r.created_at|date:"d.m.Y" }}</small></p>
+      <p>{{ r.body|linebreaksbr }}</p>
+    </article>
+  {% empty %}
+    <p>Пока нет отзывов.</p>
+  {% endfor %}
+</section>
+
+<section aria-labelledby="revform-h">
+  <h2 id="revform-h">Оставить отзыв</h2>
+  <form method="post" action="">
+    {% csrf_token %}
+    <table>{{ review_form.as_table }}</table>
+    <p><button type="submit" name="submit_review" value="1">Отправить отзыв</button></p>
+  </form>
+</section>
+
+<p><a href="{% url 'store:catalog' %}">Назад в каталог</a></p>
+{% endblock %}
