@@ -1,0 +1,19 @@
+{% extends "web/base.html" %}
+{% block title %}Product · ZoomShop{% endblock %}
+{% block content %}
+<h1>{{ product.name }}</h1>
+<dl class="detail">
+  <dt>SKU</dt><dd>{{ product.sku }}</dd>
+  <dt>Category</dt><dd>{% if product.category %}{{ product.category.name }}{% else %}—{% endif %}</dd>
+  <dt>Price</dt><dd>{{ product.base_price }}</dd>
+  <dt>Age restriction</dt><dd>{{ product.get_age_restriction_display }}</dd>
+  <dt>Active</dt><dd>{{ product.is_active|yesno:"Yes,No" }}</dd>
+  <dt>Description</dt><dd>{{ product.description|default:"—"|linebreaksbr }}</dd>
+  <dt>Stock</dt><dd>{% if product.stock %}{{ product.stock.quantity_on_hand }}{% else %}0 (no row){% endif %}</dd>
+</dl>
+<p>
+  <a class="btn" href="{% url 'web_shop:product-update' product.pk %}">Edit</a>
+  <a class="btn btn-danger" href="{% url 'web_shop:product-delete' product.pk %}">Delete</a>
+  <a class="btn btn-secondary" href="{% url 'web_shop:product-list' %}">Back to list</a>
+</p>
+{% endblock %}

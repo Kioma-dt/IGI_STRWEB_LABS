@@ -1,0 +1,16 @@
+{% extends "web/base.html" %}
+{% block title %}News article · ZoomShop{% endblock %}
+{% block content %}
+<h1>{{ article.title }}</h1>
+<dl class="detail">
+  <dt>Slug</dt><dd>{{ article.slug }}</dd>
+  <dt>Published</dt><dd>{{ article.is_published|yesno:"Yes,No" }}</dd>
+  <dt>Published at</dt><dd>{{ article.published_at|default:"—" }}</dd>
+</dl>
+<div>{{ article.body|linebreaks }}</div>
+<p>
+  <a class="btn" href="{% url 'web_shop:news-update' article.pk %}">Edit</a>
+  <a class="btn btn-danger" href="{% url 'web_shop:news-delete' article.pk %}">Delete</a>
+  <a class="btn btn-secondary" href="{% url 'web_shop:news-list' %}">Back</a>
+</p>
+{% endblock %}

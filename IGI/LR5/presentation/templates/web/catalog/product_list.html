@@ -1,0 +1,30 @@
+{% extends "web/base.html" %}
+{% block title %}Products · ZoomShop{% endblock %}
+{% block content %}
+<h1>Products</h1>
+<p><a class="btn" href="{% url 'web_shop:product-create' %}">Add product</a></p>
+<form method="get" class="filter">{{ filter.form.as_p }}<button type="submit" class="btn">Filter</button></form>
+{% include "web/includes/sort_bar.html" %}
+<table>
+  <thead><tr><th>Name</th><th>SKU</th><th>Category</th><th>Price</th><th>Active</th><th></th></tr></thead>
+  <tbody>
+  {% for row in products %}
+    <tr>
+      <td>{{ row.name }}</td>
+      <td>{{ row.sku }}</td>
+      <td>{% if row.category %}{{ row.category.name }}{% else %}—{% endif %}</td>
+      <td>{{ row.base_price }}</td>
+      <td>{{ row.is_active|yesno:"Yes,No" }}</td>
+      <td>
+        <a href="{% url 'web_shop:product-detail' row.pk %}">View</a> ·
+        <a href="{% url 'web_shop:product-update' row.pk %}">Edit</a> ·
+        <a href="{% url 'web_shop:product-delete' row.pk %}">Delete</a>
+      </td>
+    </tr>
+  {% empty %}
+    <tr><td colspan="6">No products.</td></tr>
+  {% endfor %}
+  </tbody>
+</table>
+{% include "web/includes/pagination.html" %}
+{% endblock %}

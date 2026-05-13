@@ -16,7 +16,7 @@ def _get_model(app_label: str, model_name: str) -> type[Any]:
 
 class ReviewRepository(DjangoModelRepository[Review]):
     _ALLOWED_ORDERING_FIELDS = frozenset(
-        {"created_at", "updated_at", "rating"},
+        {"created_at", "updated_at", "rating", "title"},
     )
 
     def __init__(

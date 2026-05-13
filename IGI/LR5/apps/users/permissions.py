@@ -83,6 +83,7 @@ def django_permission(perm: str) -> type[BasePermission]:
     return _DjangoPermission
 
 
+class IsCustomerWithOrderPermission(BasePermission):
     """Customer with Django permission to place orders."""
 
     def has_permission(self, request, view) -> bool:

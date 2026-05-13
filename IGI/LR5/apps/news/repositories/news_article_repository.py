@@ -16,7 +16,14 @@ def _get_model(app_label: str, model_name: str) -> type[Any]:
 
 class NewsArticleRepository(DjangoModelRepository[NewsArticle]):
     _ALLOWED_ORDERING_FIELDS = frozenset(
-        {"created_at", "updated_at", "published_at", "title"},
+        {
+            "created_at",
+            "updated_at",
+            "published_at",
+            "title",
+            "slug",
+            "is_published",
+        },
     )
 
     def __init__(

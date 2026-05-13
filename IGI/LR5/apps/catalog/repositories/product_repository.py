@@ -24,7 +24,14 @@ class ProductRepository(DjangoModelRepository[Product]):
     """
 
     _ALLOWED_ORDERING_FIELDS = frozenset(
-        {"created_at", "updated_at", "name", "base_price"},
+        {
+            "created_at",
+            "updated_at",
+            "name",
+            "sku",
+            "base_price",
+            "is_active",
+        },
     )
 
     def __init__(

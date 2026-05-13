@@ -18,7 +18,16 @@ def _get_model(app_label: str, model_name: str) -> type[Any]:
 
 class PromoCodeRepository(DjangoModelRepository[PromoCode]):
     _ALLOWED_ORDERING_FIELDS = frozenset(
-        {"created_at", "updated_at", "code", "discount_percent"},
+        {
+            "created_at",
+            "updated_at",
+            "code",
+            "discount_percent",
+            "valid_from",
+            "valid_until",
+            "is_active",
+            "current_uses",
+        },
     )
 
     def __init__(
