@@ -1,6 +1,7 @@
 from __future__ import annotations
 
-from datetime import date
+from datetime import date, timezone
+from datetime import datetime
 from uuid import UUID
 
 from django.contrib import messages
@@ -136,7 +137,7 @@ class StoreFAQView(TemplateView):
             ctx["cat_fact"] = fact.fact
         except Exception:
             ctx["cat_fact"] = None
-            
+
         return ctx
 
 
@@ -423,6 +424,13 @@ class StoreAccountView(LoginRequiredMixin, TemplateView):
             print(e)
 
         ctx["predicted_gender"] = predicted_gender
+
+        offset = datetime.now().astimezone().utcoffset()
+
+        hours = int(offset.total_seconds() // 3600)
+
+        ctx["timezone"] = f"UTC{hours:+d}"
+
         return ctx
 
 

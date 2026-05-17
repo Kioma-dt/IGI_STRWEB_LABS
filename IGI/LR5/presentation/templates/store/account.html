@@ -9,7 +9,7 @@
     <ul>
       <li>ФИО: {{ profile.full_name }}</li>
       <li>Телефон: {{ profile.phone }}</li>
-      <li>VIP: {% if profile.is_vip %}да{% else %}нет{% endif %}</li>
+      <li>Часовой пояс: {{ timezone }}</li>
 
       {% if predicted_gender %}
         <li>
@@ -35,7 +35,7 @@
     <ul>
       <li>ФИО: {{ profile.full_name }}</li>
       <li>Телефон: {{ profile.phone }}</li>
-      <li>VIP: {% if profile.is_vip %}да{% else %}нет{% endif %}</li>
+      <li>Часовой пояс: {{ timezone }}</li>
 
       {% if predicted_gender %}
         <li>
