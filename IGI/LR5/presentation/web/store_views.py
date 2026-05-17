@@ -43,6 +43,7 @@ from presentation.web.store_forms import (
     VacancyApplicationForm,
 )
 from core.exceptions import BusinessValidationError
+from core.calendar import BirthdayCalendar
 
 from infrastructure.genderize_client import GenderizeClient
 from infrastructure.cat_fact_client import CatFactClient
@@ -430,6 +431,29 @@ class StoreAccountView(LoginRequiredMixin, TemplateView):
         hours = int(offset.total_seconds() // 3600)
 
         ctx["timezone"] = f"UTC{hours:+d}"
+
+        today = datetime.now()
+
+        birthday_day = None
+        birthday_month = None
+        birthday_year = None
+
+        if profile and profile.birth_date:
+            birthday_day = profile.birth_date.day
+            birthday_month = profile.birth_date.month
+            birthday_year = profile.birth_date.year
+
+        cal = BirthdayCalendar(
+            birthday_day=birthday_day,
+            birthday_month=birthday_month
+        )
+
+        ctx["calendar_html"] = cal.formatmonth(
+            birthday_year,
+            birthday_month
+        )
+
+        ctx["calendar_title"] = today.strftime("%B %Y")
 
         return ctx
 

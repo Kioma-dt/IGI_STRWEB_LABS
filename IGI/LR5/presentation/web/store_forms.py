@@ -13,7 +13,7 @@ from apps.reviews.models import Review
 from apps.suppliers.models import Supplier
 from apps.users.constants import GROUP_CUSTOMER, GROUP_EMPLOYEE
 from apps.users.models import CustomerProfile, EmployeeProfile
-from core.validators import validate_phone_by_format_375_29
+from core.validators import validate_phone_by_format_375_29, validate_age_18_plus
 
 
 class AddToCartForm(forms.Form):
@@ -118,9 +118,17 @@ class CustomerSignupForm(UserCreationForm):
     email = forms.EmailField(label="E-mail", required=True)
     full_name = forms.CharField(label="Полное имя", max_length=255)
     phone = forms.CharField(
-        label="Телефон (формат +375 29 …)",
+        label="Телефон (формат +375 (29) XXX-XX-XX)",
         max_length=20,
         validators=[validate_phone_by_format_375_29],
+    )
+    birth_date = forms.DateField(
+        label="Дата рождения",
+        input_formats=["%d/%m/%Y"],
+        widget=forms.DateInput(
+            attrs={"type": "date"}
+        ),
+        validators=[validate_age_18_plus],
     )
 
     class Meta:
@@ -147,6 +155,7 @@ class CustomerSignupForm(UserCreationForm):
                     user=user,
                     full_name=self.cleaned_data["full_name"],
                     phone=self.cleaned_data["phone"],
+                    birth_date=self.cleaned_data["birth_date"]
                 )
         return user
 
@@ -155,9 +164,17 @@ class EmployeeSignupForm(UserCreationForm):
     email = forms.EmailField(label="E-mail", required=True)
     full_name = forms.CharField(label="Полное имя", max_length=255)
     phone = forms.CharField(
-        label="Телефон (формат +375 29 …)",
+        label="Телефон (формат +375 (29) XXX-XX-XX)",
         max_length=20,
         validators=[validate_phone_by_format_375_29],
+    )
+    birth_date = forms.DateField(
+        label="Дата рождения",
+        input_formats=["%d/%m/%Y"],
+        widget=forms.DateInput(
+            attrs={"type": "date"}
+        ),
+        validators=[validate_age_18_plus],
     )
     position = forms.CharField(label="Должность", max_length=128)
     suppliers = forms.ModelMultipleChoiceField(
@@ -189,6 +206,7 @@ class EmployeeSignupForm(UserCreationForm):
                     full_name=self.cleaned_data["full_name"],
                     phone=self.cleaned_data["phone"],
                     position=self.cleaned_data["position"],
+                    birth_date=self.cleaned_data["birth_date"]
                 )
                 profile.suppliers.set(self.cleaned_data.get("suppliers") or [])
                 employee_group, _ = Group.objects.get_or_create(name=GROUP_EMPLOYEE)

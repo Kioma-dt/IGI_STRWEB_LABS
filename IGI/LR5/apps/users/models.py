@@ -56,6 +56,12 @@ class EmployeeProfile(SoftDeleteModel):
         unique=True,
         validators=[validate_phone_by_format_375_29],
     )
+    birth_date = models.DateField(
+        "birth date",
+        null=True,
+        blank=True,
+        validators=[validate_age_18_plus],
+    )
     is_active = models.BooleanField("active", default=True)
     suppliers = models.ManyToManyField(
         "suppliers.Supplier",

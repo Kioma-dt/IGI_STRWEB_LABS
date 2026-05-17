@@ -1,6 +1,35 @@
 {% extends "store/base.html" %}
 {% block title %}Личный кабинет · Зоомагазин{% endblock %}
 {% block content %}
+
+<style>
+.calendar-wrapper table {
+    width: 100%;
+    border-collapse: collapse;
+    text-align: center;
+}
+
+.calendar-wrapper th {
+    padding: 8px;
+    background: #f2f2f2;
+}
+
+.calendar-wrapper td {
+    padding: 10px;
+    border: 1px solid #ddd;
+}
+
+.calendar-wrapper .birthday {
+    background: gold;
+    font-weight: bold;
+    border-radius: 6px;
+}
+
+.calendar-wrapper .noday {
+    background: #fafafa;
+}
+</style>
+
 <h1>Личный кабинет</h1>
 <p>Пользователь: <strong>{{ user.username }}</strong>{% if user.email %} ({{ user.email }}){% endif %}</p>
 {% if profile %}
@@ -10,6 +39,11 @@
       <li>ФИО: {{ profile.full_name }}</li>
       <li>Телефон: {{ profile.phone }}</li>
       <li>Часовой пояс: {{ timezone }}</li>
+      {% if profile.birth_date %}
+        <li>Дата рождения: {{ profile.birth_date|date:"d/m/Y" }}</li>
+      {% else %}
+        <li>Дата рождения: не указана</li>
+      {% endif %}
 
       {% if predicted_gender %}
         <li>
@@ -23,6 +57,16 @@
           {% endif %}
         </li>
       {% endif %}
+
+      {% if calendar_html %}
+      <section>
+        <h2>День рождения</h2>
+
+        <div class="calendar-wrapper">
+          {{ calendar_html|safe }}
+        </div>
+      </section>
+    {% endif %}
     </ul>
   </section>
 {% else %}
@@ -33,9 +77,14 @@
   <section>
     <h2>Профиль сотрудника</h2>
     <ul>
-      <li>ФИО: {{ profile.full_name }}</li>
-      <li>Телефон: {{ profile.phone }}</li>
+      <li>ФИО: {{ employee_profile.full_name }}</li>
+      <li>Телефон: {{ employee_profile.phone }}</li>
       <li>Часовой пояс: {{ timezone }}</li>
+      {% if employee_profile.birth_date %}
+        <li>Дата рождения: {{ employee_profile.birth_date|date:"d/m/Y" }}</li>
+      {% else %}
+        <li>Дата рождения: не указана</li>
+      {% endif %}
 
       {% if predicted_gender %}
         <li>
@@ -49,6 +98,16 @@
           {% endif %}
         </li>
       {% endif %}
+      {% if calendar_html %}
+      
+      <section>
+        <h2>День рождения</h2>
+
+        <div class="calendar-wrapper">
+          {{ calendar_html|safe }}
+        </div>
+      </section>
+    {% endif %}
     </ul>
     <p><a href="{% url 'web_shop:home' %}">Перейти в портал сотрудника</a></p>
   </section>
