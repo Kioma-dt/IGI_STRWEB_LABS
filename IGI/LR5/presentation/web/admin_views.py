@@ -87,8 +87,6 @@ class AdminProductDeleteView(AdminRequiredMixin, DeleteView):
         return HttpResponseRedirect(str(self.success_url))
 
 
-# --- Suppliers (Admin CRUD) ---
-
 
 class AdminSupplierListView(AdminRequiredMixin, StaffFilterListContextMixin, FilterView):
     model = Supplier

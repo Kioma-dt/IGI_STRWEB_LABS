@@ -3,353 +3,179 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Аналитика и статистика - Зоомагазин</title>
+  <title>Аналитика - Зоомагазин</title>
+
   <style>
-    * { margin: 0; padding: 0; box-sizing: border-box; }
     body {
-      font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-      min-height: 100vh;
-      padding: 20px;
-      color: #333;
+      font-family: Arial, sans-serif;
+      margin: 20px;
+      color: #222;
     }
-    .container {
-      max-width: 1400px;
-      margin: 0 auto;
-      background: white;
-      border-radius: 12px;
-      padding: 30px;
-      box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+
+    h1, h2 {
+      margin-top: 20px;
     }
-    h1 {
-      color: #667eea;
-      margin-bottom: 30px;
-      text-align: center;
-      font-size: 2.5em;
-      text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
-    }
-    h2 {
-      color: #764ba2;
-      margin-top: 40px;
+
+    .nav {
       margin-bottom: 20px;
-      border-bottom: 3px solid #667eea;
-      padding-bottom: 10px;
-      font-size: 1.8em;
+      padding: 10px;
+      border-bottom: 1px solid #ddd;
     }
 
-    /* Статистика */
-    .stats-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-      gap: 20px;
-      margin-bottom: 30px;
-    }
-    .stat-card {
-      background: linear-gradient(135deg, #667eea, #764ba2);
-      color: white;
-      padding: 20px;
-      border-radius: 10px;
-      text-align: center;
-      box-shadow: 0 5px 15px rgba(102,126,234,0.3);
-      transition: transform 0.3s ease;
-    }
-    .stat-card:hover {
-      transform: translateY(-5px);
-    }
-    .stat-card h3 {
-      font-size: 0.9em;
-      text-transform: uppercase;
-      opacity: 0.9;
-      margin-bottom: 10px;
-    }
-    .stat-value {
-      font-size: 2em;
-      font-weight: bold;
-      font-family: "Monaco", monospace;
+    .stats {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-bottom: 20px;
     }
 
-    /* Таблицы */
-    .table-section {
-      margin-bottom: 40px;
+    .card {
+      border: 1px solid #ddd;
+      padding: 10px;
+      min-width: 180px;
+      flex: 1;
     }
+
     table {
       width: 100%;
       border-collapse: collapse;
-      margin-top: 15px;
-      background: white;
-      border-radius: 8px;
-      overflow: hidden;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-    }
-    th {
-      background: linear-gradient(135deg, #667eea, #764ba2);
-      color: white;
-      padding: 15px;
-      text-align: left;
-      font-weight: 600;
-      text-transform: uppercase;
-      font-size: 0.85em;
-    }
-    td {
-      padding: 12px 15px;
-      border-bottom: 1px solid #eee;
-    }
-    tr:hover {
-      background: #f8f9ff;
-    }
-    tr:last-child td {
-      border-bottom: none;
+      margin-top: 10px;
     }
 
-    /* Графики */
-    .chart-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(600px, 1fr));
-      gap: 30px;
-      margin-bottom: 30px;
+    th, td {
+      border: 1px solid #ddd;
+      padding: 8px;
+      text-align: left;
     }
-    .chart-container {
-      background: #f8f9ff;
-      padding: 20px;
-      border-radius: 10px;
-      border: 1px solid #e0e7ff;
-      box-shadow: 0 2px 8px rgba(102,126,234,0.1);
+
+    th {
+      background: #f5f5f5;
     }
-    .chart-container h3 {
-      color: #764ba2;
-      margin-bottom: 15px;
-      font-size: 1.2em;
-    }
-    .chart-container img {
+
+    img {
       max-width: 100%;
       height: auto;
-      border-radius: 8px;
     }
 
-    /* Навигация */
-    .nav {
-      background: #333;
-      color: white;
-      padding: 15px 20px;
-      border-radius: 8px;
-      margin-bottom: 20px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-    .nav a {
-      color: #667eea;
-      text-decoration: none;
-      font-weight: 600;
-      transition: color 0.3s;
-    }
-    .nav a:hover {
-      color: #764ba2;
-    }
-
-    /* Ответственный дизайн */
-    @media (max-width: 768px) {
-      .chart-grid {
-        grid-template-columns: 1fr;
-      }
-      .stats-grid {
-        grid-template-columns: 1fr;
-      }
-      h1 {
-        font-size: 1.8em;
-      }
-      h2 {
-        font-size: 1.3em;
-      }
-    }
-
-    .number {
-      color: #667eea;
-      font-weight: bold;
-    }
-    .percentage {
-      color: #764ba2;
-      font-weight: bold;
+    footer {
+      margin-top: 30px;
+      font-size: 12px;
+      color: #777;
+      text-align: center;
     }
   </style>
 </head>
+
 <body>
-  <div class="container">
-    <div class="nav">
-      <h2 style="margin: 0; color: white;">📊 Аналитика Зоомагазина</h2>
-      <a href="/">← На сайт</a>
-    </div>
 
-    <h1>Аналитика и Статистика</h1>
-
-    <!-- Общая Статистика -->
-    <div class="stats-grid">
-      <div class="stat-card">
-        <h3>Всего заказов</h3>
-        <div class="stat-value">{{ sales_stats.total_orders }}</div>
-      </div>
-      <div class="stat-card">
-        <h3>Общая выручка</h3>
-        <div class="stat-value">{{ sales_stats.total_revenue|floatformat:0 }} ₽</div>
-      </div>
-      <div class="stat-card">
-        <h3>Средний чек</h3>
-        <div class="stat-value">{{ sales_stats.avg_order|floatformat:2 }} ₽</div>
-      </div>
-      <div class="stat-card">
-        <h3>Медиана стоимости</h3>
-        <div class="stat-value">{{ sales_stats.median_order|floatformat:2 }} ₽</div>
-      </div>
-      <div class="stat-card">
-        <h3>Товаров продано</h3>
-        <div class="stat-value">{{ sales_stats.total_items_sold }}</div>
-      </div>
-    </div>
-
-    <!-- Графики -->
-    <h2>📈 Графики и Диаграммы</h2>
-    <div class="chart-grid">
-      <div class="chart-container">
-        <h3>Продажи по месяцам</h3>
-        <img src="{{ sales_chart }}" alt="График продаж по месяцам">
-      </div>
-      <div class="chart-container">
-        <h3>Топ 10 популярных товаров</h3>
-        <img src="{{ popular_chart }}" alt="Популярные товары">
-      </div>
-      <div class="chart-container">
-        <h3>Распределение продаж по категориям</h3>
-        <img src="{{ category_pie_chart }}" alt="Распределение по категориям">
-      </div>
-      <div class="chart-container">
-        <h3>Выручка по категориям</h3>
-        <img src="{{ revenue_category_chart }}" alt="Выручка по категориям">
-      </div>
-      <div class="chart-container" style="grid-column: 1 / -1;">
-        <h3>Топ 10 поставщиков по объёму</h3>
-        <img src="{{ suppliers_chart }}" alt="Топ поставщиков">
-      </div>
-    </div>
-
-    <!-- Популярные товары -->
-    <h2>🏆 Топ 10 Популярных Товаров</h2>
-    <div class="table-section">
-      <table>
-        <thead>
-          <tr>
-            <th>Артикул</th>
-            <th>Название</th>
-            <th>Цена</th>
-            <th>Количество продаж</th>
-          </tr>
-        </thead>
-        <tbody>
-          {% for product in popular_products %}
-            <tr>
-              <td><code>{{ product.sku }}</code></td>
-              <td>{{ product.name }}</td>
-              <td class="number">{{ product.base_price|floatformat:2 }} ₽</td>
-              <td class="number">{{ product.total_sold|default:0 }} шт.</td>
-            </tr>
-          {% empty %}
-            <tr><td colspan="4" style="text-align: center; color: #999;">Нет данных</td></tr>
-          {% endfor %}
-        </tbody>
-      </table>
-    </div>
-
-    <!-- Товары с максимальной прибылью -->
-    <h2>💰 Товары с Максимальной Прибылью</h2>
-    <div class="table-section">
-      <table>
-        <thead>
-          <tr>
-            <th>Артикул</th>
-            <th>Название</th>
-            <th>Выручка</th>
-            <th>Себестоимость</th>
-            <th>Прибыль</th>
-            <th>Продано</th>
-          </tr>
-        </thead>
-        <tbody>
-          {% for product in profitable_products %}
-            <tr>
-              <td><code>{{ product.sku }}</code></td>
-              <td>{{ product.name }}</td>
-              <td class="number">{{ product.revenue|floatformat:2 }} ₽</td>
-              <td class="number">{{ product.cost|floatformat:2 }} ₽</td>
-              <td class="percentage">{{ product.profit|floatformat:2 }} ₽</td>
-              <td class="number">{{ product.qty_sold|default:0 }} шт.</td>
-            </tr>
-          {% empty %}
-            <tr><td colspan="6" style="text-align: center; color: #999;">Нет данных</td></tr>
-          {% endfor %}
-        </tbody>
-      </table>
-    </div>
-
-    <!-- Аналитика по категориям -->
-    <h2>📁 Статистика по Категориям</h2>
-    <div class="table-section">
-      <table>
-        <thead>
-          <tr>
-            <th>Категория</th>
-            <th>Количество товаров</th>
-            <th>Продано единиц</th>
-            <th>Выручка</th>
-          </tr>
-        </thead>
-        <tbody>
-          {% for cat in category_analytics %}
-            <tr>
-              <td><strong>{{ cat.name }}</strong></td>
-              <td class="number">{{ cat.product_count }}</td>
-              <td class="number">{{ cat.items_sold|default:0 }} шт.</td>
-              <td class="percentage">{{ cat.revenue|default:0|floatformat:2 }} ₽</td>
-            </tr>
-          {% empty %}
-            <tr><td colspan="4" style="text-align: center; color: #999;">Нет категорий</td></tr>
-          {% endfor %}
-        </tbody>
-      </table>
-    </div>
-
-    <!-- Топ поставщиков -->
-    <h2>🚚 Топ 10 Поставщиков</h2>
-    <div class="table-section">
-      <table>
-        <thead>
-          <tr>
-            <th>Название</th>
-            <th>Адрес</th>
-            <th>Телефон</th>
-            <th>Участвует товаров</th>
-            <th>Поставлено единиц</th>
-          </tr>
-        </thead>
-        <tbody>
-          {% for supplier in top_suppliers %}
-            <tr>
-              <td><strong>{{ supplier.name }}</strong></td>
-              <td>{{ supplier.address }}</td>
-              <td>{{ supplier.phone }}</td>
-              <td class="number">{{ supplier.product_count }}</td>
-              <td class="percentage">{{ supplier.total_supplied|default:0 }} шт.</td>
-            </tr>
-          {% empty %}
-            <tr><td colspan="5" style="text-align: center; color: #999;">Нет поставщиков</td></tr>
-          {% endfor %}
-        </tbody>
-      </table>
-    </div>
-
-    <footer style="text-align: center; margin-top: 40px; color: #999; font-size: 0.9em;">
-      <p>Аналитика обновляется в реальном времени на основе данных о продажах и заказах</p>
-      <p>&copy; 2026 Зоомагазин — Все права защищены</p>
-    </footer>
+  <div class="nav">
+    <strong>Аналитика Зоомагазина</strong> |
+    <a href="/">На сайт</a>
   </div>
+
+  <h1>Аналитика</h1>
+
+  <!-- Статистика -->
+  <div class="stats">
+    <div class="card">Заказов: {{ sales_stats.total_orders }}</div>
+    <div class="card">Выручка: {{ sales_stats.total_revenue }} ₽</div>
+    <div class="card">Средний чек: {{ sales_stats.avg_order }} ₽</div>
+    <div class="card">Медиана: {{ sales_stats.median_order }} ₽</div>
+    <div class="card">Продано товаров: {{ sales_stats.total_items_sold }}</div>
+  </div>
+
+  <!-- Графики -->
+  <h2>Графики</h2>
+
+  <p>Продажи по месяцам</p>
+  <img src="{{ sales_chart }}">
+
+  <p>Популярные товары</p>
+  <img src="{{ popular_chart }}">
+
+  <p>Категории</p>
+  <img src="{{ category_pie_chart }}">
+
+  <p>Выручка по категориям</p>
+  <img src="{{ revenue_category_chart }}">
+
+  <p>Поставщики</p>
+  <img src="{{ suppliers_chart }}">
+
+  <!-- Таблицы -->
+  <h2>Топ товаров</h2>
+  <table>
+    <tr>
+      <th>SKU</th>
+      <th>Название</th>
+      <th>Цена</th>
+      <th>Продажи</th>
+    </tr>
+    {% for product in popular_products %}
+    <tr>
+      <td>{{ product.sku }}</td>
+      <td>{{ product.name }}</td>
+      <td>{{ product.base_price }}</td>
+      <td>{{ product.total_sold }}</td>
+    </tr>
+    {% endfor %}
+  </table>
+
+  <h2>Прибыльные товары</h2>
+  <table>
+    <tr>
+      <th>SKU</th>
+      <th>Название</th>
+      <th>Выручка</th>
+      <th>Прибыль</th>
+    </tr>
+    {% for product in profitable_products %}
+    <tr>
+      <td>{{ product.sku }}</td>
+      <td>{{ product.name }}</td>
+      <td>{{ product.revenue }}</td>
+      <td>{{ product.profit }}</td>
+    </tr>
+    {% endfor %}
+  </table>
+
+  <h2>Категории</h2>
+  <table>
+    <tr>
+      <th>Категория</th>
+      <th>Товары</th>
+      <th>Продано</th>
+      <th>Выручка</th>
+    </tr>
+    {% for cat in category_analytics %}
+    <tr>
+      <td>{{ cat.name }}</td>
+      <td>{{ cat.product_count }}</td>
+      <td>{{ cat.items_sold }}</td>
+      <td>{{ cat.revenue }}</td>
+    </tr>
+    {% endfor %}
+  </table>
+
+  <h2>Поставщики</h2>
+  <table>
+    <tr>
+      <th>Название</th>
+      <th>Товаров</th>
+      <th>Поставлено</th>
+    </tr>
+    {% for supplier in top_suppliers %}
+    <tr>
+      <td>{{ supplier.name }}</td>
+      <td>{{ supplier.product_count }}</td>
+      <td>{{ supplier.total_supplied }}</td>
+    </tr>
+    {% endfor %}
+  </table>
+
+  <footer>
+    © 2026 Зоомагазин
+  </footer>
+
 </body>
 </html>
-
