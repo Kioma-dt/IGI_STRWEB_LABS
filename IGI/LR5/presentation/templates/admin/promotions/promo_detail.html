@@ -1,0 +1,58 @@
+{% extends "admin/base.html" %}
+{% block title %}{{ promo.code }} · Промокоды · Панель администратора{% endblock %}
+
+{% block content %}
+<h2>Промокод: {{ promo.code }}</h2>
+
+<div class="actions">
+  <a href="{% url 'admin_panel:promo-list' %}">← К списку</a>
+  <a href="{% url 'admin_panel:promo-update' promo.pk %}">Изменить</a>
+  <a href="{% url 'admin_panel:promo-delete' promo.pk %}">Удалить</a>
+</div>
+
+<table>
+  <tr>
+    <th>Код</th>
+    <td><code>{{ promo.code }}</code></td>
+  </tr>
+
+  <tr>
+    <th>Скидка</th>
+    <td>{{ promo.discount_percent }}%</td>
+  </tr>
+
+  <tr>
+    <th>Период</th>
+    <td>
+      {{ promo.valid_from }} — {{ promo.valid_until|default:"—" }}
+    </td>
+  </tr>
+
+  <tr>
+    <th>Использования</th>
+    <td>
+      {{ promo.current_uses }}
+      {% if promo.max_uses %}/ {{ promo.max_uses }}{% endif %}
+    </td>
+  </tr>
+
+  <tr>
+    <th>Активен</th>
+    <td>{{ promo.is_active|yesno:"Да,Нет" }}</td>
+  </tr>
+
+  <tr>
+    <th>Клиенты</th>
+    <td>
+      {% if promo.customers.all %}
+        {% for c in promo.customers.all %}
+          {{ c.full_name }}{% if not forloop.last %}, {% endif %}
+        {% endfor %}
+      {% else %}
+        Все клиенты
+      {% endif %}
+    </td>
+  </tr>
+</table>
+
+{% endblock %}

@@ -1,0 +1,33 @@
+{% extends "admin/base.html" %}
+{% block title %}{{ object.name }} · Категория · Панель администратора{% endblock %}
+
+{% block content %}
+<h2>Категория: {{ object.name }}</h2>
+
+<div class="actions">
+  <a href="{% url 'admin_panel:category-list' %}">← К списку</a>
+  <a href="{% url 'admin_panel:category-update' object.pk %}">Изменить</a>
+  <a href="{% url 'admin_panel:category-delete' object.pk %}">Удалить</a>
+</div>
+
+<table>
+  <tr>
+    <th>Название</th>
+    <td><strong>{{ object.name }}</strong></td>
+  </tr>
+  <tr>
+    <th>Slug</th>
+    <td><code>{{ object.slug }}</code></td>
+  </tr>
+  <tr>
+    <th>Родитель</th>
+    <td>
+      {% if object.parent %}
+        {{ object.parent.name }}
+      {% else %}
+        —
+      {% endif %}
+    </td>
+  </tr>
+</table>
+{% endblock %}

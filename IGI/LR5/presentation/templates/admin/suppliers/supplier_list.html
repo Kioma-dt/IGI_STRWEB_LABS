@@ -7,6 +7,14 @@
   <a href="{% url 'admin_panel:supplier-create' %}">+ Добавить поставщика</a>
 </div>
 
+<form method="get" class="filter">
+  {{ filter.form.as_p }}
+  <div class="actions">
+    <button type="submit">Фильтр</button>
+    <a href="{% url 'admin_panel:supplier-list' %}">Сбросить</a>
+  </div>
+</form>
+
 {% if suppliers %}
   <table>
     <thead>

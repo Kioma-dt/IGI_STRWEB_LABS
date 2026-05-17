@@ -5,6 +5,14 @@
 
 <p>Полная информация о всех продажах с указанием даты, количества, цены и стоимости.</p>
 
+<form method="get" class="filter">
+  {{ filter.form.as_p }}
+  <div class="actions">
+    <button type="submit">Фильтр</button>
+    <a href="{% url 'admin_panel:sales-list' %}">Сбросить</a>
+  </div>
+</form>
+
 {% if orders %}
   <table>
     <thead>

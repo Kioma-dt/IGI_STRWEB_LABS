@@ -2,10 +2,6 @@
   <a href="{% url 'web_shop:supplier-list' %}">Suppliers</a>
   <a href="{% url 'web_shop:order-list' %}">Orders</a>
   {% if is_admin_role %}
-    <a href="{% url 'web_shop:category-list' %}">Categories</a>
-    <a href="{% url 'web_shop:product-list' %}">Products</a>
-    <a href="{% url 'web_shop:review-list' %}">Reviews</a>
-    <a href="{% url 'web_shop:news-list' %}">News</a>
-    <a href="{% url 'web_shop:promo-list' %}">Promos</a>
+
   {% endif %}
 </nav>
