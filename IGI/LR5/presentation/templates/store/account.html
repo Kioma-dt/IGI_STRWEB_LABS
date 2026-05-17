@@ -10,6 +10,19 @@
       <li>ФИО: {{ profile.full_name }}</li>
       <li>Телефон: {{ profile.phone }}</li>
       <li>VIP: {% if profile.is_vip %}да{% else %}нет{% endif %}</li>
+
+      {% if predicted_gender %}
+        <li>
+          Предполагаемый пол:
+          {% if predicted_gender == "male" %}
+            мужской
+          {% elif predicted_gender == "female" %}
+            женский
+          {% else %}
+            неизвестно
+          {% endif %}
+        </li>
+      {% endif %}
     </ul>
   </section>
 {% else %}
@@ -20,9 +33,22 @@
   <section>
     <h2>Профиль сотрудника</h2>
     <ul>
-      <li>ФИО: {{ employee_profile.full_name }}</li>
-      <li>Должность: {{ employee_profile.position }}</li>
-      <li>Телефон: {{ employee_profile.phone }}</li>
+      <li>ФИО: {{ profile.full_name }}</li>
+      <li>Телефон: {{ profile.phone }}</li>
+      <li>VIP: {% if profile.is_vip %}да{% else %}нет{% endif %}</li>
+
+      {% if predicted_gender %}
+        <li>
+          Предполагаемый пол:
+          {% if predicted_gender == "male" %}
+            мужской
+          {% elif predicted_gender == "female" %}
+            женский
+          {% else %}
+            неизвестно
+          {% endif %}
+        </li>
+      {% endif %}
     </ul>
     <p><a href="{% url 'web_shop:home' %}">Перейти в портал сотрудника</a></p>
   </section>

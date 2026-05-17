@@ -43,6 +43,9 @@ from presentation.web.store_forms import (
 )
 from core.exceptions import BusinessValidationError
 
+from infrastructure.genderize_client import GenderizeClient
+from infrastructure.cat_fact_client import CatFactClient
+
 # --- mixins ---
 
 
@@ -123,6 +126,17 @@ class StoreFAQView(TemplateView):
             "sort_order",
             "created_at",
         )
+
+
+        try:
+            client = CatFactClient()
+
+            fact = client.get_random_fact(max_length=150)
+
+            ctx["cat_fact"] = fact.fact
+        except Exception:
+            ctx["cat_fact"] = None
+            
         return ctx
 
 
@@ -391,8 +405,24 @@ class StoreAccountView(LoginRequiredMixin, TemplateView):
     def get_context_data(self, **kwargs):
         ctx = super().get_context_data(**kwargs)
         user = self.request.user
+        profile = getattr(user, "customer_profile", None)
         ctx["profile"] = getattr(user, "customer_profile", None)
         ctx["employee_profile"] = getattr(user, "employee_profile", None)
+
+        predicted_gender = None
+
+        try:
+            if profile and profile.full_name:
+                first_name = profile.full_name.split()[0]
+
+                client = GenderizeClient()
+                result = client.get_gender(first_name)
+
+                predicted_gender = result.gender
+        except Exception as e:
+            print(e)
+
+        ctx["predicted_gender"] = predicted_gender
         return ctx
 
 
