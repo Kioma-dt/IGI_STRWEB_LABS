@@ -1,18 +1,13 @@
 from __future__ import annotations
 
-from django.urls import path, reverse_lazy
-from django.views.generic import RedirectView
+from django.urls import path
 
 from presentation.web import staff_views as views
 
 app_name = "web_shop"
 
 urlpatterns = [
-    path(
-        "",
-        RedirectView.as_view(url=reverse_lazy("web_shop:category-list")),
-        name="home",
-    ),
+    path("", views.StaffPortalHomeView.as_view(), name="home"),
     path("categories/", views.CategoryListView.as_view(), name="category-list"),
     path("categories/add/", views.CategoryCreateView.as_view(), name="category-create"),
     path(

@@ -392,6 +392,7 @@ class StoreAccountView(LoginRequiredMixin, TemplateView):
         ctx = super().get_context_data(**kwargs)
         user = self.request.user
         ctx["profile"] = getattr(user, "customer_profile", None)
+        ctx["employee_profile"] = getattr(user, "employee_profile", None)
         return ctx
 
 

@@ -3,6 +3,7 @@ from __future__ import annotations
 from django.contrib import messages
 from django.http import HttpResponseRedirect
 from django.urls import reverse, reverse_lazy
+from django.views import View
 from django.views.generic import CreateView, DeleteView, DetailView, TemplateView, UpdateView
 from django_filters.views import FilterView
 
@@ -26,6 +27,7 @@ from apps.reviews.forms import ReviewForm
 from apps.reviews.models import Review
 from apps.suppliers.forms import SupplierForm
 from apps.suppliers.models import Supplier
+from apps.users import roles
 from presentation.web.filtersets import (
     CategoryFilter,
     NewsArticleFilter,
@@ -35,12 +37,45 @@ from presentation.web.filtersets import (
     ReviewFilter,
     SupplierFilter,
 )
-from presentation.web.mixins import StaffFilterListContextMixin, StaffRequiredMixin
+from presentation.web.mixins import (
+    AdminRequiredMixin,
+    EmployeeRequiredMixin,
+    StaffFilterListContextMixin,
+    StaffRequiredMixin,
+)
+
+
+def _employee_suppliers_qs(user):
+    profile = getattr(user, "employee_profile", None)
+    if profile is None or profile.is_deleted:
+        return Supplier.objects.none()
+    return profile.suppliers.filter(is_deleted=False)
+
+
+def _restrict_suppliers_for_limited_employee(user, queryset):
+    if roles.is_employee_limited(user):
+        return queryset.filter(pk__in=_employee_suppliers_qs(user).values("pk"))
+    return queryset
+
+
+def _restrict_orders_for_limited_employee(user, queryset):
+    if not roles.is_employee_limited(user):
+        return queryset
+    supplier_ids = _employee_suppliers_qs(user).values("pk")
+    return queryset.filter(items__product__suppliers__in=supplier_ids).distinct()
+
+
+class StaffPortalHomeView(EmployeeRequiredMixin, View):
+    """Role-aware staff home: employee -> sales, admin -> full catalog."""
+
+    def get(self, request, *args, **kwargs):
+        target = "web_shop:category-list" if roles.is_admin(request.user) else "web_shop:order-list"
+        return HttpResponseRedirect(reverse(target))
 
 # --- Categories ---
 
 
-class CategoryListView(StaffRequiredMixin, StaffFilterListContextMixin, FilterView):
+class CategoryListView(AdminRequiredMixin, StaffFilterListContextMixin, FilterView):
     model = Category
     filterset_class = CategoryFilter
     paginate_by = 20
@@ -59,13 +94,13 @@ class CategoryListView(StaffRequiredMixin, StaffFilterListContextMixin, FilterVi
         )
 
 
-class CategoryDetailView(StaffRequiredMixin, DetailView):
+class CategoryDetailView(AdminRequiredMixin, DetailView):
     model = Category
     template_name = "web/catalog/category_detail.html"
     context_object_name = "category"
 
 
-class CategoryCreateView(StaffRequiredMixin, CreateView):
+class CategoryCreateView(AdminRequiredMixin, CreateView):
     model = Category
     form_class = CategoryForm
     template_name = "web/catalog/category_form.html"
@@ -78,7 +113,7 @@ class CategoryCreateView(StaffRequiredMixin, CreateView):
         return HttpResponseRedirect(reverse("web_shop:category-detail", kwargs={"pk": obj.pk}))
 
 
-class CategoryUpdateView(StaffRequiredMixin, UpdateView):
+class CategoryUpdateView(AdminRequiredMixin, UpdateView):
     model = Category
     form_class = CategoryForm
     template_name = "web/catalog/category_form.html"
@@ -90,7 +125,7 @@ class CategoryUpdateView(StaffRequiredMixin, UpdateView):
         return HttpResponseRedirect(reverse("web_shop:category-detail", kwargs={"pk": self.object.pk}))
 
 
-class CategoryDeleteView(StaffRequiredMixin, DeleteView):
+class CategoryDeleteView(AdminRequiredMixin, DeleteView):
     model = Category
     template_name = "web/confirm_delete.html"
     success_url = reverse_lazy("web_shop:category-list")
@@ -105,7 +140,7 @@ class CategoryDeleteView(StaffRequiredMixin, DeleteView):
 # --- Products ---
 
 
-class ProductListView(StaffRequiredMixin, StaffFilterListContextMixin, FilterView):
+class ProductListView(AdminRequiredMixin, StaffFilterListContextMixin, FilterView):
     model = Product
     filterset_class = ProductFilter
     paginate_by = 20
@@ -126,7 +161,7 @@ class ProductListView(StaffRequiredMixin, StaffFilterListContextMixin, FilterVie
         )
 
 
-class ProductDetailView(StaffRequiredMixin, DetailView):
+class ProductDetailView(AdminRequiredMixin, DetailView):
     model = Product
     template_name = "web/catalog/product_detail.html"
     context_object_name = "product"
@@ -135,7 +170,7 @@ class ProductDetailView(StaffRequiredMixin, DetailView):
         return ShopStaffCatalogService().products_detail_queryset()
 
 
-class ProductCreateView(StaffRequiredMixin, CreateView):
+class ProductCreateView(AdminRequiredMixin, CreateView):
     model = Product
     form_class = ProductCreateForm
     template_name = "web/catalog/product_form.html"
@@ -149,7 +184,7 @@ class ProductCreateView(StaffRequiredMixin, CreateView):
         return HttpResponseRedirect(reverse("web_shop:product-detail", kwargs={"pk": inst.pk}))
 
 
-class ProductUpdateView(StaffRequiredMixin, UpdateView):
+class ProductUpdateView(AdminRequiredMixin, UpdateView):
     model = Product
     form_class = ProductUpdateForm
     template_name = "web/catalog/product_form.html"
@@ -161,7 +196,7 @@ class ProductUpdateView(StaffRequiredMixin, UpdateView):
         return HttpResponseRedirect(reverse("web_shop:product-detail", kwargs={"pk": self.object.pk}))
 
 
-class ProductDeleteView(StaffRequiredMixin, DeleteView):
+class ProductDeleteView(AdminRequiredMixin, DeleteView):
     model = Product
     template_name = "web/confirm_delete.html"
     success_url = reverse_lazy("web_shop:product-list")
@@ -176,7 +211,7 @@ class ProductDeleteView(StaffRequiredMixin, DeleteView):
 # --- Suppliers ---
 
 
-class SupplierListView(StaffRequiredMixin, StaffFilterListContextMixin, FilterView):
+class SupplierListView(EmployeeRequiredMixin, StaffFilterListContextMixin, FilterView):
     model = Supplier
     filterset_class = SupplierFilter
     paginate_by = 20
@@ -190,18 +225,25 @@ class SupplierListView(StaffRequiredMixin, StaffFilterListContextMixin, FilterVi
 
     def get_queryset(self):
         svc = ShopStaffSupplierService()
-        return svc.suppliers_base_queryset().order_by(
+        qs = svc.suppliers_base_queryset().order_by(
             svc.supplier_ordering(self.request.GET.get("ordering")),
         )
+        return _restrict_suppliers_for_limited_employee(self.request.user, qs)
 
 
-class SupplierDetailView(StaffRequiredMixin, DetailView):
+class SupplierDetailView(EmployeeRequiredMixin, DetailView):
     model = Supplier
     template_name = "web/suppliers/supplier_detail.html"
     context_object_name = "supplier"
 
+    def get_queryset(self):
+        return _restrict_suppliers_for_limited_employee(
+            self.request.user,
+            Supplier.objects.filter(is_deleted=False).prefetch_related("products"),
+        )
 
-class SupplierCreateView(StaffRequiredMixin, CreateView):
+
+class SupplierCreateView(AdminRequiredMixin, CreateView):
     model = Supplier
     form_class = SupplierForm
     template_name = "web/suppliers/supplier_form.html"
@@ -214,7 +256,7 @@ class SupplierCreateView(StaffRequiredMixin, CreateView):
         return HttpResponseRedirect(reverse("web_shop:supplier-detail", kwargs={"pk": obj.pk}))
 
 
-class SupplierUpdateView(StaffRequiredMixin, UpdateView):
+class SupplierUpdateView(AdminRequiredMixin, UpdateView):
     model = Supplier
     form_class = SupplierForm
     template_name = "web/suppliers/supplier_form.html"
@@ -226,7 +268,7 @@ class SupplierUpdateView(StaffRequiredMixin, UpdateView):
         return HttpResponseRedirect(reverse("web_shop:supplier-detail", kwargs={"pk": self.object.pk}))
 
 
-class SupplierDeleteView(StaffRequiredMixin, DeleteView):
+class SupplierDeleteView(AdminRequiredMixin, DeleteView):
     model = Supplier
     template_name = "web/confirm_delete.html"
     success_url = reverse_lazy("web_shop:supplier-list")
@@ -241,7 +283,7 @@ class SupplierDeleteView(StaffRequiredMixin, DeleteView):
 # --- Orders ---
 
 
-class OrderListView(StaffRequiredMixin, StaffFilterListContextMixin, FilterView):
+class OrderListView(EmployeeRequiredMixin, StaffFilterListContextMixin, FilterView):
     model = Order
     filterset_class = OrderFilter
     paginate_by = 20
@@ -257,21 +299,23 @@ class OrderListView(StaffRequiredMixin, StaffFilterListContextMixin, FilterView)
 
     def get_queryset(self):
         svc = ShopStaffOrderService()
-        return svc.orders_base_queryset().order_by(
+        qs = svc.orders_base_queryset().order_by(
             svc.order_ordering(self.request.GET.get("ordering")),
         )
+        return _restrict_orders_for_limited_employee(self.request.user, qs)
 
 
-class OrderDetailView(StaffRequiredMixin, DetailView):
+class OrderDetailView(EmployeeRequiredMixin, DetailView):
     model = Order
     template_name = "web/orders/order_detail.html"
     context_object_name = "order"
 
     def get_queryset(self):
-        return ShopStaffOrderService().orders_detail_queryset()
+        qs = ShopStaffOrderService().orders_detail_queryset()
+        return _restrict_orders_for_limited_employee(self.request.user, qs)
 
 
-class OrderCreateView(StaffRequiredMixin, CreateView):
+class OrderCreateView(AdminRequiredMixin, CreateView):
     model = Order
     form_class = OrderCreateForm
     template_name = "web/orders/order_form.html"
@@ -284,7 +328,7 @@ class OrderCreateView(StaffRequiredMixin, CreateView):
         return HttpResponseRedirect(reverse("web_shop:order-detail", kwargs={"pk": obj.pk}))
 
 
-class OrderUpdateView(StaffRequiredMixin, UpdateView):
+class OrderUpdateView(AdminRequiredMixin, UpdateView):
     model = Order
     form_class = OrderForm
     template_name = "web/orders/order_form.html"
@@ -296,7 +340,7 @@ class OrderUpdateView(StaffRequiredMixin, UpdateView):
         return HttpResponseRedirect(reverse("web_shop:order-detail", kwargs={"pk": self.object.pk}))
 
 
-class OrderDeleteView(StaffRequiredMixin, DeleteView):
+class OrderDeleteView(AdminRequiredMixin, DeleteView):
     model = Order
     template_name = "web/confirm_delete.html"
     success_url = reverse_lazy("web_shop:order-list")
@@ -311,7 +355,7 @@ class OrderDeleteView(StaffRequiredMixin, DeleteView):
 # --- Reviews ---
 
 
-class ReviewListView(StaffRequiredMixin, StaffFilterListContextMixin, FilterView):
+class ReviewListView(AdminRequiredMixin, StaffFilterListContextMixin, FilterView):
     model = Review
     filterset_class = ReviewFilter
     paginate_by = 20
@@ -331,13 +375,13 @@ class ReviewListView(StaffRequiredMixin, StaffFilterListContextMixin, FilterView
         )
 
 
-class ReviewDetailView(StaffRequiredMixin, DetailView):
+class ReviewDetailView(AdminRequiredMixin, DetailView):
     model = Review
     template_name = "web/reviews/review_detail.html"
     context_object_name = "review"
 
 
-class ReviewCreateView(StaffRequiredMixin, CreateView):
+class ReviewCreateView(AdminRequiredMixin, CreateView):
     model = Review
     form_class = ReviewForm
     template_name = "web/reviews/review_form.html"
@@ -350,7 +394,7 @@ class ReviewCreateView(StaffRequiredMixin, CreateView):
         return HttpResponseRedirect(reverse("web_shop:review-detail", kwargs={"pk": obj.pk}))
 
 
-class ReviewUpdateView(StaffRequiredMixin, UpdateView):
+class ReviewUpdateView(AdminRequiredMixin, UpdateView):
     model = Review
     form_class = ReviewForm
     template_name = "web/reviews/review_form.html"
@@ -362,7 +406,7 @@ class ReviewUpdateView(StaffRequiredMixin, UpdateView):
         return HttpResponseRedirect(reverse("web_shop:review-detail", kwargs={"pk": self.object.pk}))
 
 
-class ReviewDeleteView(StaffRequiredMixin, DeleteView):
+class ReviewDeleteView(AdminRequiredMixin, DeleteView):
     model = Review
     template_name = "web/confirm_delete.html"
     success_url = reverse_lazy("web_shop:review-list")
@@ -377,7 +421,7 @@ class ReviewDeleteView(StaffRequiredMixin, DeleteView):
 # --- News ---
 
 
-class NewsArticleListView(StaffRequiredMixin, StaffFilterListContextMixin, FilterView):
+class NewsArticleListView(AdminRequiredMixin, StaffFilterListContextMixin, FilterView):
     model = NewsArticle
     filterset_class = NewsArticleFilter
     paginate_by = 20
@@ -397,13 +441,13 @@ class NewsArticleListView(StaffRequiredMixin, StaffFilterListContextMixin, Filte
         )
 
 
-class NewsArticleDetailView(StaffRequiredMixin, DetailView):
+class NewsArticleDetailView(AdminRequiredMixin, DetailView):
     model = NewsArticle
     template_name = "web/news/article_detail.html"
     context_object_name = "article"
 
 
-class NewsArticleCreateView(StaffRequiredMixin, CreateView):
+class NewsArticleCreateView(AdminRequiredMixin, CreateView):
     model = NewsArticle
     form_class = NewsArticleForm
     template_name = "web/news/article_form.html"
@@ -416,7 +460,7 @@ class NewsArticleCreateView(StaffRequiredMixin, CreateView):
         return HttpResponseRedirect(reverse("web_shop:news-detail", kwargs={"pk": obj.pk}))
 
 
-class NewsArticleUpdateView(StaffRequiredMixin, UpdateView):
+class NewsArticleUpdateView(AdminRequiredMixin, UpdateView):
     model = NewsArticle
     form_class = NewsArticleForm
     template_name = "web/news/article_form.html"
@@ -428,7 +472,7 @@ class NewsArticleUpdateView(StaffRequiredMixin, UpdateView):
         return HttpResponseRedirect(reverse("web_shop:news-detail", kwargs={"pk": self.object.pk}))
 
 
-class NewsArticleDeleteView(StaffRequiredMixin, DeleteView):
+class NewsArticleDeleteView(AdminRequiredMixin, DeleteView):
     model = NewsArticle
     template_name = "web/confirm_delete.html"
     success_url = reverse_lazy("web_shop:news-list")
@@ -443,7 +487,7 @@ class NewsArticleDeleteView(StaffRequiredMixin, DeleteView):
 # --- Promo codes ---
 
 
-class PromoCodeListView(StaffRequiredMixin, StaffFilterListContextMixin, FilterView):
+class PromoCodeListView(AdminRequiredMixin, StaffFilterListContextMixin, FilterView):
     model = PromoCode
     filterset_class = PromoCodeFilter
     paginate_by = 20
@@ -463,13 +507,13 @@ class PromoCodeListView(StaffRequiredMixin, StaffFilterListContextMixin, FilterV
         )
 
 
-class PromoCodeDetailView(StaffRequiredMixin, DetailView):
+class PromoCodeDetailView(AdminRequiredMixin, DetailView):
     model = PromoCode
     template_name = "web/promotions/promo_detail.html"
     context_object_name = "promo"
 
 
-class PromoCodeCreateView(StaffRequiredMixin, CreateView):
+class PromoCodeCreateView(AdminRequiredMixin, CreateView):
     model = PromoCode
     form_class = PromoCodeForm
     template_name = "web/promotions/promo_form.html"
@@ -481,7 +525,7 @@ class PromoCodeCreateView(StaffRequiredMixin, CreateView):
         return HttpResponseRedirect(reverse("web_shop:promo-detail", kwargs={"pk": obj.pk}))
 
 
-class PromoCodeUpdateView(StaffRequiredMixin, UpdateView):
+class PromoCodeUpdateView(AdminRequiredMixin, UpdateView):
     model = PromoCode
     form_class = PromoCodeForm
     template_name = "web/promotions/promo_form.html"
@@ -493,7 +537,7 @@ class PromoCodeUpdateView(StaffRequiredMixin, UpdateView):
         return HttpResponseRedirect(reverse("web_shop:promo-detail", kwargs={"pk": self.object.pk}))
 
 
-class PromoCodeDeleteView(StaffRequiredMixin, DeleteView):
+class PromoCodeDeleteView(AdminRequiredMixin, DeleteView):
     model = PromoCode
     template_name = "web/confirm_delete.html"
     success_url = reverse_lazy("web_shop:promo-list")

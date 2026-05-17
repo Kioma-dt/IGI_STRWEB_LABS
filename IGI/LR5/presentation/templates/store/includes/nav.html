@@ -23,13 +23,14 @@
     {% else %}
       <li><a href="{% url 'store:login' %}">Вход</a></li>
       <li><a href="{% url 'store:signup' %}">Регистрация</a></li>
+      <li><a href="{% url 'store:employee-signup' %}">Регистрация сотрудника</a></li>
     {% endif %}
     {% if user.is_authenticated %}
-      {% if user.is_superuser or user.groups.all|length > 0 and 'admin' in user.groups.values_list|join:"," %}
+      {% if is_admin_role %}
         <li><a href="{% url 'admin_panel:home' %}">Панель администратора</a></li>
       {% endif %}
-      {% if user.is_staff %}
-        <li><a href="{% url 'web_shop:home' %}">Сотрудникам (staff)</a></li>
+      {% if is_employee_role %}
+        <li><a href="{% url 'web_shop:home' %}">Портал сотрудников</a></li>
       {% endif %}
     {% endif %}
   </ul>

@@ -3,12 +3,15 @@ from __future__ import annotations
 import django_filters
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth.models import Group
 from django.contrib.auth.models import User
 from django.core.validators import EmailValidator
 
 from application.services.shop_staff_services import apply_icontains_q
 from apps.catalog.models import Category, Product
 from apps.reviews.models import Review
+from apps.suppliers.models import Supplier
+from apps.users.constants import GROUP_CUSTOMER, GROUP_EMPLOYEE
 from apps.users.models import CustomerProfile, EmployeeProfile
 from core.validators import validate_phone_by_format_375_29
 
@@ -23,13 +26,23 @@ class AddToCartForm(forms.Form):
 
 
 class StoreProductFilter(django_filters.FilterSet):
-    q = django_filters.CharFilter(method="filter_q")
+    q = django_filters.CharFilter(method="filter_q", label="Поиск")
     category = django_filters.ModelChoiceFilter(
         queryset=Category.objects.filter(is_deleted=False).order_by("name"),
-        null_label="Все категории",
+        empty_label="Все категории",
+        null_label="Без категории",
+        label="Категория",
     )
-    min_price = django_filters.NumberFilter(field_name="base_price", lookup_expr="gte")
-    max_price = django_filters.NumberFilter(field_name="base_price", lookup_expr="lte")
+    min_price = django_filters.NumberFilter(
+        field_name="base_price",
+        lookup_expr="gte",
+        label="Цена от",
+    )
+    max_price = django_filters.NumberFilter(
+        field_name="base_price",
+        lookup_expr="lte",
+        label="Цена до",
+    )
 
     class Meta:
         model = Product
@@ -37,6 +50,14 @@ class StoreProductFilter(django_filters.FilterSet):
 
     def filter_q(self, queryset, name, value):
         return apply_icontains_q(queryset, value, "name", "sku", "description")
+
+    @property
+    def qs(self):
+        qs = super().qs
+        # If stale/invalid category is passed via query string, ignore it silently.
+        if not self.form.is_valid() and "category" in self.form.errors:
+            return self.queryset
+        return qs
 
 
 class StoreReviewForm(forms.ModelForm):
@@ -120,6 +141,8 @@ class CustomerSignupForm(UserCreationForm):
         if commit:
             with transaction.atomic():
                 user.save()
+                customer_group, _ = Group.objects.get_or_create(name=GROUP_CUSTOMER)
+                user.groups.add(customer_group)
                 CustomerProfile.objects.create(
                     user=user,
                     full_name=self.cleaned_data["full_name"],
@@ -137,6 +160,11 @@ class EmployeeSignupForm(UserCreationForm):
         validators=[validate_phone_by_format_375_29],
     )
     position = forms.CharField(label="Должность", max_length=128)
+    suppliers = forms.ModelMultipleChoiceField(
+        label="Поставщики, с которыми работаете",
+        queryset=Supplier.objects.filter(is_deleted=False, is_active=True).order_by("name"),
+        required=False,
+    )
 
     class Meta:
         model = User
@@ -149,7 +177,6 @@ class EmployeeSignupForm(UserCreationForm):
         return phone
 
     def save(self, commit: bool = True) -> User:  # type: ignore[override]
-        from django.contrib.auth.models import Group
         from django.db import transaction
 
         user = super().save(commit=False)
@@ -157,12 +184,13 @@ class EmployeeSignupForm(UserCreationForm):
         if commit:
             with transaction.atomic():
                 user.save()
-                EmployeeProfile.objects.create(
+                profile = EmployeeProfile.objects.create(
                     user=user,
                     full_name=self.cleaned_data["full_name"],
                     phone=self.cleaned_data["phone"],
                     position=self.cleaned_data["position"],
                 )
-                employee_group, _ = Group.objects.get_or_create(name="employee")
+                profile.suppliers.set(self.cleaned_data.get("suppliers") or [])
+                employee_group, _ = Group.objects.get_or_create(name=GROUP_EMPLOYEE)
                 user.groups.add(employee_group)
         return user

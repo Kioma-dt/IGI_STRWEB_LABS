@@ -2,15 +2,25 @@ from __future__ import annotations
 
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 
+from apps.users import roles
+
 
 class StaffRequiredMixin(LoginRequiredMixin, UserPassesTestMixin):
-    """Back-office CRUD is limited to Django staff users."""
+    """Back-office management access (staff/admin/superuser)."""
 
     login_url = "/admin/login/"
 
     def test_func(self) -> bool:
-        u = self.request.user
-        return bool(u.is_authenticated and u.is_staff)
+        return roles.is_employee(self.request.user)
+
+
+class EmployeeRequiredMixin(LoginRequiredMixin, UserPassesTestMixin):
+    """Employee portal access (employee group/staff/admin/superuser)."""
+
+    login_url = "/admin/login/"
+
+    def test_func(self) -> bool:
+        return roles.is_employee(self.request.user)
 
 
 class AdminRequiredMixin(LoginRequiredMixin, UserPassesTestMixin):
@@ -19,13 +29,7 @@ class AdminRequiredMixin(LoginRequiredMixin, UserPassesTestMixin):
     login_url = "/admin/login/"
 
     def test_func(self) -> bool:
-        u = self.request.user
-        if not u.is_authenticated:
-            return False
-        if u.is_superuser:
-            return True
-        # Check if user is in admin group
-        return u.groups.filter(name="admin").exists()
+        return roles.is_admin(self.request.user)
 
 
 class StaffFilterListContextMixin:

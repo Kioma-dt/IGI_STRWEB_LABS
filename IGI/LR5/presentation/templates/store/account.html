@@ -15,5 +15,21 @@
 {% else %}
   <p>У учётной записи нет профиля клиента (оформление заказов недоступно).</p>
 {% endif %}
-<p><a href="{% url 'store:account-orders' %}">Мои заказы</a></p>
+
+{% if employee_profile and not employee_profile.is_deleted %}
+  <section>
+    <h2>Профиль сотрудника</h2>
+    <ul>
+      <li>ФИО: {{ employee_profile.full_name }}</li>
+      <li>Должность: {{ employee_profile.position }}</li>
+      <li>Телефон: {{ employee_profile.phone }}</li>
+    </ul>
+    <p><a href="{% url 'web_shop:home' %}">Перейти в портал сотрудника</a></p>
+  </section>
+{% endif %}
+
+{% if profile %}
+  <p><a href="{% url 'store:account-orders' %}">Мои заказы</a></p>
+  <p><a href="{% url 'store:pickup-points' %}">Точки самовывоза</a> · <a href="{% url 'store:promos' %}">Промокоды и купоны</a></p>
+{% endif %}
 {% endblock %}

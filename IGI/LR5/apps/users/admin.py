@@ -94,12 +94,12 @@ class EmployeeProfileAdmin(admin.ModelAdmin):
     list_display = ("full_name", "position", "user", "phone", "is_active", "is_deleted")
     list_filter = ("is_active", "is_deleted", "position")
     search_fields = ("full_name", "position", "phone", "user__username", "user__email")
-    autocomplete_fields = ("user",)
+    autocomplete_fields = ("user", "suppliers")
     readonly_fields = ("id", "created_at", "updated_at", "deleted_at")
     ordering = ("full_name",)
 
     fieldsets = (
-        (_("Сотрудник"), {"fields": ("user", "full_name", "position", "phone", "is_active")}),
+        (_("Сотрудник"), {"fields": ("user", "full_name", "position", "phone", "suppliers", "is_active")}),
         (
             _("Системное"),
             {

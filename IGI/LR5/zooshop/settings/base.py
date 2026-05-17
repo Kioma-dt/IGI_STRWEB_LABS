@@ -35,6 +35,7 @@ INSTALLED_APPS = [
     "apps.reviews",
     "apps.promotions",
     "apps.news",
+    "analytics",
 ]
 
 MIDDLEWARE = [
@@ -61,6 +62,7 @@ TEMPLATES = [
                 "django.contrib.auth.context_processors.auth",
                 "django.contrib.messages.context_processors.messages",
                 "presentation.context_processors.store_cart",
+                "presentation.context_processors.user_roles",
             ],
         },
     },
@@ -83,7 +85,7 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-LANGUAGE_CODE = "en-us"
+LANGUAGE_CODE = "ru-ru"
 TIME_ZONE = "UTC"
 USE_I18N = True
 USE_TZ = True

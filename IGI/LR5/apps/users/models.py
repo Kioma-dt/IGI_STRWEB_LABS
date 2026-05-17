@@ -57,6 +57,12 @@ class EmployeeProfile(SoftDeleteModel):
         validators=[validate_phone_by_format_375_29],
     )
     is_active = models.BooleanField("active", default=True)
+    suppliers = models.ManyToManyField(
+        "suppliers.Supplier",
+        related_name="employees",
+        blank=True,
+        verbose_name="working suppliers",
+    )
 
     class Meta:
         verbose_name = "employee profile"

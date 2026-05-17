@@ -50,23 +50,27 @@
         <th>Название товара</th>
         <th>Количество проданных товаров</th>
         <th>Цена за единицу</th>
+        <th>Закупочная цена за единицу</th>
         <th>Стоимость (итого по позиции)</th>
+        <th>Закупочная стоимость</th>
       </tr>
     </thead>
     <tbody>
-      {% for item in order.items.all %}
+      {% for row in sales_rows %}
         <tr>
-          <td><code>{{ item.product.sku }}</code></td>
-          <td>{{ item.product.name }}</td>
-          <td>{{ item.quantity }} шт.</td>
-          <td>{{ item.unit_price }} руб.</td>
-          <td><strong>{{ item.line_total }} руб.</strong></td>
+          <td><code>{{ row.item.product.sku }}</code></td>
+          <td>{{ row.item.product.name }}</td>
+          <td>{{ row.item.quantity }} шт.</td>
+          <td>{{ row.item.unit_price }} руб.</td>
+          <td>{% if row.has_purchase_price %}{{ row.purchase_price }} руб.{% else %}—{% endif %}</td>
+          <td><strong>{{ row.item.line_total }} руб.</strong></td>
+          <td>{% if row.has_purchase_price %}{{ row.purchase_total }} руб.{% else %}—{% endif %}</td>
         </tr>
       {% endfor %}
     </tbody>
     <tfoot>
       <tr>
-        <th colspan="4">ИТОГО:</th>
+        <th colspan="6">ИТОГО:</th>
         <th>{{ order.total_amount }} руб.</th>
       </tr>
     </tfoot>

@@ -8,7 +8,7 @@ from django_filters.views import FilterView
 
 from apps.catalog.forms import ProductCreateForm, ProductUpdateForm
 from apps.catalog.models import Product
-from apps.orders.models import Order
+from apps.orders.models import Order, PurchaseItem
 from apps.suppliers.forms import SupplierForm
 from apps.suppliers.models import Supplier
 from presentation.web.filtersets import ProductFilter, SupplierFilter, OrderFilter
@@ -191,3 +191,31 @@ class AdminSalesDetailView(AdminRequiredMixin, DetailView):
             .select_related("customer", "promo_code")
             .prefetch_related("items__product")
         )
+
+    def get_context_data(self, **kwargs):
+        ctx = super().get_context_data(**kwargs)
+        order_items = list(self.object.items.all())
+        product_ids = [it.product_id for it in order_items]
+        purchase_price_by_product: dict = {}
+        if product_ids:
+            for pi in (
+                PurchaseItem.objects.filter(is_deleted=False, product_id__in=product_ids)
+                .select_related("purchase")
+                .order_by("product_id", "-purchase__ordered_at", "-created_at")
+            ):
+                purchase_price_by_product.setdefault(pi.product_id, pi.purchase_price)
+        ctx["sales_rows"] = [
+            {
+                "item": item,
+                "purchase_price": purchase_price_by_product.get(item.product_id),
+                "has_purchase_price": purchase_price_by_product.get(item.product_id) is not None,
+                "purchase_total": (
+                    purchase_price_by_product.get(item.product_id) * item.quantity
+                    if purchase_price_by_product.get(item.product_id) is not None
+                    else None
+                ),
+            }
+            for item in order_items
+        ]
+        return ctx
+
