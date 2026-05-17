@@ -12,31 +12,46 @@ from apps.reviews.models import Review
 from apps.suppliers.models import Supplier
 from apps.users.models import CustomerProfile
 
-
 class CategoryFilter(django_filters.FilterSet):
-    q = django_filters.CharFilter(method="filter_q")
-    name = django_filters.CharFilter(lookup_expr="icontains")
-    slug = django_filters.CharFilter(lookup_expr="icontains")
+    q = django_filters.CharFilter(method="filter_q", label="Поиск")
+    name = django_filters.CharFilter(lookup_expr="icontains", label="Название")
+    slug = django_filters.CharFilter(lookup_expr="icontains", label="Slug")
+    parent = django_filters.ModelChoiceFilter(
+        queryset=Category.objects.all(),
+        label="Родительская категория",
+    )
 
-    class Meta:
-        model = Category
-        fields = ("parent",)
+    # class Meta:
+    #     model = Category
+    #     fields = ("parent",)
+    #     labels = {
+    #         "parent": "Родительская категория",
+    #     }
 
     def filter_q(self, queryset, name, value):
         return apply_icontains_q(queryset, value, "name", "slug")
 
 
 class ProductFilter(django_filters.FilterSet):
-    q = django_filters.CharFilter(method="filter_q")
-    name = django_filters.CharFilter(lookup_expr="icontains")
-    sku = django_filters.CharFilter(lookup_expr="icontains")
-    is_active = django_filters.BooleanFilter()
+    q = django_filters.CharFilter(method="filter_q", label="Поиск")
+    name = django_filters.CharFilter(lookup_expr="icontains", label="Название")
+    sku = django_filters.CharFilter(lookup_expr="icontains", label="Артикул")
+    is_active = django_filters.BooleanFilter(label="Активен")
     category = django_filters.ModelChoiceFilter(
         queryset=Category.objects.filter(is_deleted=False),
-        null_label="Any category",
+        null_label="Любая категория",
+        label="Категория",
     )
-    min_price = django_filters.NumberFilter(field_name="base_price", lookup_expr="gte")
-    max_price = django_filters.NumberFilter(field_name="base_price", lookup_expr="lte")
+    min_price = django_filters.NumberFilter(
+        field_name="base_price",
+        lookup_expr="gte",
+        label="Цена от",
+    )
+    max_price = django_filters.NumberFilter(
+        field_name="base_price",
+        lookup_expr="lte",
+        label="Цена до",
+    )
 
     class Meta:
         model = Product
@@ -47,9 +62,9 @@ class ProductFilter(django_filters.FilterSet):
 
 
 class SupplierFilter(django_filters.FilterSet):
-    q = django_filters.CharFilter(method="filter_q")
-    name = django_filters.CharFilter(lookup_expr="icontains")
-    is_active = django_filters.BooleanFilter()
+    q = django_filters.CharFilter(method="filter_q", label="Поиск")
+    name = django_filters.CharFilter(lookup_expr="icontains", label="Название")
+    is_active = django_filters.BooleanFilter(label="Активен")
 
     class Meta:
         model = Supplier
@@ -60,11 +75,12 @@ class SupplierFilter(django_filters.FilterSet):
 
 
 class OrderFilter(django_filters.FilterSet):
-    q = django_filters.CharFilter(method="filter_q")
-    status = django_filters.ChoiceFilter(choices=Order.Status.choices)
+    q = django_filters.CharFilter(method="filter_q", label="Поиск")
+    status = django_filters.ChoiceFilter(choices=Order.Status.choices, label="Статус")
     customer = django_filters.ModelChoiceFilter(
         queryset=CustomerProfile.objects.filter(is_deleted=False),
-        null_label="Any customer",
+        null_label="Любой клиент",
+        label="Клиент",
     )
 
     class Meta:
@@ -83,17 +99,19 @@ class OrderFilter(django_filters.FilterSet):
 
 
 class ReviewFilter(django_filters.FilterSet):
-    q = django_filters.CharFilter(method="filter_q")
+    q = django_filters.CharFilter(method="filter_q", label="Поиск")
     product = django_filters.ModelChoiceFilter(
         queryset=Product.objects.filter(is_deleted=False),
-        null_label="Any product",
+        null_label="Любой товар",
+        label="Товар",
     )
     customer = django_filters.ModelChoiceFilter(
         queryset=CustomerProfile.objects.filter(is_deleted=False),
-        null_label="Any customer",
+        null_label="Любой клиент",
+        label="Клиент",
     )
-    is_published = django_filters.BooleanFilter()
-    rating = django_filters.NumberFilter()
+    is_published = django_filters.BooleanFilter(label="Опубликован")
+    rating = django_filters.NumberFilter(label="Рейтинг")
 
     class Meta:
         model = Review
@@ -104,8 +122,8 @@ class ReviewFilter(django_filters.FilterSet):
 
 
 class NewsArticleFilter(django_filters.FilterSet):
-    q = django_filters.CharFilter(method="filter_q")
-    is_published = django_filters.BooleanFilter()
+    q = django_filters.CharFilter(method="filter_q", label="Поиск")
+    is_published = django_filters.BooleanFilter(label="Опубликовано")
 
     class Meta:
         model = NewsArticle
@@ -116,9 +134,9 @@ class NewsArticleFilter(django_filters.FilterSet):
 
 
 class PromoCodeFilter(django_filters.FilterSet):
-    q = django_filters.CharFilter(method="filter_q")
-    code = django_filters.CharFilter(lookup_expr="icontains")
-    is_active = django_filters.BooleanFilter()
+    q = django_filters.CharFilter(method="filter_q", label="Поиск")
+    code = django_filters.CharFilter(lookup_expr="icontains", label="Код")
+    is_active = django_filters.BooleanFilter(label="Активен")
 
     class Meta:
         model = PromoCode

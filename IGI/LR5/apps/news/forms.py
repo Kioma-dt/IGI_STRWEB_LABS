@@ -9,6 +9,13 @@ class NewsArticleForm(forms.ModelForm):
     class Meta:
         model = NewsArticle
         fields = ("title", "slug", "body", "published_at", "is_published")
+        labels = {
+            "title": "Заголовок",
+            "slug": "URL-адрес (slug)",
+            "body": "Текст статьи",
+            "published_at": "Дата публикации",
+            "is_published": "Опубликовано",
+        }
         widgets = {
             "body": forms.Textarea(attrs={"rows": 10}),
             "published_at": forms.DateTimeInput(attrs={"type": "datetime-local"}),

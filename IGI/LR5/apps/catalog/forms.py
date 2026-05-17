@@ -9,6 +9,12 @@ class CategoryForm(forms.ModelForm):
     class Meta:
         model = Category
         fields = ("name", "slug", "parent", "description")
+        labels = {
+            "name": "Название",
+            "slug": "URL-адрес (slug)",
+            "parent": "Родительская категория",
+            "description": "Описание",
+        }
         widgets = {
             "description": forms.Textarea(attrs={"rows": 4}),
         }
@@ -17,13 +23,13 @@ class CategoryForm(forms.ModelForm):
         data = super().clean()
         parent = data.get("parent")
         if self.instance.pk and parent and parent.pk == self.instance.pk:
-            raise forms.ValidationError("A category cannot be its own parent.")
+            raise forms.ValidationError("Категория не может быть родительской сама себе.")
         return data
 
 
 class ProductCreateForm(forms.ModelForm):
     initial_stock = forms.IntegerField(
-        label="Initial stock quantity",
+        label="Начльное количество на складе",
         min_value=0,
         initial=0,
         required=False,
@@ -41,6 +47,16 @@ class ProductCreateForm(forms.ModelForm):
             "age_restriction",
             "is_active",
         )
+        labels = {
+            "name": "Название",
+            "sku": "Артикул",
+            "category": "Категория",
+            "description": "Описание",
+            "image": "Изображение",
+            "base_price": "Цена",
+            "age_restriction": "Возрастное ограничение",
+            "is_active": "Активен",
+        }
         widgets = {
             "description": forms.Textarea(attrs={"rows": 4}),
         }
@@ -59,6 +75,16 @@ class ProductUpdateForm(forms.ModelForm):
             "age_restriction",
             "is_active",
         )
+        labels = {
+            "name": "Название",
+            "sku": "Артикул",
+            "category": "Категория",
+            "description": "Описание",
+            "image": "Изображение",
+            "base_price": "Цена",
+            "age_restriction": "Возрастное ограничение",
+            "is_active": "Активен",
+        }
         widgets = {
             "description": forms.Textarea(attrs={"rows": 4}),
         }
