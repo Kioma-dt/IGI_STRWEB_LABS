@@ -38,4 +38,9 @@ urlpatterns = [
     path("logout/", views.StoreLogoutView.as_view(), name="logout"),
     path("signup/", views.StoreSignupView.as_view(), name="signup"),
     path("employee/signup/", views.StoreEmployeeSignupView.as_view(), name="employee-signup"),
+
+    path("suppliers/", views.SupplierListView.as_view(), name="supplier-list"),
+    path("suppliers/<uuid:pk>/", views.SupplierDetailView.as_view(), name="supplier-detail"),
+    path("orders/", views.OrderListView.as_view(), name="order-list"),
+    path("orders/<uuid:pk>/", views.OrderDetailView.as_view(), name="order-detail"),
 ]

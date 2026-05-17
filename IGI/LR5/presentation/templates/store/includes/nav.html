@@ -43,7 +43,8 @@
         {% endif %}
 
         {% if is_employee_role %}
-          <a href="{% url 'web_shop:home' %}">Портал сотрудников</a> |
+          <a href="{% url 'store:supplier-list' %}">Поставщики</a> |
+          <a href="{% url 'store:order-list' %}">Заказы</a> |
         {% endif %}
 
         <form action="{% url 'store:logout' %}" method="post" style="display:inline;">

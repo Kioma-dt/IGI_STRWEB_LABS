@@ -188,27 +188,37 @@ class AnalyticsService:
 
     @staticmethod
     def generate_category_pie_chart():
-        """Круговая диаграмма распределения товаров по категориям."""
         categories = list(AnalyticsService.get_category_analytics())
-        
+
         fig, ax = plt.subplots(figsize=(10, 8))
+
+        if not categories:
+            ax.text(0.5, 0.5, "Нет данных", ha="center", va="center")
+            ax.axis("off")
+            return AnalyticsService._fig_to_base64(fig)
+
         names = [c["name"] for c in categories]
         items = [c["items_sold"] or 0 for c in categories]
-        
+
+        if sum(items) == 0:
+            ax.text(0.5, 0.5, "Нет продаж", ha="center", va="center")
+            ax.axis("off")
+            return AnalyticsService._fig_to_base64(fig)
+
         colors = plt.cm.Set3(range(len(categories)))
-        wedges, texts, autotexts = ax.pie(
-            items, labels=names, autopct="%1.1f%%", colors=colors, startangle=90
+
+        ax.pie(
+            items,
+            labels=names,
+            autopct="%1.1f%%",
+            colors=colors,
+            startangle=90
         )
-        ax.set_title("Распределение продаж по категориям", fontsize=14, fontweight="bold")
-        
-        for autotext in autotexts:
-            autotext.set_color("white")
-            autotext.set_fontweight("bold")
-            autotext.set_fontsize(10)
-        
+
+        ax.set_title("Распределение продаж по категориям")
+
         plt.tight_layout()
         return AnalyticsService._fig_to_base64(fig)
-
     @staticmethod
     def generate_revenue_by_category_chart():
         """Столбчатая диаграмма выручки по категориям."""

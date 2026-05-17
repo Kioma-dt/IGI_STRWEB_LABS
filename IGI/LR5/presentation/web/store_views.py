@@ -48,7 +48,66 @@ from core.calendar import BirthdayCalendar
 from infrastructure.genderize_client import GenderizeClient
 from infrastructure.cat_fact_client import CatFactClient
 
+from application.services.shop_staff_services import (
+    ShopStaffCatalogService,
+    ShopStaffNewsService,
+    ShopStaffOrderService,
+    ShopStaffPromoService,
+    ShopStaffReviewService,
+    ShopStaffSupplierService,
+)
+from apps.catalog.forms import CategoryForm, ProductCreateForm, ProductUpdateForm
+from apps.catalog.models import Category, Product
+from apps.news.forms import NewsArticleForm
+from apps.news.models import NewsArticle
+from apps.orders.forms import OrderCreateForm, OrderForm
+from apps.orders.models import Order
+from apps.promotions.forms import PromoCodeForm
+from apps.promotions.models import PromoCode
+from apps.reviews.forms import ReviewForm
+from apps.reviews.models import Review
+from apps.suppliers.forms import SupplierForm
+from apps.suppliers.models import Supplier
+from apps.users import roles
+from presentation.web.filtersets import (
+    CategoryFilter,
+    NewsArticleFilter,
+    OrderFilter,
+    ProductFilter,
+    PromoCodeFilter,
+    ReviewFilter,
+    SupplierFilter,
+)
+from presentation.web.mixins import (
+    AdminRequiredMixin,
+    EmployeeRequiredMixin,
+    StaffFilterListContextMixin,
+    StaffRequiredMixin,
+)
+
 # --- mixins ---
+
+
+def _employee_suppliers_qs(user):
+    profile = getattr(user, "employee_profile", None)
+    if profile is None or profile.is_deleted:
+        return Supplier.objects.none()
+    return profile.suppliers.filter(is_deleted=False)
+
+
+def _restrict_suppliers_for_limited_employee(user, queryset):
+    if roles.is_employee_limited(user):
+        return queryset.filter(pk__in=_employee_suppliers_qs(user).values("pk"))
+    return queryset
+
+
+def _restrict_orders_for_limited_employee(user, queryset):
+    if not roles.is_employee_limited(user):
+        return queryset
+    supplier_ids = _employee_suppliers_qs(user).values("pk")
+    return queryset.filter(items__product__suppliers__in=supplier_ids).distinct()
+
+
 
 
 class StorePaginationQueryMixin:
@@ -584,3 +643,68 @@ class StoreCartAddView(View):
         messages.success(request, "Добавлено в корзину.")
         nxt = request.POST.get("next") or reverse("store:product-detail", kwargs={"pk": pk})
         return HttpResponseRedirect(nxt)
+
+
+class SupplierListView(EmployeeRequiredMixin, StaffFilterListContextMixin, FilterView):
+    model = Supplier
+    filterset_class = SupplierFilter
+    paginate_by = 20
+    template_name = "store/supplier_list.html"
+    context_object_name = "suppliers"
+    sort_links = (
+        ("-created_at", "Newest"),
+        ("name", "Name A–Z"),
+        ("-is_active", "Active first"),
+    )
+
+    def get_queryset(self):
+        svc = ShopStaffSupplierService()
+        qs = svc.suppliers_base_queryset().order_by(
+            svc.supplier_ordering(self.request.GET.get("ordering")),
+        )
+        return _restrict_suppliers_for_limited_employee(self.request.user, qs)
+
+
+class SupplierDetailView(EmployeeRequiredMixin, DetailView):
+    model = Supplier
+    template_name = "store/supplier_detail.html"
+    context_object_name = "supplier"
+
+    def get_queryset(self):
+        return _restrict_suppliers_for_limited_employee(
+            self.request.user,
+            Supplier.objects.filter(is_deleted=False).prefetch_related("products"),
+        )
+
+
+class OrderListView(EmployeeRequiredMixin, StaffFilterListContextMixin, FilterView):
+    model = Order
+    filterset_class = OrderFilter
+    paginate_by = 20
+    template_name = "store/sales_list.html"
+    context_object_name = "orders"
+    sort_links = (
+        ("-ordered_at", "Order date ↓"),
+        ("ordered_at", "Order date ↑"),
+        ("status", "Status A–Z"),
+        ("-total_amount", "Total ↓"),
+        ("total_amount", "Total ↑"),
+    )
+
+    def get_queryset(self):
+        svc = ShopStaffOrderService()
+        qs = svc.orders_base_queryset().order_by(
+            svc.order_ordering(self.request.GET.get("ordering")),
+        )
+        return _restrict_orders_for_limited_employee(self.request.user, qs)
+
+
+class OrderDetailView(EmployeeRequiredMixin, DetailView):
+    model = Order
+    template_name = "store/sales_detail.html"
+    context_object_name = "order"
+
+    def get_queryset(self):
+        qs = ShopStaffOrderService().orders_detail_queryset()
+        return _restrict_orders_for_limited_employee(self.request.user, qs)
+
