@@ -138,7 +138,7 @@ class StoreHomeView(TemplateView):
 
 
 class StoreAboutView(TemplateView):
-    template_name = "store/about.html"
+    template_name = "store/info/about.html"
 
     def get_context_data(self, **kwargs):
         ctx = super().get_context_data(**kwargs)
@@ -150,7 +150,7 @@ class StoreAboutView(TemplateView):
 
 class StoreNewsListView(StorePaginationQueryMixin, ListView):
     model = NewsArticle
-    template_name = "store/news_list.html"
+    template_name = "store/info/news_list.html"
     context_object_name = "articles"
     paginate_by = 10
 
@@ -167,7 +167,7 @@ class StoreNewsListView(StorePaginationQueryMixin, ListView):
 
 class StoreNewsDetailView(DetailView):
     model = NewsArticle
-    template_name = "store/news_detail.html"
+    template_name = "store/info/news_detail.html"
     context_object_name = "article"
 
     def get_queryset(self):
@@ -179,7 +179,7 @@ class StoreNewsDetailView(DetailView):
 
 
 class StoreFAQView(TemplateView):
-    template_name = "store/faq.html"
+    template_name = "store/info/faq.html"
 
     def get_context_data(self, **kwargs):
         ctx = super().get_context_data(**kwargs)
@@ -202,7 +202,7 @@ class StoreFAQView(TemplateView):
 
 
 class StoreContactsView(FormView):
-    template_name = "store/contacts.html"
+    template_name = "store/info/contacts.html"
     form_class = ContactMessageForm
     success_url = reverse_lazy("store:contacts")
 
@@ -227,7 +227,7 @@ class StoreContactsView(FormView):
 
 
 class StorePrivacyView(TemplateView):
-    template_name = "store/privacy.html"
+    template_name = "store/info/privacy.html"
 
     def get_context_data(self, **kwargs):
         ctx = super().get_context_data(**kwargs)
@@ -236,7 +236,7 @@ class StorePrivacyView(TemplateView):
 
 class StoreVacancyListView(StorePaginationQueryMixin, ListView):
     model = Vacancy
-    template_name = "store/vacancy_list.html"
+    template_name = "store/info/vacancy_list.html"
     context_object_name = "vacancies"
     paginate_by = 15
 
@@ -252,7 +252,7 @@ class StoreVacancyListView(StorePaginationQueryMixin, ListView):
 
 
 class StoreVacancyApplyView(FormView):
-    template_name = "store/vacancy_apply.html"
+    template_name = "store/info/vacancy_apply.html"
     form_class = VacancyApplicationForm
 
     def dispatch(self, request, *args, **kwargs):
@@ -278,7 +278,7 @@ class StoreVacancyApplyView(FormView):
 class StoreCatalogView(StorePaginationQueryMixin, FilterView):
     model = Product
     filterset_class = StoreProductFilter
-    template_name = "store/catalog_list.html"
+    template_name = "store/products/catalog_list.html"
     context_object_name = "products"
     paginate_by = 12
 
@@ -295,7 +295,7 @@ class StoreCatalogView(StorePaginationQueryMixin, FilterView):
 
 
 class StoreProductDetailView(FormView):
-    template_name = "store/product_detail.html"
+    template_name = "store/products/product_detail.html"
     form_class = AddToCartForm
 
     def dispatch(self, request, *args, **kwargs):
@@ -371,7 +371,7 @@ class StoreProductDetailView(FormView):
 
 
 class StoreCartView(TemplateView):
-    template_name = "store/cart.html"
+    template_name = "store/products/cart.html"
 
     def get_context_data(self, **kwargs):
         ctx = super().get_context_data(**kwargs)
@@ -399,7 +399,7 @@ class StoreCartView(TemplateView):
 
 
 class StoreCheckoutView(LoginRequiredMixin, FormView):
-    template_name = "store/checkout.html"
+    template_name = "store/info/checkout.html"
     form_class = CheckoutForm
     login_url = reverse_lazy("store:login")
 
@@ -460,7 +460,7 @@ class StoreCheckoutView(LoginRequiredMixin, FormView):
 
 
 class StoreAccountView(LoginRequiredMixin, TemplateView):
-    template_name = "store/account.html"
+    template_name = "store/accounts/account.html"
     login_url = reverse_lazy("store:login")
 
     def get_context_data(self, **kwargs):
@@ -493,9 +493,9 @@ class StoreAccountView(LoginRequiredMixin, TemplateView):
 
         today = datetime.now()
 
-        birthday_day = None
-        birthday_month = None
-        birthday_year = None
+        birthday_day = today.day
+        birthday_month = today.month
+        birthday_year = today.year
 
         if profile and profile.birth_date:
             birthday_day = profile.birth_date.day
@@ -519,7 +519,7 @@ class StoreAccountView(LoginRequiredMixin, TemplateView):
 
 class StoreAccountOrdersView(LoginRequiredMixin, ListView):
     model = Order
-    template_name = "store/account_orders.html"
+    template_name = "store/accounts/account_orders.html"
     context_object_name = "orders"
     paginate_by = 15
     login_url = reverse_lazy("store:login")
@@ -544,7 +544,7 @@ class StoreAccountOrdersView(LoginRequiredMixin, ListView):
 
 class StoreReviewsView(StorePaginationQueryMixin, ListView):
     model = Review
-    template_name = "store/reviews_list.html"
+    template_name = "store/info/reviews_list.html"
     context_object_name = "reviews"
     paginate_by = 20
 
@@ -561,7 +561,7 @@ class StoreReviewsView(StorePaginationQueryMixin, ListView):
 
 
 class StorePromosView(TemplateView):
-    template_name = "store/promos_list.html"
+    template_name = "store/info/promos_list.html"
 
     def get_context_data(self, **kwargs):
         ctx = super().get_context_data(**kwargs)
@@ -571,7 +571,7 @@ class StorePromosView(TemplateView):
 
 
 class StorePickupPointsView(TemplateView):
-    template_name = "store/pickup_points.html"
+    template_name = "store/info/pickup_points.html"
 
     def get_context_data(self, **kwargs):
         ctx = super().get_context_data(**kwargs)
@@ -583,7 +583,7 @@ class StorePickupPointsView(TemplateView):
 
 
 class StoreLoginView(LoginView):
-    template_name = "store/login.html"
+    template_name = "store/accounts/login.html"
     redirect_authenticated_user = True
 
     def get_success_url(self):
@@ -595,7 +595,7 @@ class StoreLogoutView(LogoutView):
 
 
 class StoreSignupView(FormView):
-    template_name = "store/signup.html"
+    template_name = "store/accounts/signup.html"
     form_class = CustomerSignupForm
     success_url = reverse_lazy("store:home")
 
@@ -612,7 +612,7 @@ class StoreSignupView(FormView):
 
 
 class StoreEmployeeSignupView(FormView):
-    template_name = "store/employee_signup.html"
+    template_name = "store/accounts/employee_signup.html"
     form_class = EmployeeSignupForm
     success_url = reverse_lazy("store:home")
 
@@ -649,7 +649,7 @@ class SupplierListView(EmployeeRequiredMixin, StaffFilterListContextMixin, Filte
     model = Supplier
     filterset_class = SupplierFilter
     paginate_by = 20
-    template_name = "store/supplier_list.html"
+    template_name = "store/suppliers/supplier_list.html"
     context_object_name = "suppliers"
     sort_links = (
         ("-created_at", "Newest"),
@@ -667,7 +667,7 @@ class SupplierListView(EmployeeRequiredMixin, StaffFilterListContextMixin, Filte
 
 class SupplierDetailView(EmployeeRequiredMixin, DetailView):
     model = Supplier
-    template_name = "store/supplier_detail.html"
+    template_name = "store/suppliers/supplier_detail.html"
     context_object_name = "supplier"
 
     def get_queryset(self):
@@ -681,7 +681,7 @@ class OrderListView(EmployeeRequiredMixin, StaffFilterListContextMixin, FilterVi
     model = Order
     filterset_class = OrderFilter
     paginate_by = 20
-    template_name = "store/sales_list.html"
+    template_name = "store/sales/sales_list.html"
     context_object_name = "orders"
     sort_links = (
         ("-ordered_at", "Order date ↓"),
@@ -701,7 +701,7 @@ class OrderListView(EmployeeRequiredMixin, StaffFilterListContextMixin, FilterVi
 
 class OrderDetailView(EmployeeRequiredMixin, DetailView):
     model = Order
-    template_name = "store/sales_detail.html"
+    template_name = "store/sales/sales_detail.html"
     context_object_name = "order"
 
     def get_queryset(self):
