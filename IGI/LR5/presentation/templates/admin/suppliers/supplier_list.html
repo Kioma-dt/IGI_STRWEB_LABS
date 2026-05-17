@@ -1,0 +1,64 @@
+{% extends "admin/base.html" %}
+{% block title %}Поставщики · Панель администратора{% endblock %}
+{% block content %}
+<h2>Управление поставщиками</h2>
+
+<div class="actions">
+  <a href="{% url 'admin_panel:supplier-create' %}">+ Добавить поставщика</a>
+</div>
+
+{% if suppliers %}
+  <table>
+    <thead>
+      <tr>
+        <th>Название</th>
+        <th>Адрес</th>
+        <th>Телефон</th>
+        <th>Email</th>
+        <th>Поставляемые товары</th>
+        <th>Активен</th>
+        <th>Действия</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for supplier in suppliers %}
+        <tr>
+          <td><strong>{{ supplier.name }}</strong></td>
+          <td>{{ supplier.address|default:"—" }}</td>
+          <td>{{ supplier.phone }}</td>
+          <td>{{ supplier.email|default:"—" }}</td>
+          <td>
+            {% if supplier.products.all %}
+              {{ supplier.products.count }} товар(ов)
+            {% else %}
+              —
+            {% endif %}
+          </td>
+          <td>{% if supplier.is_active %}Да{% else %}Нет{% endif %}</td>
+          <td>
+            <a href="{% url 'admin_panel:supplier-detail' supplier.pk %}">Просмотр</a> |
+            <a href="{% url 'admin_panel:supplier-update' supplier.pk %}">Изменить</a> |
+            <a href="{% url 'admin_panel:supplier-delete' supplier.pk %}">Удалить</a>
+          </td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+
+  {% if is_paginated %}
+    <div class="pagination">
+      {% if page_obj.has_previous %}
+        <a href="?page=1">« Первая</a>
+        <a href="?page={{ page_obj.previous_page_number }}">‹ Предыдущая</a>
+      {% endif %}
+      <span>Страница {{ page_obj.number }} из {{ page_obj.paginator.num_pages }}</span>
+      {% if page_obj.has_next %}
+        <a href="?page={{ page_obj.next_page_number }}">Следующая ›</a>
+        <a href="?page={{ page_obj.paginator.num_pages }}">Последняя »</a>
+      {% endif %}
+    </div>
+  {% endif %}
+{% else %}
+  <p>Поставщики не найдены.</p>
+{% endif %}
+{% endblock %}

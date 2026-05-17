@@ -13,6 +13,21 @@ class StaffRequiredMixin(LoginRequiredMixin, UserPassesTestMixin):
         return bool(u.is_authenticated and u.is_staff)
 
 
+class AdminRequiredMixin(LoginRequiredMixin, UserPassesTestMixin):
+    """Admin-only access: superuser or admin group member."""
+
+    login_url = "/admin/login/"
+
+    def test_func(self) -> bool:
+        u = self.request.user
+        if not u.is_authenticated:
+            return False
+        if u.is_superuser:
+            return True
+        # Check if user is in admin group
+        return u.groups.filter(name="admin").exists()
+
+
 class StaffFilterListContextMixin:
     """
     Adds querystring fragments for sort links while preserving django-filter params.

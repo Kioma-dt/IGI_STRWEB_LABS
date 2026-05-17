@@ -10,6 +10,7 @@
     <li><a href="{% url 'store:catalog' %}">Каталог</a></li>
     <li><a href="{% url 'store:reviews' %}">Отзывы</a></li>
     <li><a href="{% url 'store:promos' %}">Промокоды</a></li>
+    <li><a href="{% url 'store:pickup-points' %}">Точки самовывоза</a></li>
     <li><a href="{% url 'store:cart' %}">Корзина{% if cart_items %} ({{ cart_items }}){% endif %}</a></li>
     {% if user.is_authenticated %}
       <li><a href="{% url 'store:account' %}">Личный кабинет</a></li>
@@ -23,6 +24,13 @@
       <li><a href="{% url 'store:login' %}">Вход</a></li>
       <li><a href="{% url 'store:signup' %}">Регистрация</a></li>
     {% endif %}
-    <li><a href="{% url 'web_shop:home' %}">Сотрудникам (staff)</a></li>
+    {% if user.is_authenticated %}
+      {% if user.is_superuser or user.groups.all|length > 0 and 'admin' in user.groups.values_list|join:"," %}
+        <li><a href="{% url 'admin_panel:home' %}">Панель администратора</a></li>
+      {% endif %}
+      {% if user.is_staff %}
+        <li><a href="{% url 'web_shop:home' %}">Сотрудникам (staff)</a></li>
+      {% endif %}
+    {% endif %}
   </ul>
 </nav>
