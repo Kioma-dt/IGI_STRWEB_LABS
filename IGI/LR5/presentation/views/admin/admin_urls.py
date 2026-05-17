@@ -3,7 +3,7 @@ from __future__ import annotations
 from django.urls import path, reverse_lazy
 from django.views.generic import RedirectView
 
-from presentation.web import admin_views as views
+from presentation.views.admin import admin_views as views
 
 app_name = "admin_panel"
 

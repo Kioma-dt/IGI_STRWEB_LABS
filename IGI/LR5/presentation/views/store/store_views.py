@@ -26,13 +26,13 @@ from apps.news.models import NewsArticle
 from apps.orders.models import Order
 from apps.promotions.models import PromoCode
 from apps.reviews.models import Review
-from presentation.web.cart import (
+from presentation.cart import (
     cart_add,
     cart_clear,
     cart_lines,
     cart_set_quantity,
 )
-from presentation.web.store_forms import (
+from presentation.store_forms import (
     AddToCartForm,
     CheckoutForm,
     ContactMessageForm,
@@ -69,7 +69,7 @@ from apps.reviews.models import Review
 from apps.suppliers.forms import SupplierForm
 from apps.suppliers.models import Supplier
 from apps.users import roles
-from presentation.web.filtersets import (
+from presentation.filtersets import (
     CategoryFilter,
     NewsArticleFilter,
     OrderFilter,
@@ -78,7 +78,7 @@ from presentation.web.filtersets import (
     ReviewFilter,
     SupplierFilter,
 )
-from presentation.web.mixins import (
+from presentation.mixins import (
     AdminRequiredMixin,
     EmployeeRequiredMixin,
     StaffFilterListContextMixin,

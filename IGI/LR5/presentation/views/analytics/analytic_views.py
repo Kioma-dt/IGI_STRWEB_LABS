@@ -23,22 +23,21 @@ class AnalyticsDashboardView(AdminOnlyMixin, TemplateView):
     def get_context_data(self, **kwargs):
         ctx = super().get_context_data(**kwargs)
         
-        # Общая статистика
+
         ctx["sales_stats"] = AnalyticsService.get_sales_statistics()
         
-        # Популярные товары
+
         ctx["popular_products"] = AnalyticsService.get_popular_products(10)
         
-        # Товары с максимальной прибылью
+
         ctx["profitable_products"] = AnalyticsService.get_profitable_products(10)
-        
-        # Топ поставщиков
+
         ctx["top_suppliers"] = AnalyticsService.get_top_suppliers(10)
         
-        # Аналитика по категориям
+
         ctx["category_analytics"] = AnalyticsService.get_category_analytics()
         
-        # Графики (base64 encoded images)
+
         ctx["sales_chart"] = AnalyticsService.generate_sales_by_month_chart()
         ctx["popular_chart"] = AnalyticsService.generate_popular_products_chart()
         ctx["category_pie_chart"] = AnalyticsService.generate_category_pie_chart()

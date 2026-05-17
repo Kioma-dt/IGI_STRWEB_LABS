@@ -11,8 +11,8 @@ from apps.catalog.models import Product
 from apps.orders.models import Order, PurchaseItem
 from apps.suppliers.forms import SupplierForm
 from apps.suppliers.models import Supplier
-from presentation.web.filtersets import ProductFilter, SupplierFilter, OrderFilter
-from presentation.web.mixins import AdminRequiredMixin, StaffFilterListContextMixin
+from presentation.filtersets import ProductFilter, SupplierFilter, OrderFilter
+from presentation.mixins import AdminRequiredMixin, StaffFilterListContextMixin
 from application.services.shop_staff_services import (
     ShopStaffCatalogService,
     ShopStaffNewsService,
@@ -34,7 +34,7 @@ from apps.reviews.models import Review
 from apps.suppliers.forms import SupplierForm
 from apps.suppliers.models import Supplier
 from apps.users import roles
-from presentation.web.filtersets import (
+from presentation.filtersets import (
     CategoryFilter,
     NewsArticleFilter,
     OrderFilter,
@@ -43,7 +43,7 @@ from presentation.web.filtersets import (
     ReviewFilter,
     SupplierFilter,
 )
-from presentation.web.mixins import (
+from presentation.mixins import (
     AdminRequiredMixin,
     EmployeeRequiredMixin,
     StaffFilterListContextMixin,

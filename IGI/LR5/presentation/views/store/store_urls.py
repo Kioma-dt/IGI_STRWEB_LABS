@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from django.urls import path
 
-from presentation.web import store_views as views
+from presentation.views.store import store_views as views
 
 app_name = "store"
 

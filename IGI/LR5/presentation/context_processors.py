@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from apps.users import roles
-from presentation.web.cart import cart_count
+from presentation.cart import cart_count
 
 
 def store_cart(request):
