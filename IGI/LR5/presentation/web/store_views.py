@@ -20,7 +20,7 @@ from django_filters.views import FilterView
 from application.dto.orders import OrderLineInputDTO, PlaceOrderDTO
 from application.services.order_service import OrderService
 from apps.catalog.models import Product
-from apps.common.models import CompanyInfo, Contact, FAQ, Vacancy
+from apps.common.models import CompanyInfo, Contact, FAQ, PickupPoint, Vacancy
 from apps.news.models import NewsArticle
 from apps.orders.models import Order
 from apps.promotions.models import PromoCode
@@ -36,6 +36,7 @@ from presentation.web.store_forms import (
     CheckoutForm,
     ContactMessageForm,
     CustomerSignupForm,
+    EmployeeSignupForm,
     StoreProductFilter,
     StoreReviewForm,
     VacancyApplicationForm,
@@ -447,6 +448,18 @@ class StorePromosView(TemplateView):
         return ctx
 
 
+class StorePickupPointsView(TemplateView):
+    template_name = "store/pickup_points.html"
+
+    def get_context_data(self, **kwargs):
+        ctx = super().get_context_data(**kwargs)
+        ctx["pickup_points"] = PickupPoint.objects.filter(
+            is_deleted=False,
+            is_active=True,
+        ).order_by("name")
+        return ctx
+
+
 class StoreLoginView(LoginView):
     template_name = "store/login.html"
     redirect_authenticated_user = True
@@ -473,6 +486,23 @@ class StoreSignupView(FormView):
         user = form.save()
         login(self.request, user, backend="django.contrib.auth.backends.ModelBackend")
         messages.success(self.request, "Регистрация завершена, вы вошли в систему.")
+        return redirect(self.get_success_url())
+
+
+class StoreEmployeeSignupView(FormView):
+    template_name = "store/employee_signup.html"
+    form_class = EmployeeSignupForm
+    success_url = reverse_lazy("store:home")
+
+    def dispatch(self, request, *args, **kwargs):
+        if request.user.is_authenticated:
+            return redirect("store:home")
+        return super().dispatch(request, *args, **kwargs)
+
+    def form_valid(self, form):
+        user = form.save()
+        login(self.request, user, backend="django.contrib.auth.backends.ModelBackend")
+        messages.success(self.request, "Регистрация работника завершена, вы вошли в систему.")
         return redirect(self.get_success_url())
 
 

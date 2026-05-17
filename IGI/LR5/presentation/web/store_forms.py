@@ -9,7 +9,7 @@ from django.core.validators import EmailValidator
 from application.services.shop_staff_services import apply_icontains_q
 from apps.catalog.models import Category, Product
 from apps.reviews.models import Review
-from apps.users.models import CustomerProfile
+from apps.users.models import CustomerProfile, EmployeeProfile
 from core.validators import validate_phone_by_format_375_29
 
 
@@ -125,4 +125,44 @@ class CustomerSignupForm(UserCreationForm):
                     full_name=self.cleaned_data["full_name"],
                     phone=self.cleaned_data["phone"],
                 )
+        return user
+
+
+class EmployeeSignupForm(UserCreationForm):
+    email = forms.EmailField(label="E-mail", required=True)
+    full_name = forms.CharField(label="Полное имя", max_length=255)
+    phone = forms.CharField(
+        label="Телефон (формат +375 29 …)",
+        max_length=20,
+        validators=[validate_phone_by_format_375_29],
+    )
+    position = forms.CharField(label="Должность", max_length=128)
+
+    class Meta:
+        model = User
+        fields = ("username",)
+
+    def clean_phone(self) -> str:
+        phone = self.cleaned_data["phone"]
+        if EmployeeProfile.objects.filter(phone=phone, is_deleted=False).exists():
+            raise forms.ValidationError("Этот телефон уже зарегистрирован.")
+        return phone
+
+    def save(self, commit: bool = True) -> User:  # type: ignore[override]
+        from django.contrib.auth.models import Group
+        from django.db import transaction
+
+        user = super().save(commit=False)
+        user.email = self.cleaned_data["email"]
+        if commit:
+            with transaction.atomic():
+                user.save()
+                EmployeeProfile.objects.create(
+                    user=user,
+                    full_name=self.cleaned_data["full_name"],
+                    phone=self.cleaned_data["phone"],
+                    position=self.cleaned_data["position"],
+                )
+                employee_group, _ = Group.objects.get_or_create(name="employee")
+                user.groups.add(employee_group)
         return user

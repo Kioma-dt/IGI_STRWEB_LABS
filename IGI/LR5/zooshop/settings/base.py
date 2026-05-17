@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 import os
-from datetime import timedelta
 from pathlib import Path
 
 from dotenv import load_dotenv
@@ -26,11 +25,7 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
-    "rest_framework",
-    "rest_framework_simplejwt",
-    "rest_framework_simplejwt.token_blacklist",
     "django_filters",
-    "drf_spectacular",
     "core",
     "apps.common",
     "apps.users",
@@ -100,70 +95,6 @@ MEDIA_URL = "/media/"
 MEDIA_ROOT = BASE_DIR / "media"
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
-
-REST_FRAMEWORK = {
-    "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
-    "DEFAULT_FILTER_BACKENDS": [
-        "django_filters.rest_framework.DjangoFilterBackend",
-        "rest_framework.filters.SearchFilter",
-        "rest_framework.filters.OrderingFilter",
-    ],
-    "DEFAULT_PERMISSION_CLASSES": [
-        "rest_framework.permissions.AllowAny",
-    ],
-    "DEFAULT_AUTHENTICATION_CLASSES": [
-        "rest_framework.authentication.SessionAuthentication",
-        "rest_framework_simplejwt.authentication.JWTAuthentication",
-    ],
-    "DEFAULT_PAGINATION_CLASS": "presentation.api.pagination.ZoomShopPageNumberPagination",
-    "PAGE_SIZE": 20,
-    "DEFAULT_VERSIONING_CLASS": "rest_framework.versioning.QueryParameterVersioning",
-    "DEFAULT_VERSION": "1",
-    "ALLOWED_VERSIONS": ("1",),
-    "VERSION_PARAM": "version",
-    "DEFAULT_THROTTLE_CLASSES": [
-        "rest_framework.throttling.ScopedRateThrottle",
-    ],
-    "DEFAULT_THROTTLE_RATES": {
-        "anon": "120/hour",
-        "user": "600/hour",
-        "categories": "300/hour",
-        "products": "300/hour",
-        "orders": "200/hour",
-        "reviews": "200/hour",
-        "news": "200/hour",
-        "promocodes": "200/hour",
-    },
-    "EXCEPTION_HANDLER": "presentation.api.exceptions.zoomshop_exception_handler",
-}
-
-SIMPLE_JWT = {
-    "ACCESS_TOKEN_LIFETIME": timedelta(minutes=30),
-    "REFRESH_TOKEN_LIFETIME": timedelta(days=7),
-    "ROTATE_REFRESH_TOKENS": True,
-    "BLACKLIST_AFTER_ROTATION": True,
-    "UPDATE_LAST_LOGIN": True,
-    "AUTH_HEADER_TYPES": ("Bearer",),
-}
-
-SPECTACULAR_SETTINGS = {
-    "TITLE": "ZoomShop API",
-    "DESCRIPTION": "ZoomShop REST API (catalog, orders, reviews, news, promotions). "
-    "Versioning: pass query parameter ``version=1`` (default). JWT: ``Authorization: Bearer <access>``.",
-    "VERSION": "1.0.0",
-    "SERVE_INCLUDE_SCHEMA": False,
-    "COMPONENT_SPLIT_REQUEST": True,
-    "SECURITY": [{"bearerAuth": []}],
-    "APPEND_COMPONENTS": {
-        "securitySchemes": {
-            "bearerAuth": {
-                "type": "http",
-                "scheme": "bearer",
-                "bearerFormat": "JWT",
-            },
-        },
-    },
-}
 
 LOG_LEVEL = os.environ.get("DJANGO_LOG_LEVEL", "INFO")
 

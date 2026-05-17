@@ -33,7 +33,9 @@ urlpatterns = [
     path("account/orders/", views.StoreAccountOrdersView.as_view(), name="account-orders"),
     path("reviews/", views.StoreReviewsView.as_view(), name="reviews"),
     path("promos/", views.StorePromosView.as_view(), name="promos"),
+    path("pickup-points/", views.StorePickupPointsView.as_view(), name="pickup-points"),
     path("login/", views.StoreLoginView.as_view(), name="login"),
     path("logout/", views.StoreLogoutView.as_view(), name="logout"),
     path("signup/", views.StoreSignupView.as_view(), name="signup"),
+    path("employee/signup/", views.StoreEmployeeSignupView.as_view(), name="employee-signup"),
 ]

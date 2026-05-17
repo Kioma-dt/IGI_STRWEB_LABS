@@ -110,3 +110,25 @@ class CompanyInfo(SoftDeleteModel):
 
     def __str__(self) -> str:
         return self.name
+
+
+class PickupPoint(SoftDeleteModel):
+    name = models.CharField("name", max_length=255)
+    address = models.CharField("address", max_length=255)
+    phone = models.CharField(
+        "phone",
+        max_length=20,
+        validators=[validate_phone_by_format_375_29],
+    )
+    working_hours = models.CharField("working hours", max_length=255, blank=True)
+    is_active = models.BooleanField("active", default=True)
+
+    class Meta:
+        verbose_name = "pickup point"
+        verbose_name_plural = "pickup points"
+        indexes = [
+            models.Index(fields=["is_active"], name="pickup_active_idx"),
+        ]
+
+    def __str__(self) -> str:
+        return f"{self.name} - {self.address}"
