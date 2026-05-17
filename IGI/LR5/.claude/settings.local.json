@@ -1,7 +1,0 @@
-{
-  "permissions": {
-    "allow": [
-      "PowerShell(Get-ChildItem -Path \"apps\" -Recurse -Directory | Where-Object { $_.Name -eq \"api\" } | Measure-Object | Select-Object -ExpandProperty Count)"
-    ]
-  }
-}
