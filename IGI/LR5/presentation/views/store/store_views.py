@@ -67,7 +67,7 @@ from apps.promotions.models import PromoCode
 from apps.reviews.forms import ReviewForm
 from apps.reviews.models import Review
 from apps.suppliers.forms import SupplierForm
-from apps.suppliers.models import Supplier
+from apps.suppliers.models import Supplier, ProductSupplier
 from apps.users import roles
 from presentation.filtersets import (
     CategoryFilter,
@@ -293,23 +293,33 @@ class StoreCatalogView(StorePaginationQueryMixin, FilterView):
         ctx = super().get_context_data(**kwargs)
         return ctx
 
-
 class StoreProductDetailView(FormView):
     template_name = "store/products/product_detail.html"
     form_class = AddToCartForm
 
     def dispatch(self, request, *args, **kwargs):
         self.product = get_object_or_404(
-            Product.objects.filter(is_deleted=False, is_active=True).select_related(
-                "category",
-            ),
+            Product.objects.filter(is_deleted=False, is_active=True)
+            .select_related("category"),
             pk=kwargs["pk"],
         )
         return super().dispatch(request, *args, **kwargs)
 
+    def get_form(self, form_class=None):
+        form = super().get_form(form_class)
+
+        form.fields["supplier"].queryset = Supplier.objects.filter(
+            product_links__product=self.product,
+            is_active=True,
+        ).distinct()
+
+        return form
+
     def get_context_data(self, **kwargs):
         ctx = super().get_context_data(**kwargs)
+
         ctx["product"] = self.product
+
         ctx["reviews"] = (
             Review.objects.filter(
                 is_deleted=False,
@@ -319,12 +329,41 @@ class StoreProductDetailView(FormView):
             .select_related("customer")
             .order_by("-created_at")[:50]
         )
+
         ctx.setdefault("review_form", StoreReviewForm())
+
+        ctx["suppliers"] = (
+            ProductSupplier.objects
+            .filter(product=self.product)
+            .select_related("supplier")
+        )
+
         return ctx
 
     def form_valid(self, form):
-        cart_add(self.request, self.product.id, form.cleaned_data["quantity"])
-        messages.success(self.request, "Товар добавлен в корзину.")
+        supplier = form.cleaned_data["supplier"]
+        quantity = form.cleaned_data["quantity"]
+
+        link = ProductSupplier.objects.get(
+            product=self.product,
+            supplier=supplier,
+        )
+
+        price = link.last_purchase_price
+
+        cart_add(
+            self.request,
+            self.product.id,
+            quantity,
+            supplier_id=supplier.id,
+            price=price,
+        )
+
+        messages.success(
+            self.request,
+            f"Добавлено в корзину от поставщика {supplier.name}.",
+        )
+
         return redirect("store:product-detail", pk=self.product.pk)
 
     def post(self, request, *args, **kwargs):
@@ -334,37 +373,27 @@ class StoreProductDetailView(FormView):
 
     def _post_review(self, request, *args, **kwargs):
         if not request.user.is_authenticated:
-            messages.error(request, "Войдите, чтобы оставить отзыв.")
-            return redirect(
-                f"{reverse('store:login')}?next={request.path}",
-            )
+            return redirect(f"{reverse('store:login')}?next={request.path}")
+
         profile = getattr(request.user, "customer_profile", None)
         if profile is None or profile.is_deleted:
-            messages.error(request, "Отзывы могут оставлять только клиенты с профилем.")
             return redirect("store:product-detail", pk=self.product.pk)
 
         rf = StoreReviewForm(request.POST)
+
         if not rf.is_valid():
             ctx = self.get_context_data()
             ctx["review_form"] = rf
             return self.render_to_response(ctx)
 
-        try:
-            with transaction.atomic():
-                Review.objects.create(
-                    product=self.product,
-                    customer=profile,
-                    rating=rf.cleaned_data["rating"],
-                    title=rf.cleaned_data["title"],
-                    body=rf.cleaned_data.get("body") or "",
-                    is_published=True,
-                )
-        except Exception:
-            messages.error(
-                request,
-                "Не удалось сохранить отзыв (возможно, дубликат заголовка для этого товара).",
-            )
-            return redirect("store:product-detail", pk=self.product.pk)
+        Review.objects.create(
+            product=self.product,
+            customer=profile,
+            rating=rf.cleaned_data["rating"],
+            title=rf.cleaned_data["title"],
+            body=rf.cleaned_data.get("body") or "",
+            is_published=True,
+        )
 
         messages.success(request, "Отзыв опубликован.")
         return redirect("store:product-detail", pk=self.product.pk)
@@ -677,12 +706,15 @@ class SupplierDetailView(EmployeeRequiredMixin, DetailView):
         )
 
 
+from django.db.models import Sum
+
 class OrderListView(EmployeeRequiredMixin, StaffFilterListContextMixin, FilterView):
     model = Order
     filterset_class = OrderFilter
     paginate_by = 20
     template_name = "store/sales/sales_list.html"
     context_object_name = "orders"
+
     sort_links = (
         ("-ordered_at", "Order date ↓"),
         ("ordered_at", "Order date ↑"),
@@ -693,11 +725,19 @@ class OrderListView(EmployeeRequiredMixin, StaffFilterListContextMixin, FilterVi
 
     def get_queryset(self):
         svc = ShopStaffOrderService()
-        qs = svc.orders_base_queryset().order_by(
-            svc.order_ordering(self.request.GET.get("ordering")),
-        )
-        return _restrict_orders_for_limited_employee(self.request.user, qs)
 
+        qs = (
+            svc.orders_base_queryset()
+            .annotate(
+                computed_total=Sum("items__line_total")
+            )
+            .order_by(
+                svc.order_ordering(self.request.GET.get("ordering")),
+            )
+        )
+
+        return _restrict_orders_for_limited_employee(self.request.user, qs)
+    
 
 class OrderDetailView(EmployeeRequiredMixin, DetailView):
     model = Order
@@ -705,6 +745,12 @@ class OrderDetailView(EmployeeRequiredMixin, DetailView):
     context_object_name = "order"
 
     def get_queryset(self):
-        qs = ShopStaffOrderService().orders_detail_queryset()
-        return _restrict_orders_for_limited_employee(self.request.user, qs)
+        qs = (
+            ShopStaffOrderService()
+            .orders_detail_queryset()
+            .annotate(
+                computed_total=Sum("items__line_total")
+            )
+        )
 
+        return _restrict_orders_for_limited_employee(self.request.user, qs)

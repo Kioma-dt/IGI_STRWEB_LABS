@@ -17,13 +17,16 @@ from core.validators import validate_phone_by_format_375_29, validate_age_18_plu
 
 
 class AddToCartForm(forms.Form):
-    quantity = forms.IntegerField(
-        label="Количество",
-        min_value=1,
-        max_value=99,
-        initial=1,
+    supplier = forms.ModelChoiceField(
+        queryset=Supplier.objects.none(),
+        label="Поставщик",
     )
 
+    quantity = forms.IntegerField(
+        min_value=1,
+        initial=1,
+        label="Количество",
+    )
 
 class StoreProductFilter(django_filters.FilterSet):
     q = django_filters.CharFilter(method="filter_q", label="Поиск")

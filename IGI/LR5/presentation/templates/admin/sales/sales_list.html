@@ -32,7 +32,7 @@
           <td>{{ order.ordered_at|date:"d.m.Y H:i" }}</td>
           <td>{% if order.customer %}{{ order.customer.full_name }}{% else %}—{% endif %}</td>
           <td>{{ order.get_status_display }}</td>
-          <td><strong>{{ order.total_amount }} руб.</strong></td>
+          <td><strong>{{ order.computed_total|default:0 }}</strong></td>
           <td>
             <a href="{% url 'admin_panel:sales-detail' order.pk %}">Просмотр</a>
           </td>

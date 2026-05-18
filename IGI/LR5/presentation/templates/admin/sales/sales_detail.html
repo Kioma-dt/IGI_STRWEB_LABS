@@ -37,7 +37,7 @@
   </tr>
   <tr>
     <th>Общая стоимость покупки</th>
-    <td><strong>{{ order.total_amount }} руб.</strong></td>
+    <td><strong>{{ order.computed_total|default:0 }}</strong></td>
   </tr>
 </table>
 

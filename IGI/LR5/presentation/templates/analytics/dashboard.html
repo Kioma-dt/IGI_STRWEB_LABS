@@ -78,17 +78,14 @@
   <!-- Статистика -->
   <div class="stats">
     <div class="card">Заказов: {{ sales_stats.total_orders }}</div>
-    <div class="card">Выручка: {{ sales_stats.total_revenue }} ₽</div>
-    <div class="card">Средний чек: {{ sales_stats.avg_order }} ₽</div>
-    <div class="card">Медиана: {{ sales_stats.median_order }} ₽</div>
+    <div class="card">Выручка: {{ sales_stats.total_revenue }}</div>
+    <div class="card">Средний чек: {{ sales_stats.avg_order }}</div>
+    <div class="card">Медиана: {{ sales_stats.median_order }}</div>
     <div class="card">Продано товаров: {{ sales_stats.total_items_sold }}</div>
   </div>
 
   <!-- Графики -->
   <h2>Графики</h2>
-
-  <p>Продажи по месяцам</p>
-  <img src="{{ sales_chart }}">
 
   <p>Популярные товары</p>
   <img src="{{ popular_chart }}">
@@ -102,7 +99,6 @@
   <p>Поставщики</p>
   <img src="{{ suppliers_chart }}">
 
-  <!-- Таблицы -->
   <h2>Топ товаров</h2>
   <table>
     <tr>

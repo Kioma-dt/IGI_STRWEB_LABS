@@ -211,8 +211,8 @@ class AdminSupplierDeleteView(AdminRequiredMixin, DeleteView):
         return HttpResponseRedirect(str(self.success_url))
 
 
-# --- Sales (Orders - Admin View) ---
 
+from django.db.models import Sum, F, ExpressionWrapper, DecimalField
 
 class AdminSalesListView(AdminRequiredMixin, StaffFilterListContextMixin, FilterView):
     model = Order
@@ -220,6 +220,7 @@ class AdminSalesListView(AdminRequiredMixin, StaffFilterListContextMixin, Filter
     paginate_by = 20
     template_name = "admin/sales/sales_list.html"
     context_object_name = "orders"
+
     sort_links = (
         ("-ordered_at", "Date ↓"),
         ("ordered_at", "Date ↑"),
@@ -233,10 +234,12 @@ class AdminSalesListView(AdminRequiredMixin, StaffFilterListContextMixin, Filter
             Order.objects.filter(is_deleted=False)
             .select_related("customer", "promo_code")
             .prefetch_related("items__product")
+            .annotate(
+                computed_total=Sum("items__line_total")
+            )
             .order_by(self.request.GET.get("ordering") or "-ordered_at")
         )
-
-
+    
 class AdminSalesDetailView(AdminRequiredMixin, DetailView):
     model = Order
     template_name = "admin/sales/sales_detail.html"
@@ -247,25 +250,39 @@ class AdminSalesDetailView(AdminRequiredMixin, DetailView):
             Order.objects.filter(is_deleted=False)
             .select_related("customer", "promo_code")
             .prefetch_related("items__product")
+            .annotate(
+                computed_total=Sum("items__line_total")
+            )
         )
 
     def get_context_data(self, **kwargs):
         ctx = super().get_context_data(**kwargs)
+
         order_items = list(self.object.items.all())
+
         product_ids = [it.product_id for it in order_items]
-        purchase_price_by_product: dict = {}
+
+        purchase_price_by_product = {}
+
         if product_ids:
             for pi in (
-                PurchaseItem.objects.filter(is_deleted=False, product_id__in=product_ids)
+                PurchaseItem.objects.filter(
+                    is_deleted=False,
+                    product_id__in=product_ids
+                )
                 .select_related("purchase")
-                .order_by("product_id", "-purchase__ordered_at", "-created_at")
+                .order_by("product_id", "-purchase__ordered_at")
             ):
-                purchase_price_by_product.setdefault(pi.product_id, pi.purchase_price)
+                purchase_price_by_product.setdefault(
+                    pi.product_id,
+                    pi.purchase_price
+                )
+
         ctx["sales_rows"] = [
             {
                 "item": item,
                 "purchase_price": purchase_price_by_product.get(item.product_id),
-                "has_purchase_price": purchase_price_by_product.get(item.product_id) is not None,
+                "has_purchase_price": item.product_id in purchase_price_by_product,
                 "purchase_total": (
                     purchase_price_by_product.get(item.product_id) * item.quantity
                     if purchase_price_by_product.get(item.product_id) is not None
@@ -274,6 +291,9 @@ class AdminSalesDetailView(AdminRequiredMixin, DetailView):
             }
             for item in order_items
         ]
+
+        ctx["computed_total"] = self.object.computed_total or 0
+
         return ctx
 
 class CategoryListView(AdminRequiredMixin, StaffFilterListContextMixin, FilterView):

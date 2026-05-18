@@ -77,15 +77,25 @@ class AnalyticsService:
         """Общая статистика по продажам."""
         orders = Order.objects.filter(is_deleted=False)
         total_orders = orders.count()
-        total_revenue = orders.aggregate(Sum("total_amount"))["total_amount__sum"] or Decimal("0")
-        
-        # Средний чек
-        avg_order = orders.aggregate(avg=Avg("total_amount"))["avg"] or Decimal("0")
-        
-        # Медиана стоимости заказов
-        order_amounts = list(orders.values_list("total_amount", flat=True))
-        median_order = median([float(x) for x in order_amounts]) if order_amounts else 0
-        
+        total_revenue = OrderItem.objects.filter(
+            order__is_deleted=False
+        ).aggregate(
+            total=Sum("line_total")
+        )["total"] or Decimal("0")
+
+        total_orders = Order.objects.filter(is_deleted=False).count()
+
+        avg_order = (total_revenue / total_orders) if total_orders else Decimal("0")
+
+        order_totals = (
+            OrderItem.objects
+            .filter(order__is_deleted=False)
+            .values("order_id")
+            .annotate(total=Sum("line_total"))
+            .values_list("total", flat=True)
+        )
+
+        median_order = median(order_totals) if order_totals else 0
         return {
             "total_orders": total_orders,
             "total_revenue": total_revenue,
