@@ -20,9 +20,8 @@ python manage.py bootstrap_superuser || true
 python manage.py clear_db
 python manage.py seed_data
 
-# Запускаем gunicorn
 echo "Starting Gunicorn..."
 exec gunicorn zooshop.wsgi:application \
-  --bind 0.0.0.0:8000 \
+  --bind 0.0.0.0:${PORT:-8000} \
   --workers 3 \
   --timeout 30
