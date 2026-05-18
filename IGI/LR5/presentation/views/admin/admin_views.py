@@ -31,7 +31,7 @@ from apps.promotions.forms import PromoCodeForm
 from apps.promotions.models import PromoCode
 from apps.reviews.forms import ReviewForm
 from apps.reviews.models import Review
-from apps.suppliers.forms import SupplierForm
+from apps.suppliers.forms import SupplierForm, ProductSupplierFormSet
 from apps.suppliers.models import Supplier
 from apps.users import roles
 from presentation.filtersets import (
@@ -158,10 +158,33 @@ class AdminSupplierCreateView(AdminRequiredMixin, CreateView):
     form_class = SupplierForm
     template_name = "admin/suppliers/supplier_form.html"
 
-    def form_valid(self, form) -> HttpResponseRedirect:
-        obj = form.save()
-        messages.success(self.request, f"Поставщик «{obj.name}» создан.")
-        return HttpResponseRedirect(reverse("admin_panel:supplier-detail", kwargs={"pk": obj.pk}))
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        if self.request.POST:
+            context["formset"] = ProductSupplierFormSet(self.request.POST)
+        else:
+            context["formset"] = ProductSupplierFormSet()
+
+        return context
+
+    def form_valid(self, form):
+        context = self.get_context_data()
+        formset = context["formset"]
+
+        if not formset.is_valid():
+            return self.form_invalid(form)
+
+        self.object = form.save()
+
+        formset.instance = self.object
+        formset.save()
+
+        messages.success(self.request, f"Поставщик «{self.object.name}» создан.")
+
+        return HttpResponseRedirect(
+            reverse("admin_panel:supplier-detail", kwargs={"pk": self.object.pk})
+        )
 
 
 class AdminSupplierUpdateView(AdminRequiredMixin, UpdateView):

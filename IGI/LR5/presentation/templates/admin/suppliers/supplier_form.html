@@ -9,36 +9,35 @@
     <a href="{% url 'admin_panel:supplier-detail' object.pk %}">Просмотр</a>
   {% endif %}
 </div>
-
 <form method="post">
   {% csrf_token %}
 
-  {% if form.non_field_errors %}
-    <div class="alert alert-error">
-      {{ form.non_field_errors }}
-    </div>
-  {% endif %}
+  {{ form.as_p }}
+
+  <h3>Поставляемые товары</h3>
+
+  {{ formset.management_form }}
 
   <table>
-    {% for field in form %}
+    <thead>
       <tr>
-        <th>{{ field.label_tag }}</th>
-        <td>
-          {{ field }}
-          {% if field.help_text %}
-            <small>{{ field.help_text }}</small>
-          {% endif %}
-          {% if field.errors %}
-            <div class="alert alert-error">{{ field.errors }}</div>
-          {% endif %}
-        </td>
+        <th>Товар</th>
+        <th>Цена</th>
+        <th>Удалить</th>
       </tr>
-    {% endfor %}
+    </thead>
+
+    <tbody>
+      {% for f in formset %}
+        <tr>
+          <td>{{ f.product }}</td>
+          <td>{{ f.last_purchase_price }}</td>
+          <td>{{ f.DELETE }}</td>
+        </tr>
+      {% endfor %}
+    </tbody>
   </table>
 
-  <div class="actions">
-    <button type="submit">Сохранить</button>
-    <a href="{% url 'admin_panel:supplier-list' %}">Отмена</a>
-  </div>
+  <button type="submit">Сохранить</button>
 </form>
 {% endblock %}
