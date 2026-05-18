@@ -1,28 +1,17 @@
-ARG PYTHON_VERSION=3.12
-
-FROM python:${PYTHON_VERSION}-slim AS base
-
-ENV PYTHONDONTWRITEBYTECODE=1 \
-    PYTHONUNBUFFERED=1 \
-    PIP_DISABLE_PIP_VERSION_CHECK=on \
-    PIP_NO_CACHE_DIR=on
+FROM python:3.12-slim
 
 WORKDIR /app
 
-RUN apt-get update && apt-get install -y --no-install-recommends \
-    libpq5 \
-    && rm -rf /var/lib/apt/lists/*
+RUN apt-get update && apt-get install -y libpq5 postgresql-client netcat-openbsd && rm -rf /var/lib/apt/lists/*
 
-COPY requirements/prod.txt /tmp/requirements.txt
-RUN pip install --upgrade pip && pip install -r /tmp/requirements.txt
+COPY requirements/ requirements/
+RUN pip install -r requirements/prod.txt
 
-COPY . /app
+COPY entrypoint.sh /entrypoint.sh
+RUN chmod +x /entrypoint.sh
 
-ENV DJANGO_SETTINGS_MODULE=zooshop.settings.prod
-
-RUN adduser --disabled-password --gecos "" appuser && chown -R appuser:appuser /app
-USER appuser
+COPY . .
 
 EXPOSE 8000
 
-CMD ["gunicorn", "zooshop.wsgi:application", "--bind", "0.0.0.0:8000", "--workers", "3"]
+ENTRYPOINT ["/entrypoint.sh"]

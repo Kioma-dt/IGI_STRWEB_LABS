@@ -6,14 +6,16 @@ from django.core.exceptions import ImproperlyConfigured
 
 from .base import *  # noqa: F403
 
-DEBUG = False
+DEBUG = os.environ.get("DEBUG", "False").lower() in ("true", "1", "yes")
 
 _prod_hosts_raw = os.environ.get("ALLOWED_HOSTS", "").strip()
-if not _prod_hosts_raw:
-    raise ImproperlyConfigured(
-        "ALLOWED_HOSTS is required in production (set it via environment variable)."
-    )
-ALLOWED_HOSTS = [h.strip() for h in _prod_hosts_raw.split(",") if h.strip()]
+
+if DEBUG:
+    ALLOWED_HOSTS = ["*"]
+else:
+    if not _prod_hosts_raw:
+        raise ImproperlyConfigured("ALLOWED_HOSTS required in production")
+    ALLOWED_HOSTS = [h.strip() for h in _prod_hosts_raw.split(",") if h.strip()]
 
 postgres_db = os.environ.get("POSTGRES_DB")
 postgres_user = os.environ.get("POSTGRES_USER")
@@ -50,21 +52,30 @@ DATABASES = {
 }
 
 SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
-SESSION_COOKIE_SECURE = True
-CSRF_COOKIE_SECURE = True
+
+# Для локальной разработки отключаем HTTPS требования
+if DEBUG:
+    SESSION_COOKIE_SECURE = False
+    CSRF_COOKIE_SECURE = False
+else:
+    SESSION_COOKIE_SECURE = True
+    CSRF_COOKIE_SECURE = True
+
 SESSION_COOKIE_HTTPONLY = True
 CSRF_COOKIE_HTTPONLY = True
 SESSION_COOKIE_SAMESITE = "Lax"
 CSRF_COOKIE_SAMESITE = "Lax"
 
 _csrf_origins_raw = os.environ.get("CSRF_TRUSTED_ORIGINS", "").strip()
-CSRF_TRUSTED_ORIGINS = [
-    o.strip() for o in _csrf_origins_raw.split(",") if o.strip()
-]
-if not CSRF_TRUSTED_ORIGINS:
-    raise ImproperlyConfigured(
-        "CSRF_TRUSTED_ORIGINS is required in production (comma-separated HTTPS origins)."
-    )
+
+if DEBUG:
+    CSRF_TRUSTED_ORIGINS = []
+else:
+    if not _csrf_origins_raw:
+        raise ImproperlyConfigured("CSRF_TRUSTED_ORIGINS required in production")
+    CSRF_TRUSTED_ORIGINS = [
+        o.strip() for o in _csrf_origins_raw.split(",") if o.strip()
+    ]
 SECURE_BROWSER_XSS_FILTER = True
 SECURE_CONTENT_TYPE_NOSNIFF = True
 X_FRAME_OPTIONS = "DENY"
