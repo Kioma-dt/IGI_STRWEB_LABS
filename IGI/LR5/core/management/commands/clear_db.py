@@ -45,9 +45,7 @@ class Command(BaseCommand):
     def handle(self, *args, **kwargs):
         self.stdout.write("Очистка базы данных...")
 
-        # =========================
-        # Заказы и закупки
-        # =========================
+
 
         OrderItem.objects.all().delete()
         PurchaseItem.objects.all().delete()
@@ -55,82 +53,48 @@ class Command(BaseCommand):
         Order.objects.all().delete()
         Purchase.objects.all().delete()
 
-        # =========================
-        # Связи поставщиков
-        # =========================
+
 
         ProductSupplier.objects.all().delete()
 
-        # =========================
-        # Склады
-        # =========================
+
 
         ProductStock.objects.all().delete()
 
-        # =========================
-        # Отзывы
-        # =========================
 
         Review.objects.all().delete()
 
-        # =========================
-        # Промокоды
-        # =========================
+
 
         PromoCode.objects.all().delete()
 
-        # =========================
-        # Новости
-        # =========================
+
 
         NewsArticle.objects.all().delete()
 
-        # =========================
-        # FAQ
-        # =========================
 
         FAQ.objects.all().delete()
 
-        # =========================
-        # Вакансии
-        # =========================
 
         Vacancy.objects.all().delete()
 
-        # =========================
-        # Контакты
-        # =========================
-
         Contact.objects.all().delete()
 
-        # =========================
-        # Информация о компании
-        # =========================
 
         CompanyInfo.objects.all().delete()
 
-        # =========================
-        # Пункты выдачи
-        # =========================
 
         PickupPoint.objects.all().delete()
 
-        # =========================
-        # Товары
-        # =========================
+
 
         Product.objects.all().delete()
 
-        # =========================
-        # Категории
-        # =========================
+
 
         Category.objects.update(parent=None)
         Category.objects.all().delete()
 
-        # =========================
-        # Поставщики
-        # =========================
 
         Supplier.objects.all().delete()
 

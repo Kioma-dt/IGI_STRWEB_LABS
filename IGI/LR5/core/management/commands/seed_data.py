@@ -68,9 +68,7 @@ class Command(BaseCommand):
     def handle(self, *args, **kwargs):
         self.stdout.write("Создание тестовых данных...")
 
-        # =========================
-        # Категории
-        # =========================
+
 
         dogs = Category.objects.create(
             name="Собаки",
@@ -132,9 +130,6 @@ class Command(BaseCommand):
             parent=rodents,
         )
 
-        # =========================
-        # Товары
-        # =========================
 
         products = [
             Product.objects.create(
@@ -218,10 +213,6 @@ class Command(BaseCommand):
             ),
         ]
 
-        # =========================
-        # Остатки
-        # =========================
-
         quantities = [120, 85, 300, 150, 90, 110, 400, 40, 130, 160]
 
         for product, qty in zip(products, quantities):
@@ -230,9 +221,6 @@ class Command(BaseCommand):
                 quantity_on_hand=qty,
             )
 
-        # =========================
-        # Поставщики
-        # =========================
 
         suppliers = [
             Supplier.objects.create(
@@ -276,9 +264,7 @@ class Command(BaseCommand):
             ),
         ]
 
-        # =========================
-        # ProductSupplier
-        # =========================
+
 
         ProductSupplier.objects.create(
             product=products[0],
@@ -340,10 +326,6 @@ class Command(BaseCommand):
             last_purchase_price=Decimal("5.00"),
         )
 
-        # =========================
-        # FAQ
-        # =========================
-
         faq_data = [
             ("Как оформить заказ?", "Добавьте товары в корзину и оформите заказ."),
             ("Можно ли вернуть товар?", "Да, в течение 14 дней."),
@@ -364,9 +346,6 @@ class Command(BaseCommand):
                 sort_order=i,
             )
 
-        # =========================
-        # Вакансии
-        # =========================
 
         vacancy_titles = [
             "Продавец-консультант",
@@ -389,9 +368,7 @@ class Command(BaseCommand):
                 published_at=timezone.now(),
             )
 
-        # =========================
-        # Контакты
-        # =========================
+
 
         image = self.load_image()
 
@@ -423,9 +400,6 @@ class Command(BaseCommand):
             photo=image if image else None,
         )
 
-        # =========================
-        # Информация о компании
-        # =========================
 
         CompanyInfo.objects.create(
             name="ЗооМаркет",
@@ -436,9 +410,6 @@ class Command(BaseCommand):
             is_current=True,
         )
 
-        # =========================
-        # Пункты выдачи
-        # =========================
 
         for i in range(1, 11):
             PickupPoint.objects.create(
@@ -449,9 +420,6 @@ class Command(BaseCommand):
                 is_active=True,
             )
 
-        # =========================
-        # Новости
-        # =========================
 
         for i in range(1, 11):
             NewsArticle.objects.create(
@@ -463,9 +431,7 @@ class Command(BaseCommand):
                 image=image if image else None,
             )
 
-        # =========================
-        # Промокоды
-        # =========================
+
 
         promo_codes = []
 
@@ -482,16 +448,11 @@ class Command(BaseCommand):
 
             promo_codes.append(promo)
 
-        # =========================
-        # Пользователи
-        # =========================
 
         customer = CustomerProfile.objects.filter(is_deleted=False).first()
         employee = EmployeeProfile.objects.filter(is_deleted=False).first()
 
-        # =========================
-        # Заказы
-        # =========================
+
 
         if customer and employee:
             statuses = [
@@ -532,9 +493,6 @@ class Command(BaseCommand):
                 order.total_amount = total
                 order.save()
 
-        # =========================
-        # Закупки
-        # =========================
 
         purchases = []
 
@@ -555,9 +513,6 @@ class Command(BaseCommand):
                     purchase_price=Decimal("10.00") + i,
                 )
 
-        # =========================
-        # Отзывы
-        # =========================
 
         if customer:
             for i in range(10):
