@@ -60,6 +60,12 @@ class Contact(SoftDeleteModel):
     )
     value = models.CharField("value", max_length=255)
     is_primary = models.BooleanField("primary", default=False)
+    photo = models.ImageField(
+        "employee photo",
+        upload_to="staff_photos/%Y/%m/",
+        null=True,
+        blank=True,
+    )
 
     class Meta:
         verbose_name = "contact"

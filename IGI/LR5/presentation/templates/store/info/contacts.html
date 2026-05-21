@@ -12,7 +12,14 @@
   <h2 id="lst">Контактные данные</h2>
   <ul>
     {% for c in contacts %}
-      <li>{{ c.get_type_display }}: {{ c.value }}{% if c.is_primary %} (основной){% endif %}</li>
+      <li>
+        <div>
+          {{ c.get_type_display }}: {{ c.value }}{% if c.is_primary %} (основной){% endif %}
+        </div>
+        {% if c.photo %}
+          <img src="{{ c.photo.url }}" alt="Фото сотрудника" style="max-width: 150px; height: auto; margin-top: 5px;">
+        {% endif %}
+      </li>
     {% empty %}
       <li>Нет записей.</li>
     {% endfor %}

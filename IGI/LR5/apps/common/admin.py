@@ -69,7 +69,7 @@ class ContactAdmin(admin.ModelAdmin):
     readonly_fields = ("id", "created_at", "updated_at", "deleted_at")
 
     fieldsets = (
-        (_("Контакт"), {"fields": ("type", "value", "is_primary")}),
+        (_("Контакт"), {"fields": ("type", "value", "is_primary", "photo")}),
         (
             _("Системное"),
             {"fields": ("id", "is_deleted", "deleted_at", "created_at", "updated_at")},

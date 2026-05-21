@@ -13,5 +13,5 @@ urlpatterns = [
     path("analytics/", include("presentation.views.analytics.analytics_urls")),
 ]
 
-if settings.DEBUG:
-    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+# Подавать медиа файлы в development и контейнерах
+urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

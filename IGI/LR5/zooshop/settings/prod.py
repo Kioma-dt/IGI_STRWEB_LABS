@@ -79,3 +79,7 @@ else:
 SECURE_BROWSER_XSS_FILTER = True
 SECURE_CONTENT_TYPE_NOSNIFF = True
 X_FRAME_OPTIONS = "DENY"
+
+# Медиа файлы (всегда подавать через Django в контейнере)
+MEDIA_URL = "/media/"
+MEDIA_ROOT = os.path.join(os.path.dirname(__file__), "..", "..", "media")

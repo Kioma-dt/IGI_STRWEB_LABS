@@ -1,7 +1,10 @@
 from decimal import Decimal
 from datetime import timedelta
+from pathlib import Path
 from django.utils import timezone
 from django.core.management.base import BaseCommand
+from django.core.files.uploadedfile import SimpleUploadedFile
+from django.conf import settings
 
 from apps.catalog.models import (
     Category,
@@ -49,6 +52,18 @@ from apps.users.models import (
 
 class Command(BaseCommand):
     help = "Заполнение базы тестовыми данными"
+
+    def load_image(self):
+        """Загружает изображение из media/images.jpeg"""
+        image_path = settings.BASE_DIR / "media" / "images.jpeg"
+        if image_path.exists():
+            with open(image_path, "rb") as f:
+                return SimpleUploadedFile(
+                    "images.jpeg",
+                    f.read(),
+                    content_type="image/jpeg",
+                )
+        return None
 
     def handle(self, *args, **kwargs):
         self.stdout.write("Создание тестовых данных...")
@@ -378,28 +393,34 @@ class Command(BaseCommand):
         # Контакты
         # =========================
 
+        image = self.load_image()
+
         Contact.objects.create(
             type="phone",
             value="+375 (29) 777-77-77",
             is_primary=True,
+            photo=image if image else None,
         )
 
         Contact.objects.create(
             type="email",
             value="support@zooshop.by",
             is_primary=True,
+            photo=image if image else None,
         )
 
         Contact.objects.create(
             type="address",
             value="г. Минск, ул. Центральная 10",
             is_primary=True,
+            photo=image if image else None,
         )
 
         Contact.objects.create(
             type="social",
             value="@zooshop",
             is_primary=False,
+            photo=image if image else None,
         )
 
         # =========================
@@ -439,6 +460,7 @@ class Command(BaseCommand):
                 body=f"Содержимое новости №{i}",
                 published_at=timezone.now(),
                 is_published=True,
+                image=image if image else None,
             )
 
         # =========================

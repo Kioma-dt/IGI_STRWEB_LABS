@@ -18,7 +18,7 @@ class NewsArticleAdmin(admin.ModelAdmin):
     date_hierarchy = "published_at"
 
     fieldsets = (
-        (_("Статья"), {"fields": ("title", "slug", "body")}),
+        (_("Статья"), {"fields": ("title", "slug", "body", "image")}),
         (_("Публикация"), {"fields": ("is_published", "published_at")}),
         (
             _("Системное"),

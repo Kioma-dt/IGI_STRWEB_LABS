@@ -10,6 +10,12 @@ class NewsArticle(SoftDeleteModel):
     title = models.CharField("title", max_length=255)
     slug = models.SlugField("slug", max_length=255, unique=True)
     body = models.TextField("body")
+    image = models.ImageField(
+        "article image",
+        upload_to="news/%Y/%m/",
+        null=True,
+        blank=True,
+    )
     published_at = models.DateTimeField(
         "published at",
         null=True,
