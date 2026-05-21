@@ -85,7 +85,6 @@ from presentation.mixins import (
     StaffRequiredMixin,
 )
 
-# --- mixins ---
 
 
 def _employee_suppliers_qs(user):
@@ -119,9 +118,6 @@ class StorePaginationQueryMixin:
         p.pop("page", None)
         ctx["pagination_query"] = p.urlencode()
         return ctx
-
-
-# --- pages ---
 
 
 class StoreHomeView(TemplateView):
@@ -495,15 +491,31 @@ class StoreAccountView(LoginRequiredMixin, TemplateView):
     def get_context_data(self, **kwargs):
         ctx = super().get_context_data(**kwargs)
         user = self.request.user
-        profile = getattr(user, "customer_profile", None)
-        ctx["profile"] = getattr(user, "customer_profile", None)
-        ctx["employee_profile"] = getattr(user, "employee_profile", None)
+        try:
+            profile = user.customer_profile
+        except:
+            profile = None
+
+        try:
+            employee_profile = user.employee_profile
+        except:
+            employee_profile = None
+
+        ctx["profile"] = profile
+        ctx["employee_profile"] = employee_profile
+
+        full_name = None
+
+        if profile:
+            full_name = profile.full_name
+        elif employee_profile:
+            full_name = employee_profile.full_name
 
         predicted_gender = None
 
         try:
-            if profile and profile.full_name:
-                first_name = profile.full_name.split()[0]
+            if full_name:
+                first_name = full_name.split()[0]
 
                 client = GenderizeClient()
                 result = client.get_gender(first_name)

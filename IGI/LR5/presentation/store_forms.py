@@ -126,13 +126,10 @@ class CustomerSignupForm(UserCreationForm):
         validators=[validate_phone_by_format_375_29],
     )
     birth_date = forms.DateField(
-        label="Дата рождения",
-        input_formats=["%d/%m/%Y"],
-        widget=forms.DateInput(
-            attrs={"type": "date"}
-        ),
-        validators=[validate_age_18_plus],
-    )
+    label="Дата рождения",
+    widget=forms.DateInput(attrs={"type": "date"}),
+    validators=[validate_age_18_plus],
+    )   
 
     class Meta:
         model = User
@@ -172,12 +169,9 @@ class EmployeeSignupForm(UserCreationForm):
         validators=[validate_phone_by_format_375_29],
     )
     birth_date = forms.DateField(
-        label="Дата рождения",
-        input_formats=["%d/%m/%Y"],
-        widget=forms.DateInput(
-            attrs={"type": "date"}
-        ),
-        validators=[validate_age_18_plus],
+    label="Дата рождения",
+    widget=forms.DateInput(attrs={"type": "date"}),
+    validators=[validate_age_18_plus],
     )
     position = forms.CharField(label="Должность", max_length=128)
     suppliers = forms.ModelMultipleChoiceField(
