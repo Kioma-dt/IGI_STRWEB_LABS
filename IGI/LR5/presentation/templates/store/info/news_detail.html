@@ -3,11 +3,13 @@
 {% block content %}
 <article>
   <h1>{{ article.title }}</h1>
-  {% if article.image %}
-    <div style="margin: 20px 0;">
-      <img src="{{ article.image.url }}" alt="No Image" style="max-width: 500px; height: auto;">
-    </div>
-  {% endif %}
+  <div style="margin: 20px 0;">
+    <img
+      src="{% if article.image %}{{ article.image.url }}{% else %}/media/placeholders/news_contacts.svg{% endif %}"
+      alt="{{ article.title }}"
+      style="max-width: 500px; height: auto;"
+    >
+  </div>
   <p><time datetime="{{ article.published_at|date:'c' }}">{{ article.published_at|date:"d.m.Y H:i" }}</time></p>
   <div>{{ article.body|linebreaks }}</div>
 </article>

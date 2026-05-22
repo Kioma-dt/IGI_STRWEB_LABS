@@ -4,11 +4,13 @@
 <h1>Новости</h1>
 {% for a in articles %}
   <article>
-    {% if a.image %}
-      <div>
-        <img src="{{ a.image.url }}" alt="{{ a.title }}" style="max-width: 300px; height: auto; margin-bottom: 10px;">
-      </div>
-    {% endif %}
+    <div>
+      <img
+        src="{% if a.image %}{{ a.image.url }}{% else %}/media/placeholders/news_contacts.svg{% endif %}"
+        alt="{{ a.title }}"
+        style="max-width: 300px; height: auto; margin-bottom: 10px;"
+      >
+    </div>
     <h2><a href="{% url 'store:news-detail' a.pk %}">{{ a.title }}</a></h2>
     <p><time datetime="{{ a.published_at|date:'c' }}">{{ a.published_at|date:"d.m.Y H:i" }}</time></p>
     <p>{{ a.body|truncatewords:40 }}</p>

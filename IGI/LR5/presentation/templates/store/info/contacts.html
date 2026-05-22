@@ -2,6 +2,13 @@
 {% block title %}Контакты · Зоомагазин{% endblock %}
 {% block content %}
 <h1>Контакты</h1>
+<div style="margin: 12px 0 18px;">
+  <img
+    src="/media/placeholders/news_contacts.svg"
+    alt="Контакты зоомагазина"
+    style="max-width: 420px; height: auto;"
+  >
+</div>
 {% if company %}
   <section aria-labelledby="co">
     <h2 id="co">{{ company.name }}</h2>
@@ -16,9 +23,11 @@
         <div>
           {{ c.get_type_display }}: {{ c.value }}{% if c.is_primary %} (основной){% endif %}
         </div>
-        {% if c.photo %}
-          <img src="{{ c.photo.url }}" alt="Фото сотрудника" style="max-width: 150px; height: auto; margin-top: 5px;">
-        {% endif %}
+        <img
+          src="{% if c.photo %}{{ c.photo.url }}{% else %}/media/placeholders/news_contacts.svg{% endif %}"
+          alt="Фото сотрудника"
+          style="max-width: 150px; height: auto; margin-top: 5px;"
+        >
       </li>
     {% empty %}
       <li>Нет записей.</li>
