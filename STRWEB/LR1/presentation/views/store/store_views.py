@@ -698,6 +698,11 @@ class StoreReviewsView(StorePaginationQueryMixin, ListView):
         )
         if ctx["show_review_form"]:
             ctx["review_form"] = review_form or StoreSiteReviewForm()
+        qs = self.get_queryset()
+        from django.db.models import Avg, Count
+        agg = qs.aggregate(avg=Avg("rating"), cnt=Count("id"))
+        ctx["reviews_avg"] = agg["avg"]
+        ctx["reviews_count"] = agg["cnt"]
         return ctx
 
     def post(self, request, *args, **kwargs):

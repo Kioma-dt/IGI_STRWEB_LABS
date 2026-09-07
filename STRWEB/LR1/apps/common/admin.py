@@ -111,7 +111,7 @@ class CompanyInfoAdmin(admin.ModelAdmin):
 
     fieldsets = (
         (_("Компания"), {"fields": ("name", "legal_address", "about", "logo")}),
-        (_("Медиа"), {"fields": ("video_url",)}),
+        (_("Медиа"), {"fields": ("video", "audio", "video_url", "certificate_image")}),
         (_("Реквизиты и сертификат"), {"fields": ("requisites", "certificate_text")}),
         (_("Контакты"), {"fields": ("support_email", "phone")}),
         (_("Текущая запись"), {"fields": ("is_current",)}),

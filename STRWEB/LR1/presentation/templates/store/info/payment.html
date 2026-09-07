@@ -1,31 +1,62 @@
 {% extends "store/base.html" %}
-{% block title %}Оплата · Зоомагазин{% endblock %}
+{% block title %}Оплата · ЗооМаркет{% endblock %}
+{% block meta_description %}Демо-форма оплаты заказа в ЗооМаркет (без реальной платёжной интеграции).{% endblock %}
+
 {% block content %}
-<h1>Оплата товаров</h1>
-<p>Демо-заглушка формы оплаты (реальная интеграция с платёжной системой не выполняется).</p>
-<table>
-  <thead>
-    <tr>
-      <th scope="col">Товар</th>
-      <th scope="col">Кол-во</th>
-      <th scope="col">Сумма</th>
-    </tr>
-  </thead>
-  <tbody>
-    {% for line in lines %}
+<section id="payment" data-page="payment">
+  <h1>Оплата товаров</h1>
+  <p>Демо-заглушка формы оплаты (реальная интеграция с платёжной системой не выполняется).</p>
+
+  <ol>
+    <li>Проверьте сумму к оплате</li>
+    <li>Заполните данные карты</li>
+    <li>Подтвердите оплату и перейдите к оформлению заказа</li>
+  </ol>
+
+  <table>
+    <caption>К оплате</caption>
+    <thead>
       <tr>
-        <td>{{ line.product_name }}</td>
-        <td>{{ line.quantity }}</td>
-        <td>{{ line.line_total }}</td>
+        <th scope="col">Товар</th>
+        <th scope="col">Кол-во</th>
+        <th scope="col">Сумма</th>
       </tr>
-    {% endfor %}
-  </tbody>
-</table>
-<p><strong>К оплате:</strong> {{ subtotal }}</p>
-<form method="post" action="">
-  {% csrf_token %}
-  <table>{{ form.as_table }}</table>
-  <p><button type="submit">Оплатить</button></p>
-</form>
-<p><a href="{% url 'store:cart' %}">Назад в корзину</a></p>
+    </thead>
+    <tbody>
+      {% for line in lines %}
+        <tr>
+          <td>{{ line.product_name }}</td>
+          <td>{{ line.quantity }}</td>
+          <td>{{ line.line_total }}</td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  <p><strong>К оплате:</strong> {{ subtotal }}</p>
+
+  <form method="post">
+    {% csrf_token %}
+    <fieldset>
+      <legend>Платёжные данные (демо)</legend>
+      <p>
+        <label for="id_cardholder_name">Имя держателя карты</label>
+        <input type="text" name="cardholder_name" id="id_cardholder_name" required minlength="2" maxlength="120" value="{{ form.cardholder_name.value|default_if_none:'' }}">
+      </p>
+      <p>
+        <label for="id_card_number">Номер карты</label>
+        <input type="text" name="card_number" id="id_card_number" required minlength="13" maxlength="19" pattern="[0-9 ]{13,19}" inputmode="numeric" value="{{ form.card_number.value|default_if_none:'' }}">
+      </p>
+      <p>
+        <label for="id_expiry">Срок действия (ММ/ГГ)</label>
+        <input type="text" name="expiry" id="id_expiry" required pattern="(0[1-9]|1[0-2])/[0-9]{2}" maxlength="5" placeholder="MM/YY" value="{{ form.expiry.value|default_if_none:'' }}">
+      </p>
+      <p>
+        <label for="id_cvv">CVV</label>
+        <input type="text" name="cvv" id="id_cvv" required minlength="3" maxlength="4" pattern="[0-9]{3,4}" value="{{ form.cvv.value|default_if_none:'' }}">
+      </p>
+    </fieldset>
+    <p><button type="submit">Оплатить</button></p>
+  </form>
+  <p><a href="{% url 'store:cart' %}">Назад в корзину</a></p>
+</section>
 {% endblock %}

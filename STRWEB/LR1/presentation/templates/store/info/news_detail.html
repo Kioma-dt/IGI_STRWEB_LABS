@@ -1,17 +1,44 @@
 {% extends "store/base.html" %}
+{% load static store_extras %}
 {% block title %}{{ article.title }} · Новости{% endblock %}
+{% block meta_description %}{{ article.summary|default:article.title }}{% endblock %}
+{% block meta_keywords %}новости зоомагазина, {{ article.title }}, уход за животными{% endblock %}
+{% block og_type %}article{% endblock %}
+{% block og_title %}{{ article.title }}{% endblock %}
+{% block og_description %}{{ article.summary|default:article.title }}{% endblock %}
+{% block og_image %}{% if article.image %}{{ article.image.url }}{% else %}{% static 'images/news/news-placeholder.jpg' %}{% endif %}{% endblock %}
+
 {% block content %}
-<article>
-  <h1>{{ article.title }}</h1>
-  <div style="margin: 20px 0;">
+<article itemscope itemtype="https://schema.org/NewsArticle" data-article-slug="{{ article.slug }}">
+  <h1 itemprop="headline">{{ article.title }}</h1>
+
+  <aside aria-label="Метаданные статьи">
+    <p>
+      Опубликовано:
+      {% if article.published_at %}
+        <time itemprop="datePublished" datetime="{{ article.published_at|iso8601 }}">{{ article.published_at|date:"d.m.Y H:i" }}</time>
+      {% else %}
+        <time datetime="{{ article.created_at|iso8601 }}">{{ article.created_at|date:"d.m.Y" }}</time>
+      {% endif %}
+    </p>
+    <p><a href="{% url 'store:news-list' %}">Все новости</a></p>
+  </aside>
+
+  <figure>
     <img
-      src="{% if article.image %}{{ article.image.url }}{% else %}/media/placeholders/news_contacts.svg{% endif %}"
-      alt="{{ article.title }}"
-      style="max-width: 500px; height: auto;"
+      src="{% if article.image %}{{ article.image.url }}{% else %}{% static 'images/news/news-placeholder.jpg' %}{% endif %}"
+      alt="Иллюстрация к статье: {{ article.title }}"
+      itemprop="image"
     >
+    <figcaption>{{ article.title }}</figcaption>
+  </figure>
+
+  {% if article.summary %}
+    <p><strong itemprop="description">{{ article.summary }}</strong></p>
+  {% endif %}
+
+  <div itemprop="articleBody">
+    {{ article.body|safe }}
   </div>
-  <p><time datetime="{{ article.published_at|date:'c' }}">{{ article.published_at|date:"d.m.Y H:i" }}</time></p>
-  <div>{{ article.body|linebreaks }}</div>
 </article>
-<p><a href="{% url 'store:news-list' %}">Все новости</a></p>
 {% endblock %}

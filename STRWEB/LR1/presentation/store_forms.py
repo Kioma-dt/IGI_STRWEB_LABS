@@ -113,8 +113,50 @@ class ContactMessageForm(forms.Form):
     name = forms.CharField(
         label="Ваше имя",
         max_length=120,
+        min_length=2,
     )
     email = forms.EmailField(label="E-mail", validators=[EmailValidator()])
+    phone = forms.CharField(
+        label="Телефон",
+        max_length=20,
+        validators=[validate_phone_by_format_375_29],
+    )
+    topic = forms.ChoiceField(
+        label="Тема обращения",
+        choices=(
+            ("order", "Вопрос по заказу"),
+            ("product", "Вопрос по товару"),
+            ("delivery", "Доставка и самовывоз"),
+            ("other", "Другое"),
+        ),
+    )
+    preferred_date = forms.DateField(
+        label="Удобная дата ответа",
+        required=False,
+        widget=forms.DateInput(attrs={"type": "date"}),
+    )
+    site_url = forms.URLField(label="Ссылка на страницу", required=False)
+    contact_via = forms.ChoiceField(
+        label="Способ связи",
+        choices=(("email", "E-mail"), ("phone", "Телефон")),
+        widget=forms.RadioSelect,
+        initial="email",
+    )
+    consent = forms.BooleanField(label="Согласие на обработку данных")
+    urgency = forms.IntegerField(
+        label="Срочность",
+        min_value=1,
+        max_value=10,
+        initial=5,
+        required=False,
+    )
+    accent = forms.CharField(
+        label="Цвет",
+        max_length=7,
+        required=False,
+        initial="#2d6a4f",
+    )
+    attachment = forms.FileField(label="Вложение", required=False)
     message = forms.CharField(
         label="Сообщение",
         widget=forms.Textarea(attrs={"rows": 6, "cols": 60}),

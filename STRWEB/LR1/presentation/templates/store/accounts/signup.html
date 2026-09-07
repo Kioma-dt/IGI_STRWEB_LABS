@@ -2,7 +2,7 @@
 {% block title %}Регистрация · Зоомагазин{% endblock %}
 {% block content %}
 <h1>Регистрация клиента</h1>
-<form method="post" action="">
+<form method="post">
   {% csrf_token %}
   <table>{{ form.as_table }}</table>
   <p><button type="submit">Создать аккаунт</button></p>

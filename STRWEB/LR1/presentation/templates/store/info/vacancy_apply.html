@@ -3,7 +3,7 @@
 {% block content %}
 <h1>Заявка на вакансию</h1>
 <p>Вакансия: <strong>{{ vacancy.title }}</strong></p>
-<form method="post" action="">
+<form method="post">
   {% csrf_token %}
   <table>
     {{ form.as_table }}

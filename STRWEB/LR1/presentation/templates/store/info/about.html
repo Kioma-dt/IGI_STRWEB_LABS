@@ -1,50 +1,202 @@
 {% extends "store/base.html" %}
-{% block title %}О компании · Зоомагазин{% endblock %}
+{% load static store_extras %}
+{% block title %}О компании · ЗооМаркет{% endblock %}
+{% block meta_description %}О компании ЗооМаркет: история, реквизиты, сертификаты и миссия магазина зоотоваров.{% endblock %}
+{% block meta_keywords %}о компании, ЗооМаркет, реквизиты, сертификат, история{% endblock %}
+{% block og_title %}О компании ЗооМаркет{% endblock %}
+{% block og_description %}Узнайте историю сети ЗооМаркет, реквизиты и сертификаты качества.{% endblock %}
+
 {% block content %}
-<h1>О компании</h1>
-{% if company %}
-  {% if company.logo %}
-    <p><img src="{{ company.logo.url }}" alt="Логотип {{ company.name }}"></p>
+<section id="about-top" itemscope itemtype="https://schema.org/Organization" data-section="about">
+  <h1 id="about-title" itemprop="name">{% if company %}{{ company.name }}{% else %}ЗооМаркет{% endif %}</h1>
+
+  <nav id="about-toc" aria-label="Вертикальное оглавление страницы О компании">
+    <ol>
+      <li><a href="#about-mission">Миссия</a></li>
+      <li><a href="#about-history">История</a></li>
+      <li><a href="#about-media">Видео и аудио</a></li>
+      <li><a href="#about-requisites">Реквизиты</a></li>
+      <li><a href="#about-certificate">Сертификат</a></li>
+      <li><a href="#about-verse">Слоган в стихах</a></li>
+      <li><a href="#about-code">Пример данных</a></li>
+    </ol>
+  </nav>
+
+  {% if company and company.logo %}
+    <figure>
+      <img src="{{ company.logo.url }}" alt="Логотип {{ company.name }}" itemprop="logo">
+      <figcaption>Официальный логотип компании</figcaption>
+    </figure>
+  {% else %}
+    <figure>
+      <img src="{% static 'images/company/logo.png' %}" alt="Логотип ЗооМаркет" itemprop="logo">
+      <figcaption>Официальный логотип компании</figcaption>
+    </figure>
   {% endif %}
-  <h2>{{ company.name }}</h2>
-  <p><strong>Юридический адрес:</strong> {{ company.legal_address }}</p>
-  <p><strong>Телефон:</strong> {{ company.phone }}</p>
-  <p><strong>E-mail поддержки:</strong> {{ company.support_email }}</p>
-  {% if company.about %}
-    <section>
-      <h2>О нас</h2>
-      <p>{{ company.about|linebreaks }}</p>
-    </section>
-  {% endif %}
-  {% if company.video_url %}
-    <section>
-      <h2>Видео</h2>
-      <p><a href="{{ company.video_url }}">Смотреть видео о компании</a></p>
-    </section>
-  {% endif %}
-  {% if history_entries %}
-    <section>
-      <h2>История по годам</h2>
-      <ul>
-        {% for entry in history_entries %}
-          <li><strong>{{ entry.year }}</strong> — {{ entry.description }}</li>
-        {% endfor %}
-      </ul>
-    </section>
-  {% endif %}
-  {% if company.requisites %}
-    <section>
-      <h2>Реквизиты</h2>
-      <p>{{ company.requisites|linebreaks }}</p>
-    </section>
-  {% endif %}
-  {% if company.certificate_text %}
-    <section>
-      <h2>Сертификат</h2>
-      <p>{{ company.certificate_text|linebreaks }}</p>
-    </section>
-  {% endif %}
-{% else %}
-  <p>Информация о компании скоро появится.</p>
-{% endif %}
+
+  <p>
+    <strong>Юридический адрес:</strong>
+    <span itemprop="address">{% if company %}{{ company.legal_address }}{% else %}г. Минск{% endif %}</span>
+  </p>
+  <p>
+    <strong>Телефон:</strong>
+    <a href="tel:{% if company %}{{ company.phone|tel_href }}{% else %}+375298888888{% endif %}" itemprop="telephone">
+      {% if company %}{{ company.phone }}{% else %}+375 (29) 888-88-88{% endif %}
+    </a>
+  </p>
+  <p>
+    <strong>E-mail поддержки:</strong>
+    <a href="mailto:{% if company %}{{ company.support_email }}{% else %}support@zooshop.by{% endif %}" itemprop="email">
+      {% if company %}{{ company.support_email }}{% else %}support@zooshop.by{% endif %}
+    </a>
+  </p>
+
+  <section id="about-mission">
+    <h2>Миссия</h2>
+    {% if company and company.about %}
+      <div itemprop="description">{{ company.about|linebreaks }}</div>
+    {% else %}
+      <p itemprop="description">
+        Мы помогаем владельцам животных выбирать <strong>безопасный корм</strong> и удобные аксессуары,
+        опираясь на рекомендации ветеринаров и опыт розничной сети.
+      </p>
+    {% endif %}
+    <blockquote cite="https://schema.org/Organization">
+      <p>
+        <q>Здоровый питомец — спокойный хозяин.</q>
+        — девиз консультантов зала ЗооМаркет.
+      </p>
+    </blockquote>
+    <p>
+      Компания сотрудничает с выпускниками
+      <abbr title="Белорусский государственный университет информатики и радиоэлектроники">БГУИР</abbr>
+      при развитии интернет-витрины и аналитики продаж.
+    </p>
+  </section>
+
+  <section id="about-history">
+    <h2>История по годам</h2>
+    {% if history_entries %}
+      <table>
+        <caption>Ключевые этапы развития сети ЗооМаркет</caption>
+        <thead>
+          <tr>
+            <th id="hist-year" scope="col">Год</th>
+            <th id="hist-event" scope="col">Событие</th>
+            <th id="hist-note" scope="col">Примечание</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for entry in history_entries %}
+            <tr>
+              <th id="hist-row-{{ entry.year }}" scope="row" headers="hist-year">{{ entry.year }}</th>
+              <td headers="hist-event hist-row-{{ entry.year }}">{{ entry.description }}</td>
+              {% if forloop.first %}
+                <td headers="hist-note hist-row-{{ entry.year }}" rowspan="{{ history_entries|length }}">
+                  Хронология подтверждена внутренними отчётами сети
+                </td>
+              {% endif %}
+            </tr>
+          {% endfor %}
+          <tr>
+            <td headers="hist-year" colspan="2"><strong>Итого лет в сети:</strong> {{ history_entries|length }} этапа(ов)</td>
+            <td headers="hist-note">актуально на текущий год</td>
+          </tr>
+        </tbody>
+      </table>
+    {% else %}
+      <p>История компании будет опубликована позже.</p>
+    {% endif %}
+  </section>
+
+  <section id="about-media">
+    <h2>Видео и аудио о компании</h2>
+    <p>
+      Ролик и аудиоприветствие хранятся <em>локально</em> в проекте
+      (поле модели <code>CompanyInfo.video</code> / <code>CompanyInfo.audio</code>,
+      при отсутствии файла — запасной путь в <code>static/</code>).
+    </p>
+    <figure>
+      <video id="company-video" controls preload="metadata" title="Видеоролик о ЗооМаркет">
+        {% if company and company.video %}
+          <source src="{{ company.video.url }}" type="video/mp4">
+        {% else %}
+          <source src="{% static 'videos/company.mp4' %}" type="video/mp4">
+        {% endif %}
+        Ваш браузер не поддерживает воспроизведение видео.
+      </video>
+      <figcaption>Короткий ролик о магазине и ассортименте</figcaption>
+    </figure>
+    <figure>
+      <audio id="company-audio" controls preload="metadata" title="Аудиоприветствие ЗооМаркет">
+        {% if company and company.audio %}
+          <source src="{{ company.audio.url }}" type="audio/mpeg">
+        {% else %}
+          <source src="{% static 'audio/company-welcome.mp3' %}" type="audio/mpeg">
+        {% endif %}
+        Ваш браузер не поддерживает воспроизведение аудио.
+      </audio>
+      <figcaption>Аудиоприветствие консультанта магазина</figcaption>
+    </figure>
+  </section>
+
+  <section id="about-requisites">
+    <h2>Реквизиты</h2>
+    <dl>
+      <dt>Наименование</dt>
+      <dd>{% if company %}{{ company.name }}{% else %}ООО «ЗооМаркет»{% endif %}</dd>
+      <dt>Адрес</dt>
+      <dd>{% if company %}{{ company.legal_address }}{% else %}г. Минск{% endif %}</dd>
+      <dt>Полный текст реквизитов</dt>
+      <dd>{% if company and company.requisites %}<div>{{ company.requisites|linebreaks }}</div>{% else %}УНП и банковские реквизиты уточняйте у бухгалтерии.{% endif %}</dd>
+    </dl>
+  </section>
+
+  <section id="about-certificate">
+    <h2>Сертификат</h2>
+    <figure>
+      <img
+        src="{% if company and company.certificate_image %}{{ company.certificate_image.url }}{% else %}{% static 'images/company/certificate.jpg' %}{% endif %}"
+        alt="Скан сертификата соответствия ЗооМаркет"
+      >
+      <figcaption>Сертификат соответствия на розничную торговлю зоотоварами</figcaption>
+    </figure>
+    {% if company and company.certificate_text %}
+      <div>{{ company.certificate_text|linebreaks }}</div>
+    {% else %}
+      <p>Документ подтверждает право на розничную торговлю кормами и товарами для животных.</p>
+    {% endif %}
+    <p>
+      <a href="{% static 'files/certificate.pdf' %}" download="zooshop-certificate.pdf">Скачать сертификат (PDF)</a>
+    </p>
+  </section>
+
+  <section id="about-verse">
+    <h2>Слоган в четверостишии</h2>
+    <p><strong>Вариант с жёстким переносом (<code>&lt;br&gt;</code>):</strong></p>
+    <p>
+      Корм свежий — миска полна,<br>
+      Игрушка ждет у окна,<br>
+      Хвост виляет от тепла —<br>
+      ЗооМаркет: забота видна.
+    </p>
+    <p><strong>Вариант с мягким переносом (обычный абзац):</strong></p>
+    <p>
+      Корм свежий — миска полна, игрушка ждет у окна, хвост виляет от тепла — ЗооМаркет: забота видна.
+    </p>
+  </section>
+
+  <section id="about-code">
+    <h2>Пример листинга данных заказа</h2>
+    <p>Фрагмент JSON, который витрина передаёт в сервис оформления (учебный пример):</p>
+    <pre><code>{
+  "shop": "ZooMarket",
+  "currency": "BYN",
+  "lines": [
+    {"sku": "SKU-001", "qty": 2},
+    {"sku": "SKU-008", "qty": 1}
+  ]
+}</code></pre>
+  </section>
+</section>
 {% endblock %}

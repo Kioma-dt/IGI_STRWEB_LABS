@@ -1,18 +1,32 @@
 {% extends "store/base.html" %}
-{% block title %}Вакансии · Зоомагазин{% endblock %}
+{% load static store_extras %}
+{% block title %}Вакансии · ЗооМаркет{% endblock %}
+{% block meta_description %}Вакансии ЗооМаркет: продавец-консультант, кассир, курьер и другие позиции в зоомагазине.{% endblock %}
+
 {% block content %}
-<h1>Вакансии</h1>
-<ul>
+<section id="vacancies" data-page="vacancies">
+  <h1>Вакансии</h1>
+  <p>
+    Присоединяйтесь к команде, которая каждый день помогает подбирать корм и аксессуары для питомцев.
+    Описание вакансии можно <a href="{% static 'files/vacancy-info.pdf' %}" download="vacancy-info.pdf">скачать PDF</a>.
+  </p>
   {% for v in vacancies %}
-    <li>
-      <strong>{{ v.title }}</strong>
-      {% if v.published_at %}<span> ({{ v.published_at|date:"d.m.Y" }})</span>{% endif %}
-      <p>{{ v.description|truncatewords:30 }}</p>
+    <article itemscope itemtype="https://schema.org/JobPosting">
+      <h2 itemprop="title">{{ v.title }}</h2>
+      {% if v.published_at %}
+        <p>
+          Опубликовано:
+          <time itemprop="datePosted" datetime="{{ v.published_at|iso8601 }}">{{ v.published_at|date:"d.m.Y" }}</time>
+        </p>
+      {% endif %}
+      <div itemprop="description">{{ v.description|safe }}</div>
+      <meta itemprop="hiringOrganization" content="ЗооМаркет">
+      <meta itemprop="employmentType" content="FULL_TIME">
       <p><a href="{% url 'store:vacancy-apply' v.pk %}">Подать заявку</a></p>
-    </li>
+    </article>
   {% empty %}
-    <li>Нет открытых вакансий.</li>
+    <p>Нет открытых вакансий.</p>
   {% endfor %}
-</ul>
+</section>
 {% include "store/includes/pagination.html" %}
 {% endblock %}

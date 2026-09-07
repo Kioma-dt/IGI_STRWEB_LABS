@@ -1,28 +1,37 @@
 {% extends "store/base.html" %}
-{% block title %}Новости · Зоомагазин{% endblock %}
+{% load static store_extras %}
+{% block title %}Новости · ЗооМаркет{% endblock %}
+{% block meta_description %}Новости ЗооМаркет: акции на корма, советы по уходу за питомцами и события магазина.{% endblock %}
+
 {% block content %}
-<h1>Новости</h1>
-{% for a in articles %}
-  <article>
-    <div>
-      {% if a.image %}
-        <img src="{{ a.image.url }}" alt="{{ a.title }}">
-      {% endif %}
-    </div>
-    <h2>{{ a.title }}</h2>
-    <p><time datetime="{{ a.published_at|date:'c' }}">{{ a.published_at|date:"d.m.Y H:i" }}</time></p>
-    <p>
-      {% if a.summary %}
-        {{ a.summary }}
-      {% else %}
-        {{ a.body|truncatewords:20 }}
-      {% endif %}
-    </p>
-    <p><a href="{% url 'store:news-detail' a.pk %}">Читать далее</a></p>
-  </article>
-  <hr>
-{% empty %}
-  <p>Нет опубликованных новостей.</p>
-{% endfor %}
+<section id="news-list" data-page="news">
+  <h1>Новости</h1>
+  {% for a in articles %}
+    <article>
+      <figure>
+        <img
+          src="{% if a.image %}{{ a.image.url }}{% else %}{% static 'images/news/news-placeholder.jpg' %}{% endif %}"
+          alt="Превью новости: {{ a.title }}"
+        >
+        <figcaption>{{ a.title }}</figcaption>
+      </figure>
+      <h2>{{ a.title }}</h2>
+      <p>
+        <time datetime="{{ a.published_at|iso8601 }}">{{ a.published_at|date:"d.m.Y H:i" }}</time>
+      </p>
+      <p>
+        {% if a.summary %}
+          {{ a.summary }}
+        {% else %}
+          {{ a.body|striptags|truncatewords:20 }}
+        {% endif %}
+      </p>
+      <p><a href="{% url 'store:news-detail' a.pk %}">Читать далее</a></p>
+    </article>
+    <hr>
+  {% empty %}
+    <p>Нет опубликованных новостей.</p>
+  {% endfor %}
+</section>
 {% include "store/includes/pagination.html" %}
 {% endblock %}

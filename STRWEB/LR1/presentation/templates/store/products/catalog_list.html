@@ -1,35 +1,50 @@
 {% extends "store/base.html" %}
-{% block title %}Каталог · Зоомагазин{% endblock %}
+{% load static %}
+{% block title %}Каталог · ЗооМаркет{% endblock %}
+{% block meta_description %}Каталог зоотоваров ЗооМаркет: корма, игрушки и аксессуары с фильтром по категориям и цене.{% endblock %}
+
 {% block content %}
-<h1>Каталог товаров</h1>
-<form method="get" action="">
-  <fieldset>
-    <legend>Фильтр</legend>
-    {{ filter.form.as_p }}
-    <p><button type="submit">Применить</button></p>
-  </fieldset>
-</form>
-<table>
-  <thead>
-    <tr>
-      <th scope="col">Товар</th>
-      <th scope="col">Категория</th>
-      <th scope="col">Цена</th>
-      <th scope="col">SKU</th>
-    </tr>
-  </thead>
-  <tbody>
+<section id="catalog" data-page="catalog">
+  <h1>Каталог товаров</h1>
+
+  <nav id="catalog-side-nav" aria-label="Вертикальная навигация фильтра каталога">
+    <ul>
+      <li><a href="#catalog-filter">К фильтру</a></li>
+      <li><a href="#catalog-list">К списку товаров</a></li>
+      <li><a href="{% url 'store:cart' %}">В корзину</a></li>
+    </ul>
+  </nav>
+
+  <section id="catalog-filter">
+    <h2>Фильтр</h2>
+    <form method="get">
+      <fieldset>
+        <legend>Параметры поиска</legend>
+        {{ filter.form.as_p }}
+        <p><button type="submit">Применить</button></p>
+      </fieldset>
+    </form>
+  </section>
+
+  <section id="catalog-list">
+    <h2>Товары</h2>
     {% for p in products %}
-      <tr>
-        <td><a href="{% url 'store:product-detail' p.pk %}">{{ p.name }}</a></td>
-        <td>{% if p.category %}{{ p.category.name }}{% else %}—{% endif %}</td>
-        <td>{{ p.base_price }}</td>
-        <td>{{ p.sku }}</td>
-      </tr>
+      <article>
+        <h3><a href="{% url 'store:product-detail' p.pk %}">{{ p.name }}</a></h3>
+        <figure>
+          {% if p.image %}
+            <img src="{{ p.image.url }}" alt="Фото товара {{ p.name }}">
+          {% else %}
+            <img src="{% static 'images/products/product-placeholder.jpg' %}" alt="Фото товара {{ p.name }}">
+          {% endif %}
+          <figcaption>{{ p.base_price }} BYN · {{ p.sku }}</figcaption>
+        </figure>
+        <p>{% if p.category %}{{ p.category.name }}{% else %}Без категории{% endif %}</p>
+      </article>
     {% empty %}
-      <tr><td colspan="4">Ничего не найдено.</td></tr>
+      <p>Ничего не найдено.</p>
     {% endfor %}
-  </tbody>
-</table>
+  </section>
+</section>
 {% include "store/includes/pagination.html" %}
 {% endblock %}

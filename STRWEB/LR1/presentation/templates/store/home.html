@@ -1,90 +1,140 @@
 {% extends "store/base.html" %}
-{% block title %}Главная · Зоомагазин{% endblock %}
+{% load static store_extras %}
+{% block title %}Главная · ЗооМаркет{% endblock %}
+{% block meta_description %}ЗооМаркет — корма, игрушки и аксессуары для питомцев. Каталог, доставка и советы по уходу.{% endblock %}
+{% block meta_keywords %}зоомагазин, главная, корм, игрушки для животных, ЗооМаркет{% endblock %}
+{% block og_title %}ЗооМаркет — зоотовары онлайн{% endblock %}
+{% block og_description %}Добро пожаловать в ЗооМаркет: каталог товаров, новости и партнёры брендов.{% endblock %}
+{% block og_image %}{% static 'images/og-default.jpg' %}{% endblock %}
+
 {% block content %}
-<section aria-labelledby="brand">
+<section id="hero" aria-labelledby="brand" data-page="home">
   <h1 id="brand">
     {% if company and company.logo %}
-      <img src="{{ company.logo.url }}" alt="{{ company.name }}">
-    {% elif company %}
-      {{ company.name }}
+      <img src="{{ company.logo.url }}" alt="Логотип {{ company.name }}">
     {% else %}
-      Зоомагазин
+      <img src="{% static 'images/logo-header.png' %}" alt="Логотип ЗооМаркет" width="180" height="60">
     {% endif %}
   </h1>
-  {% if company %}
-    <p>{{ company.about|truncatewords:40 }}</p>
-  {% else %}
-    <p>Интернет-витрина зоомагазина: каталог, корзина, новости и отзывы.</p>
-  {% endif %}
+  <p>
+    {% if company %}
+      {{ company.about|truncatewords:40 }}
+    {% else %}
+      Интернет-витрина <strong>ЗооМаркет</strong>: качественный корм, игрушки и аксессуары для ваших питомцев.
+    {% endif %}
+  </p>
+  <p title="Слоган компании">
+    Забота о питомцах — <em lang="en">pet care</em> каждый день.
+  </p>
 </section>
 
-{% if banner %}
-<section aria-labelledby="banner-h">
-  <h2 id="banner-h">Реклама</h2>
-  {% if banner.link_url %}<a href="{{ banner.link_url }}">{% endif %}
-  {% if banner.image %}
-    <img src="{{ banner.image.url }}" alt="{{ banner.title }}">
+<aside id="promo-banner" aria-labelledby="banner-h" data-banner-id="{% if banner %}{{ banner.id }}{% endif %}">
+  <h2 id="banner-h">Рекламный баннер</h2>
+  {% if banner %}
+    {% if banner.link_url %}<a href="{{ banner.link_url }}" title="{{ banner.title }}">{% endif %}
+    <figure>
+      <picture>
+        <source media="(max-width: 600px)" srcset="{% static 'images/banners/banner-mobile.jpg' %}">
+        <img
+          src="{% if banner.image %}{{ banner.image.url }}{% else %}{% static 'images/banners/banner-desktop.jpg' %}{% endif %}"
+          alt="{{ banner.title }}"
+          width="1200"
+          height="400"
+        >
+      </picture>
+      <figcaption>{{ banner.title }}</figcaption>
+    </figure>
+    {% if banner.link_url %}</a>{% endif %}
   {% else %}
-    <p>{{ banner.title }}</p>
+    <figure>
+      <picture>
+        <source media="(max-width: 600px)" srcset="{% static 'images/banners/banner-mobile.jpg' %}">
+        <img
+          src="{% static 'images/banners/banner-desktop.jpg' %}"
+          alt="Акция ЗооМаркет: скидки на корма"
+          srcset="{% static 'images/banners/banner-desktop.jpg' %} 1200w, {% static 'images/banners/banner-mobile.jpg' %} 600w"
+          sizes="(max-width: 600px) 100vw, 1200px"
+          width="1200"
+          height="400"
+        >
+      </picture>
+      <figcaption>Сезонная акция на сухие корма</figcaption>
+    </figure>
   {% endif %}
-  {% if banner.link_url %}</a>{% endif %}
-</section>
-{% endif %}
+</aside>
 
-<section aria-labelledby="feat">
+<section id="catalog-preview" aria-labelledby="feat">
   <h2 id="feat">Каталог товаров</h2>
   {% if featured_products %}
-    <ul>
-      {% for p in featured_products %}
-        <li>
-          <a href="{% url 'store:product-detail' p.pk %}">{{ p.name }}</a>
-          — {{ p.base_price }} (арт. {{ p.sku }})
+    {% for p in featured_products %}
+      <article data-product-id="{{ p.pk }}" title="{{ p.name }}">
+        <h3><a href="{% url 'store:product-detail' p.pk %}">{{ p.name }}</a></h3>
+        {% if p.image %}
+          <figure>
+            <img src="{{ p.image.url }}" alt="Фото товара: {{ p.name }}">
+            <figcaption>{{ p.name }} — {{ p.base_price }} BYN</figcaption>
+          </figure>
+        {% else %}
+          <figure>
+            <img src="{% static 'images/products/product-placeholder.jpg' %}" alt="Фото товара: {{ p.name }}">
+            <figcaption>{{ p.name }} — {{ p.base_price }} BYN</figcaption>
+          </figure>
+        {% endif %}
+        <p>
+          Арт. <abbr title="Stock Keeping Unit — складской артикул">SKU</abbr> {{ p.sku }}
           {% if p.category %} · {{ p.category.name }}{% endif %}
-        </li>
-      {% endfor %}
-    </ul>
+        </p>
+      </article>
+    {% endfor %}
   {% else %}
     <p>Пока нет товаров в каталоге.</p>
   {% endif %}
   <p><a href="{% url 'store:catalog' %}">Весь каталог</a></p>
 </section>
 
-<section aria-labelledby="news-h">
+<section id="latest-news" aria-labelledby="news-h">
   <h2 id="news-h">Последняя новость</h2>
   {% if latest_article %}
-    <h3>{{ latest_article.title }}</h3>
-    <p>
-      {% if latest_article.summary %}
-        {{ latest_article.summary }}
-      {% else %}
-        {{ latest_article.body|truncatewords:30 }}
+    <article>
+      <h3>{{ latest_article.title }}</h3>
+      {% if latest_article.published_at %}
+        <p><time datetime="{{ latest_article.published_at|iso8601 }}">{{ latest_article.published_at|date:"d.m.Y H:i" }}</time></p>
       {% endif %}
-    </p>
-    <p><a href="{% url 'store:news-detail' latest_article.pk %}">Читать далее</a></p>
+      <p>
+        {% if latest_article.summary %}
+          {{ latest_article.summary }}
+        {% else %}
+          {{ latest_article.body|striptags|truncatewords:30 }}
+        {% endif %}
+      </p>
+      <p><a href="{% url 'store:news-detail' latest_article.pk %}">Читать далее</a></p>
+    </article>
   {% else %}
     <p>Пока нет опубликованных статей.</p>
   {% endif %}
 </section>
 
-<section aria-labelledby="partners-h">
+<aside id="partners" aria-labelledby="partners-h">
   <h2 id="partners-h">Компании-партнёры</h2>
   {% if partners %}
     <ul>
       {% for partner in partners %}
         <li>
-          <a href="{{ partner.url }}" rel="noopener noreferrer">
-            {% if partner.logo %}
-              <img src="{{ partner.logo.url }}" alt="{{ partner.name }}">
-            {% else %}
-              {{ partner.name }}
-            {% endif %}
-          </a>
-          — {{ partner.name }}
+          <figure>
+            <a href="{{ partner.url }}" rel="noopener noreferrer" title="Сайт партнёра {{ partner.name }}">
+              {% if partner.logo %}
+                <img src="{{ partner.logo.url }}" alt="Логотип {{ partner.name }}">
+              {% else %}
+                <img src="{% static 'images/partners/partner-placeholder.png' %}" alt="Логотип {{ partner.name }}">
+              {% endif %}
+            </a>
+            <figcaption>{{ partner.name }}</figcaption>
+          </figure>
         </li>
       {% endfor %}
     </ul>
   {% else %}
     <p>Список партнёров скоро появится.</p>
   {% endif %}
-</section>
+</aside>
 {% endblock %}
