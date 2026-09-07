@@ -1,0 +1,46 @@
+{% extends "store/base.html" %}
+{% block title %}Отзывы · Зоомагазин{% endblock %}
+{% block content %}
+<h1>Отзывы покупателей</h1>
+
+<p>
+  {% if user.is_authenticated %}
+    <a href="{% url 'store:reviews' %}?add=1">Добавить отзыв</a>
+  {% else %}
+    {% url 'store:reviews' as reviews_url %}
+    <a href="{% url 'store:login' %}?next={{ reviews_url|urlencode }}%3Fadd%3D1">Добавить отзыв</a>
+    (требуется <a href="{% url 'store:login' %}">вход</a> или
+    <a href="{% url 'store:signup' %}">регистрация</a>)
+  {% endif %}
+</p>
+
+{% if show_review_form %}
+<section aria-labelledby="add-rev">
+  <h2 id="add-rev">Новый отзыв</h2>
+  <form method="post" action="">
+    {% csrf_token %}
+    <table>{{ review_form.as_table }}</table>
+    <p><button type="submit">Отправить</button></p>
+  </form>
+</section>
+<hr>
+{% endif %}
+
+<ul>
+  {% for r in reviews %}
+    <li>
+      <strong>{{ r.title }}</strong> (оценка: {{ r.rating }}/5) —
+      <a href="{% url 'store:product-detail' r.product_id %}">{{ r.product.name }}</a>
+      <p>{{ r.body|truncatewords:25 }}</p>
+      <p>
+        <small>
+          {{ r.customer.user.username }} · {{ r.created_at|date:"d.m.Y" }}
+        </small>
+      </p>
+    </li>
+  {% empty %}
+    <li>Нет опубликованных отзывов.</li>
+  {% endfor %}
+</ul>
+{% include "store/includes/pagination.html" %}
+{% endblock %}

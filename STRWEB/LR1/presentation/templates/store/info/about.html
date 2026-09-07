@@ -1,0 +1,50 @@
+{% extends "store/base.html" %}
+{% block title %}О компании · Зоомагазин{% endblock %}
+{% block content %}
+<h1>О компании</h1>
+{% if company %}
+  {% if company.logo %}
+    <p><img src="{{ company.logo.url }}" alt="Логотип {{ company.name }}"></p>
+  {% endif %}
+  <h2>{{ company.name }}</h2>
+  <p><strong>Юридический адрес:</strong> {{ company.legal_address }}</p>
+  <p><strong>Телефон:</strong> {{ company.phone }}</p>
+  <p><strong>E-mail поддержки:</strong> {{ company.support_email }}</p>
+  {% if company.about %}
+    <section>
+      <h2>О нас</h2>
+      <p>{{ company.about|linebreaks }}</p>
+    </section>
+  {% endif %}
+  {% if company.video_url %}
+    <section>
+      <h2>Видео</h2>
+      <p><a href="{{ company.video_url }}">Смотреть видео о компании</a></p>
+    </section>
+  {% endif %}
+  {% if history_entries %}
+    <section>
+      <h2>История по годам</h2>
+      <ul>
+        {% for entry in history_entries %}
+          <li><strong>{{ entry.year }}</strong> — {{ entry.description }}</li>
+        {% endfor %}
+      </ul>
+    </section>
+  {% endif %}
+  {% if company.requisites %}
+    <section>
+      <h2>Реквизиты</h2>
+      <p>{{ company.requisites|linebreaks }}</p>
+    </section>
+  {% endif %}
+  {% if company.certificate_text %}
+    <section>
+      <h2>Сертификат</h2>
+      <p>{{ company.certificate_text|linebreaks }}</p>
+    </section>
+  {% endif %}
+{% else %}
+  <p>Информация о компании скоро появится.</p>
+{% endif %}
+{% endblock %}

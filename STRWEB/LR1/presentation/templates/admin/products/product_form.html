@@ -1,0 +1,44 @@
+{% extends "admin/base.html" %}
+{% block title %}{% if object %}Редактирование{% else %}Создание{% endif %} товара · Панель администратора{% endblock %}
+{% block content %}
+<h2>{% if object %}Редактирование товара: {{ object.name }}{% else %}Создание нового товара{% endif %}</h2>
+
+<div class="actions">
+  <a href="{% url 'admin_panel:product-list' %}">← К списку товаров</a>
+  {% if object %}
+    <a href="{% url 'admin_panel:product-detail' object.pk %}">Просмотр</a>
+  {% endif %}
+</div>
+
+<form method="post" enctype="multipart/form-data">
+  {% csrf_token %}
+
+  {% if form.non_field_errors %}
+    <div class="alert alert-error">
+      {{ form.non_field_errors }}
+    </div>
+  {% endif %}
+
+  <table>
+    {% for field in form %}
+      <tr>
+        <th>{{ field.label_tag }}</th>
+        <td>
+          {{ field }}
+          {% if field.help_text %}
+            <small>{{ field.help_text }}</small>
+          {% endif %}
+          {% if field.errors %}
+            <div class="alert alert-error">{{ field.errors }}</div>
+          {% endif %}
+        </td>
+      </tr>
+    {% endfor %}
+  </table>
+
+  <div class="actions">
+    <button type="submit">Сохранить</button>
+    <a href="{% url 'admin_panel:product-list' %}">Отмена</a>
+  </div>
+</form>
+{% endblock %}

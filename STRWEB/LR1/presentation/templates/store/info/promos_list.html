@@ -1,0 +1,64 @@
+{% extends "store/base.html" %}
+{% block title %}Промокоды и купоны · Зоомагазин{% endblock %}
+{% block content %}
+<h1>Промокоды и купоны</h1>
+<p>При оформлении заказа введите код в поле «Промокод».</p>
+
+<section aria-labelledby="active-h">
+  <h2 id="active-h">Действующие</h2>
+  {% if active_promos %}
+    <table>
+      <thead>
+        <tr>
+          <th scope="col">Код</th>
+          <th scope="col">Скидка, %</th>
+          <th scope="col">Действует с</th>
+          <th scope="col">До</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for p in active_promos %}
+          <tr>
+            <td><code>{{ p.code }}</code></td>
+            <td>{{ p.discount_percent }}</td>
+            <td>{{ p.valid_from|date:"d.m.Y" }}</td>
+            <td>{% if p.valid_until %}{{ p.valid_until|date:"d.m.Y" }}{% else %}без срока{% endif %}</td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  {% else %}
+    <p>Сейчас нет действующих промокодов.</p>
+  {% endif %}
+</section>
+
+<section aria-labelledby="arch-h">
+  <h2 id="arch-h">Архивные</h2>
+  {% if archived_promos %}
+    <table>
+      <thead>
+        <tr>
+          <th scope="col">Код</th>
+          <th scope="col">Скидка, %</th>
+          <th scope="col">Действует с</th>
+          <th scope="col">До</th>
+          <th scope="col">Активен</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for p in archived_promos %}
+          <tr>
+            <td><code>{{ p.code }}</code></td>
+            <td>{{ p.discount_percent }}</td>
+            <td>{{ p.valid_from|date:"d.m.Y" }}</td>
+            <td>{% if p.valid_until %}{{ p.valid_until|date:"d.m.Y" }}{% else %}без срока{% endif %}</td>
+            <td>{% if p.is_active %}да{% else %}нет{% endif %}</td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  {% else %}
+    <p>Архивных промокодов нет.</p>
+  {% endif %}
+</section>
+{% endblock %}

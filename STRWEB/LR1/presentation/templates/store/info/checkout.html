@@ -1,0 +1,30 @@
+{% extends "store/base.html" %}
+{% block title %}Оформление заказа · Зоомагазин{% endblock %}
+{% block content %}
+<h1>Оформление заказа</h1>
+<table>
+  <thead>
+    <tr>
+      <th scope="col">Товар</th>
+      <th scope="col">Кол-во</th>
+      <th scope="col">Сумма</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for line in lines %}
+      <tr>
+        <td>{{ line.product_name }}</td>
+        <td>{{ line.quantity }}</td>
+        <td>{{ line.line_total }}</td>
+      </tr>
+    {% endfor %}
+  </tbody>
+</table>
+<p><strong>Итого без скидки:</strong> {{ subtotal }}</p>
+<form method="post" action="">
+  {% csrf_token %}
+  <table>{{ form.as_table }}</table>
+  <p><button type="submit">Подтвердить заказ</button></p>
+</form>
+<p><a href="{% url 'store:cart' %}">Назад в корзину</a></p>
+{% endblock %}

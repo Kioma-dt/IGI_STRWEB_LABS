@@ -1,0 +1,56 @@
+{% extends "store/base.html" %}
+{% block title %}Контакты · Зоомагазин{% endblock %}
+{% block content %}
+<h1>Контакты</h1>
+{% if company %}
+  <section aria-labelledby="co">
+    <h2 id="co">{{ company.name }}</h2>
+    <p>Телефон: {{ company.phone }}, e-mail: {{ company.support_email }}</p>
+  </section>
+{% endif %}
+
+<section aria-labelledby="staff">
+  <h2 id="staff">Сотрудники</h2>
+  <ul>
+    {% for e in employees %}
+      <li>
+        <p>
+          {% if e.photo %}
+            <img src="{{ e.photo.url }}" alt="{{ e.employee_name }}">
+          {% endif %}
+        </p>
+        <p><strong>{{ e.employee_name|default:e.value }}</strong></p>
+        {% if e.job_description %}<p>{{ e.job_description|linebreaks }}</p>{% endif %}
+        {% if e.phone_number %}<p>Телефон: {{ e.phone_number }}</p>{% endif %}
+        {% if e.email_address %}<p>Почта: {{ e.email_address }}</p>{% endif %}
+      </li>
+    {% empty %}
+      <li>Нет записей о сотрудниках.</li>
+    {% endfor %}
+  </ul>
+</section>
+
+<section aria-labelledby="lst">
+  <h2 id="lst">Контактные данные</h2>
+  <ul>
+    {% for c in contacts %}
+      <li>
+        {{ c.get_type_display }}: {{ c.value }}{% if c.is_primary %} (основной){% endif %}
+      </li>
+    {% empty %}
+      <li>Нет записей.</li>
+    {% endfor %}
+  </ul>
+</section>
+
+<section aria-labelledby="fb">
+  <h2 id="fb">Написать нам</h2>
+  <form method="post" action="">
+    {% csrf_token %}
+    <table>
+      {{ form.as_table }}
+    </table>
+    <p><button type="submit">Отправить</button></p>
+  </form>
+</section>
+{% endblock %}

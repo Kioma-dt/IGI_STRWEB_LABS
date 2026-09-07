@@ -1,0 +1,25 @@
+{% extends "store/base.html" %}
+{% block title %}Словарь терминов · Зоомагазин{% endblock %}
+{% block content %}
+<h1>Словарь терминов и понятий</h1>
+
+{% if cat_fact %}
+  <section>
+    <h2>Случайный факт о котах</h2>
+    <p>{{ cat_fact }}</p>
+  </section>
+  <hr>
+{% endif %}
+
+{% for row in faq_list %}
+  <details>
+    <summary>
+      <strong>{{ row.question }}</strong>
+      <small>(добавлено: {{ row.created_at|date:"d.m.Y" }})</small>
+    </summary>
+    <div>{{ row.answer|linebreaks }}</div>
+  </details>
+{% empty %}
+  <p>Раздел пуст.</p>
+{% endfor %}
+{% endblock %}

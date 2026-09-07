@@ -1,0 +1,42 @@
+{% extends "admin/base.html" %}
+{% block title %}{{ article.title }} · Новости · Панель администратора{% endblock %}
+
+{% block content %}
+<h2>Новость: {{ article.title }}</h2>
+
+<div class="actions">
+  <a href="{% url 'admin_panel:news-list' %}">← К списку</a>
+  <a href="{% url 'admin_panel:news-update' article.pk %}">Изменить</a>
+  <a href="{% url 'admin_panel:news-delete' article.pk %}">Удалить</a>
+</div>
+
+<table>
+  <tr>
+    <th>Slug</th>
+    <td><code>{{ article.slug }}</code></td>
+  </tr>
+  <tr>
+    <th>Опубликовано</th>
+    <td>{{ article.is_published|yesno:"Да,Нет" }}</td>
+  </tr>
+  <tr>
+    <th>Дата публикации</th>
+    <td>{{ article.published_at|default:"—" }}</td>
+  </tr>
+</table>
+
+<h3>Изображение</h3>
+{% if article.image %}
+  <div>
+    <img src="{{ article.image.url }}" alt="{{ article.title }}" style="max-width: 400px; height: auto;">
+  </div>
+{% else %}
+  <p>—</p>
+{% endif %}
+
+<h3>Текст</h3>
+<div>
+  {{ article.body|linebreaks }}
+</div>
+
+{% endblock %}

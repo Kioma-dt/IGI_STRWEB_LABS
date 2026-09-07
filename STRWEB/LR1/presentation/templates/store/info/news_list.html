@@ -1,0 +1,28 @@
+{% extends "store/base.html" %}
+{% block title %}Новости · Зоомагазин{% endblock %}
+{% block content %}
+<h1>Новости</h1>
+{% for a in articles %}
+  <article>
+    <div>
+      {% if a.image %}
+        <img src="{{ a.image.url }}" alt="{{ a.title }}">
+      {% endif %}
+    </div>
+    <h2>{{ a.title }}</h2>
+    <p><time datetime="{{ a.published_at|date:'c' }}">{{ a.published_at|date:"d.m.Y H:i" }}</time></p>
+    <p>
+      {% if a.summary %}
+        {{ a.summary }}
+      {% else %}
+        {{ a.body|truncatewords:20 }}
+      {% endif %}
+    </p>
+    <p><a href="{% url 'store:news-detail' a.pk %}">Читать далее</a></p>
+  </article>
+  <hr>
+{% empty %}
+  <p>Нет опубликованных новостей.</p>
+{% endfor %}
+{% include "store/includes/pagination.html" %}
+{% endblock %}

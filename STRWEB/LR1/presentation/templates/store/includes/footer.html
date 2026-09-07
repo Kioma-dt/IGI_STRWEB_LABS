@@ -1,0 +1,10 @@
+{% load static %}
+<p>
+  <small>
+    © {% now "Y" %} ЗооМаркет.
+    <a href="{% url 'store:contacts' %}">Контакты</a> ·
+    <a href="{% url 'store:privacy' %}">Политика конфиденциальности</a> ·
+    <a href="{% static 'files/price-list.pdf' %}" download="price-list.pdf" title="Скачать прайс-лист PDF">Прайс-лист (PDF)</a>
+  </small>
+</p>
+<p hidden id="site-tech-note">Служебная пометка: витрина учебного проекта ЛР по HTML5.</p>

@@ -1,0 +1,11 @@
+{% if is_paginated %}
+<p class="pagination">
+  {% if page_obj.has_previous %}
+    <a href="?page={{ page_obj.previous_page_number }}{% if non_page_query %}&amp;{{ non_page_query }}{% endif %}">Previous</a>
+  {% endif %}
+  <span>Page {{ page_obj.number }} of {{ paginator.num_pages }}</span>
+  {% if page_obj.has_next %}
+    <a href="?page={{ page_obj.next_page_number }}{% if non_page_query %}&amp;{{ non_page_query }}{% endif %}">Next</a>
+  {% endif %}
+</p>
+{% endif %}
