@@ -22,17 +22,10 @@
     </ol>
   </nav>
 
-  {% if company and company.logo %}
     <figure>
-      <img src="{{ company.logo.url }}" alt="Логотип {{ company.name }}" itemprop="logo">
+      <img src="{% static 'images/company/logo.jpeg' %}" alt="Логотип ЗооМаркет" itemprop="logo">
       <figcaption>Официальный логотип компании</figcaption>
     </figure>
-  {% else %}
-    <figure>
-      <img src="{% static 'images/company/logo.png' %}" alt="Логотип ЗооМаркет" itemprop="logo">
-      <figcaption>Официальный логотип компании</figcaption>
-    </figure>
-  {% endif %}
 
   <p>
     <strong>Юридический адрес:</strong>
@@ -111,29 +104,16 @@
 
   <section id="about-media">
     <h2>Видео и аудио о компании</h2>
-    <p>
-      Ролик и аудиоприветствие хранятся <em>локально</em> в проекте
-      (поле модели <code>CompanyInfo.video</code> / <code>CompanyInfo.audio</code>,
-      при отсутствии файла — запасной путь в <code>static/</code>).
-    </p>
     <figure>
       <video id="company-video" controls preload="metadata" title="Видеоролик о ЗооМаркет">
-        {% if company and company.video %}
-          <source src="{{ company.video.url }}" type="video/mp4">
-        {% else %}
           <source src="{% static 'videos/company.mp4' %}" type="video/mp4">
-        {% endif %}
         Ваш браузер не поддерживает воспроизведение видео.
       </video>
       <figcaption>Короткий ролик о магазине и ассортименте</figcaption>
     </figure>
     <figure>
       <audio id="company-audio" controls preload="metadata" title="Аудиоприветствие ЗооМаркет">
-        {% if company and company.audio %}
-          <source src="{{ company.audio.url }}" type="audio/mpeg">
-        {% else %}
           <source src="{% static 'audio/company-welcome.mp3' %}" type="audio/mpeg">
-        {% endif %}
         Ваш браузер не поддерживает воспроизведение аудио.
       </audio>
       <figcaption>Аудиоприветствие консультанта магазина</figcaption>
@@ -166,9 +146,6 @@
     {% else %}
       <p>Документ подтверждает право на розничную торговлю кормами и товарами для животных.</p>
     {% endif %}
-    <p>
-      <a href="{% static 'files/certificate.pdf' %}" download="zooshop-certificate.pdf">Скачать сертификат (PDF)</a>
-    </p>
   </section>
 
   <section id="about-verse">

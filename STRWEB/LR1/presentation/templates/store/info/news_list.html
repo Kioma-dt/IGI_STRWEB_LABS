@@ -8,14 +8,13 @@
   <h1>Новости</h1>
   {% for a in articles %}
     <article>
+      <h2>{{ a.title }}</h2>
       <figure>
         <img
           src="{% if a.image %}{{ a.image.url }}{% else %}{% static 'images/news/news-placeholder.jpg' %}{% endif %}"
-          alt="Превью новости: {{ a.title }}"
         >
         <figcaption>{{ a.title }}</figcaption>
       </figure>
-      <h2>{{ a.title }}</h2>
       <p>
         <time datetime="{{ a.published_at|iso8601 }}">{{ a.published_at|date:"d.m.Y H:i" }}</time>
       </p>

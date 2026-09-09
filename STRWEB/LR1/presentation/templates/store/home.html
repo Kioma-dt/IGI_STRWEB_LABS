@@ -9,13 +9,6 @@
 
 {% block content %}
 <section id="hero" aria-labelledby="brand" data-page="home">
-  <h1 id="brand">
-    {% if company and company.logo %}
-      <img src="{{ company.logo.url }}" alt="Логотип {{ company.name }}">
-    {% else %}
-      <img src="{% static 'images/logo-header.png' %}" alt="Логотип ЗооМаркет" width="180" height="60">
-    {% endif %}
-  </h1>
   <p>
     {% if company %}
       {{ company.about|truncatewords:40 }}
@@ -30,29 +23,13 @@
 
 <aside id="promo-banner" aria-labelledby="banner-h" data-banner-id="{% if banner %}{{ banner.id }}{% endif %}">
   <h2 id="banner-h">Рекламный баннер</h2>
-  {% if banner %}
-    {% if banner.link_url %}<a href="{{ banner.link_url }}" title="{{ banner.title }}">{% endif %}
     <figure>
       <picture>
         <source media="(max-width: 600px)" srcset="{% static 'images/banners/banner-mobile.jpg' %}">
         <img
-          src="{% if banner.image %}{{ banner.image.url }}{% else %}{% static 'images/banners/banner-desktop.jpg' %}{% endif %}"
-          alt="{{ banner.title }}"
-          width="1200"
-          height="400"
-        >
-      </picture>
-      <figcaption>{{ banner.title }}</figcaption>
-    </figure>
-    {% if banner.link_url %}</a>{% endif %}
-  {% else %}
-    <figure>
-      <picture>
-        <source media="(max-width: 600px)" srcset="{% static 'images/banners/banner-mobile.jpg' %}">
-        <img
-          src="{% static 'images/banners/banner-desktop.jpg' %}"
+          src="{% static 'images/banners/banner-desktop.jpeg' %}"
           alt="Акция ЗооМаркет: скидки на корма"
-          srcset="{% static 'images/banners/banner-desktop.jpg' %} 1200w, {% static 'images/banners/banner-mobile.jpg' %} 600w"
+          srcset="{% static 'images/banners/banner-desktop.jpeg' %} 1200w, {% static 'images/banners/banner-mobile.jpg' %} 600w"
           sizes="(max-width: 600px) 100vw, 1200px"
           width="1200"
           height="400"
@@ -60,7 +37,6 @@
       </picture>
       <figcaption>Сезонная акция на сухие корма</figcaption>
     </figure>
-  {% endif %}
 </aside>
 
 <section id="catalog-preview" aria-labelledby="feat">

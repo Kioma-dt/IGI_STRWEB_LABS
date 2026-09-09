@@ -56,7 +56,46 @@ from apps.users.models import (
 class Command(BaseCommand):
     help = "Заполнение базы тестовыми данными"
 
-    def load_image(self):
+    def load_image_partners(self, filename):
+        image_path = settings.BASE_DIR / "media" / "partners" / filename
+
+        if not image_path.exists():
+            return None
+
+        with open(image_path, "rb") as file:
+            return SimpleUploadedFile(
+                filename,
+                file.read(),
+                content_type="image/png",
+        )
+
+    def load_image_staff(self, filename):
+                image_path = settings.BASE_DIR / "media" / "staff_photos" / filename
+        
+                if not image_path.exists():
+                    return None
+        
+                with open(image_path, "rb") as file:
+                    return SimpleUploadedFile(
+                        filename,
+                        file.read(),
+                        content_type="image/png",
+                )
+
+    def load_image_news(self, filename):
+                    image_path = settings.BASE_DIR / "media" / "news" / filename
+            
+                    if not image_path.exists():
+                        return None
+            
+                    with open(image_path, "rb") as file:
+                        return SimpleUploadedFile(
+                            filename,
+                            file.read(),
+                            content_type="image/png",
+                    )
+
+    def load_image_placeholder(self):
         """Загружает изображение из media/images.jpeg"""
         image_path = settings.BASE_DIR / "media" / "images.jpeg"
         if image_path.exists():
@@ -373,7 +412,7 @@ class Command(BaseCommand):
 
 
 
-        image = self.load_image()
+        image = self.load_image_placeholder()
 
         Contact.objects.create(
             type="phone",
@@ -403,6 +442,8 @@ class Command(BaseCommand):
             photo=image if image else None,
         )
 
+        employees_images = ["employees_image1.jpeg", "employees_image2.jpeg", "employees_image3.jpeg"]
+
         Contact.objects.create(
             type=Contact.ContactType.EMPLOYEE,
             value="ivanov-manager",
@@ -411,7 +452,7 @@ class Command(BaseCommand):
             phone_number="+375 (29) 111-11-11",
             email_address="ivanov@zooshop.by",
             is_primary=False,
-            photo=image if image else None,
+            photo=self.load_image_staff(employees_images[0]),
         )
 
         Contact.objects.create(
@@ -422,7 +463,7 @@ class Command(BaseCommand):
             phone_number="+375 (29) 222-22-22",
             email_address="petrova@zooshop.by",
             is_primary=False,
-            photo=image if image else None,
+            photo=self.load_image_staff(employees_images[1]),
         )
 
         Contact.objects.create(
@@ -433,7 +474,7 @@ class Command(BaseCommand):
             phone_number="+375 (29) 333-33-33",
             email_address="sidorov@zooshop.by",
             is_primary=False,
-            photo=image if image else None,
+            photo=self.load_image_staff(employees_images[2]),
         )
 
 
@@ -475,15 +516,15 @@ class Command(BaseCommand):
         )
 
         partners_data = [
-            ("Royal Canin", "https://www.royalcanin.com/"),
-            ("Hills", "https://www.hillspet.com/"),
-            ("Purina", "https://www.purina.com/"),
+            ("Royal Canin", "https://www.royalcanin.com/", "royal-canin.png"),
+            ("Hills", "https://www.hillspet.com/", "hills.avif"),
+            ("Felix", "https://www.nestle.com/brands/petcare/felix", "felix.png"),
         ]
-        for i, (pname, purl) in enumerate(partners_data):
+        for i, (pname, purl, filename) in enumerate(partners_data):
             Partner.objects.create(
                 name=pname,
                 url=purl,
-                logo=image if image else None,
+                logo=self.load_image_partners(filename),
                 is_active=True,
                 sort_order=i,
             )
@@ -509,16 +550,58 @@ class Command(BaseCommand):
                 is_active=True,
             )
 
+        articles_content = [
+            (
+                "Как выбрать корм для питомца",
+                "Разбираем основные критерии выбора корма с учетом возраста, размера и активности животного.",
+            ),
+            (
+                "Весенняя проверка здоровья питомца",
+                "Весной особенно важно проверить состояние шерсти, зубов и кожи питомца, а также обновить график профилактических обработок.",
+            ),
+            (
+                "Игрушки для активных собак",
+                "Подобрали безопасные игрушки, которые помогают собаке двигаться, развивать смекалку и не скучать дома.",
+            ),
+            (
+                "Как подготовить кошку к поездке",
+                "Рассказываем, как выбрать переноску, собрать необходимые вещи и снизить стресс кошки во время дороги.",
+            ),
+            (
+                "Уход за шерстью в сезон линьки",
+                "Регулярное вычесывание и правильно подобранные средства помогут питомцу легче перенести сезонную линьку.",
+            ),
+            # (
+            #     "Полезные лакомства для дрессировки",
+            #     "Объясняем, как подобрать размер и состав лакомств, чтобы поощрение оставалось полезным и не нарушало рацион.",
+            # ),
+            # (
+            #     "Обустройство комфортного места для сна",
+            #     "Советы по выбору лежанки, ее размеру и расположению, чтобы питомец мог спокойно отдыхать в любое время.",
+            # ),
+            # (
+            #     "Безопасность питомца дома",
+            #     "Проверяем квартиру на потенциальные опасности и рассказываем, как сделать повседневную обстановку безопаснее.",
+            # ),
+            # (
+            #     "Рацион для пожилых животных",
+            #     "С возрастом потребности питомца меняются, поэтому рацион должен учитывать активность, вес и рекомендации ветеринара.",
+            # ),
+            # (
+            #     "Новинки в ассортименте магазина",
+            #     "В каталог поступили новые корма, аксессуары и игрушки для собак, кошек, птиц и грызунов.",
+            # ),
+        ]
 
-        for i in range(1, 11):
+        for i, (summary, body) in enumerate(articles_content, start=1):
             NewsArticle.objects.create(
-                title=f"Новость магазина №{i}",
-                slug=f"news-{i}",
-                summary=f"Кратко: важные обновления зоомагазина №{i}.",
-                body=f"Содержимое новости №{i}. Полный текст статьи для демонстрации раздела новостей.",
-                published_at=timezone.now(),
+                title=f"Новость магазина №{6 - i}",
+                slug=f"news-{6 - i}",
+                summary=summary,
+                body=body,
+                published_at=timezone.now() - timedelta(days=i),
                 is_published=True,
-                image=image if image else None,
+                image=self.load_image_news(f"article_image{5 - i}.jpeg"),
             )
 
 

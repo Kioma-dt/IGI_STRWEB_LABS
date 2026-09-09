@@ -11,7 +11,10 @@ from apps.common.models import (
     Vacancy,
     Contact,
     CompanyInfo,
-    PickupPoint
+    CompanyHistoryEntry,
+    Partner,
+    Banner,
+    PickupPoint,
 )
 
 from apps.suppliers.models import (
@@ -36,6 +39,12 @@ from apps.reviews.models import (
 
 from apps.news.models import (
     NewsArticle,
+)
+
+from apps.users.models import (
+    CustomerProfile,
+    EmployeeProfile,
+    ShopPermission,
 )
 
 
@@ -72,6 +81,7 @@ class Command(BaseCommand):
 
         NewsArticle.objects.all().delete()
 
+        CompanyHistoryEntry.objects.all().delete()
 
         FAQ.objects.all().delete()
 
@@ -83,6 +93,8 @@ class Command(BaseCommand):
 
         CompanyInfo.objects.all().delete()
 
+        Partner.objects.all().delete()
+        Banner.objects.all().delete()
 
         PickupPoint.objects.all().delete()
 
@@ -97,6 +109,10 @@ class Command(BaseCommand):
 
 
         Supplier.objects.all().delete()
+
+        CustomerProfile.objects.all().delete()
+        EmployeeProfile.objects.all().delete()
+        ShopPermission.objects.all().delete()
 
         self.stdout.write(
             self.style.SUCCESS(
