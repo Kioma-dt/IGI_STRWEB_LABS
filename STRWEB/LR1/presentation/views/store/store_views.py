@@ -258,7 +258,7 @@ class StoreContactsView(FormView):
     def form_valid(self, form):
         messages.success(
             self.request,
-            "Сообщение принято (демо: данные не сохраняются на сервере). "
+            "Сообщение принято"
             "Проверьте поля формы — валидация прошла успешно.",
         )
         return super().form_valid(form)

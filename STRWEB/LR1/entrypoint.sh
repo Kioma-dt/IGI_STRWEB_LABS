@@ -17,8 +17,11 @@ python manage.py migrate --noinput
 echo "Creating superuser (if not exists)..."
 python manage.py bootstrap_superuser || true
 
-python manage.py clear_db
-python manage.py seed_data
+if python manage.py shell -c "from apps.catalog.models import Product; raise SystemExit(0 if Product.objects.exists() else 1)"; then
+  echo "Seed data already exists; skipping seed."
+else
+  python manage.py seed_data
+fi
 
 echo "Starting Gunicorn..."
 exec gunicorn zooshop.wsgi:application \

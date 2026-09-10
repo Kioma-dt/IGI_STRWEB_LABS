@@ -21,49 +21,32 @@
 
   <section aria-labelledby="staff" id="staff">
     <h2 id="staff-title">Сотрудники</h2>
+    <ul type="square">
     {% for e in employees %}
       <article data-employee="{{ e.value }}">
-        <h3>{% if e.employee_name %}{{ e.employee_name }}{% else %}{{ e.value }}{% endif %}</h3>
-        <figure>
-          <img
-            src="{% if e.photo %}{{ e.photo.url }}{% else %}{% static 'images/staff/staff-placeholder.jpg' %}{% endif %}"
-            alt="Фото сотрудника {% if e.employee_name %}{{ e.employee_name }}{% else %}{{ e.value }}{% endif %}"
-          >
-          <figcaption>{% if e.employee_name %}{{ e.employee_name }}{% else %}{{ e.value }}{% endif %}</figcaption>
-        </figure>
-        {% if e.job_description %}<div>{{ e.job_description|linebreaks }}</div>{% endif %}
-        {% if e.phone_number %}
-          <p>Телефон: <a href="tel:{{ e.phone_number|tel_href }}">{{ e.phone_number }}</a></p>
-        {% endif %}
-        {% if e.email_address %}
-          <p>Почта: <a href="mailto:{{ e.email_address }}">{{ e.email_address }}</a></p>
-        {% endif %}
+        <li>
+          <h3>{{ e.employee_name }}</h3>
+            <img
+              src="{% if e.photo %}{{ e.photo.url }}{% endif %}"
+              alt="Фото сотрудника {{ e.employee_name }}"
+              width="400"
+              height="300"
+            >
+          {% if e.job_description %}<div>{{ e.job_description|linebreaks }}</div>{% endif %}
+          {% if e.phone_number %}
+            <p>Телефон: <a href="tel:{{ e.phone_number|tel_href }}">{{ e.phone_number }}</a></p>
+          {% endif %}
+          {% if e.email_address %}
+            <p>Почта: <a href="mailto:{{ e.email_address }}">{{ e.email_address }}</a></p>
+          {% endif %}
+        </li>
       </article>
     {% empty %}
       <p>Нет записей о сотрудниках.</p>
     {% endfor %}
-  </section>
-
-  <section aria-labelledby="lst">
-    <h2 id="lst">Контактные данные</h2>
-    <ul>
-      {% for c in contacts %}
-        <li>
-          {{ c.get_type_display }}:
-          {% if c.type == "email" %}
-            <a href="mailto:{{ c.value }}">{{ c.value }}</a>
-          {% elif c.type == "phone" %}
-            <a href="tel:{{ c.value|tel_href }}">{{ c.value }}</a>
-          {% else %}
-            {{ c.value }}
-          {% endif %}
-          {% if c.is_primary %} <small>(основной)</small>{% endif %}
-        </li>
-      {% empty %}
-        <li>Нет записей.</li>
-      {% endfor %}
     </ul>
   </section>
+
 
   <section aria-labelledby="map-h" id="map">
     <h2 id="map-h">Карта проезда</h2>
@@ -166,7 +149,7 @@
         </p>
 
         <p>
-          <label for="id_accent">Любимый цвет питомца (для демо color)</label>
+          <label for="id_accent">Любимый цвет питомца</label>
           <input type="color" name="accent" id="id_accent" value="{{ form.accent.value|default:'#2d6a4f' }}">
         </p>
 

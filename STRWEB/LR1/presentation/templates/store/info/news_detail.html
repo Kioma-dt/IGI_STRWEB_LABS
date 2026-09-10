@@ -24,14 +24,13 @@
     <p><a href="{% url 'store:news-list' %}">Все новости</a></p>
   </aside>
 
-  <figure>
     <img
-      src="{% if article.image %}{{ article.image.url }}{% else %}{% static 'images/news/news-placeholder.jpg' %}{% endif %}"
-      alt="Иллюстрация к статье: {{ article.title }}"
+      src="{{ article.image.url }}"
+      alt="Иллюстрация к статье: {{ article.title }}"        
+      width="400"
+      height="300"
       itemprop="image"
     >
-    <figcaption>{{ article.title }}</figcaption>
-  </figure>
 
   {% if article.summary %}
     <p><strong itemprop="description">{{ article.summary }}</strong></p>

@@ -28,9 +28,7 @@
     >
       <details>
         <summary>
-          <h2>
-            <dfn itemprop="name">{{ row.question }}</dfn>
-          </h2>
+          <dfn itemprop="name">{{ row.question }}</dfn>
           <small>
             (добавлено:
             <time datetime="{{ row.created_at|iso8601 }}">{{ row.created_at|date:"d.m.Y" }}</time>)
