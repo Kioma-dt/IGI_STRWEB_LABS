@@ -18,9 +18,11 @@ python manage.py collectstatic --noinput
 echo "Creating superuser (if not exists)..."
 python manage.py bootstrap_superuser || true
 
-if python manage.py shell -c "from apps.catalog.models import Product; raise SystemExit(0 if Product.objects.exists() else 1)"; then
+if python manage.py shell -c "from apps.catalog.models import Product; from apps.common.models import Contact; raise SystemExit(0 if Product.objects.exists() and Contact.objects.filter(type='employee', value='ivanov-manager').exists() else 1)"; then
   echo "Seed data already exists; skipping seed."
 else
+  echo "Incomplete seed data detected; clearing it before reseeding..."
+  python manage.py clear_db
   python manage.py seed_data
 fi
 
