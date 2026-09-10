@@ -21,22 +21,23 @@
   </p>
 </section>
 
-<aside id="promo-banner" aria-labelledby="banner-h" data-banner-id="{% if banner %}{{ banner.id }}{% endif %}">
+<aside id="promo-banner" aria-labelledby="banner-h">
   <h2 id="banner-h">Рекламный баннер</h2>
-    <figure>
-      <picture>
-        <source media="(max-width: 600px)" srcset="{% static 'images/banners/banner-mobile.jpg' %}">
-        <img
-          src="{% static 'images/banners/banner-desktop.jpeg' %}"
-          alt="Акция ЗооМаркет: скидки на корма"
-          srcset="{% static 'images/banners/banner-desktop.jpeg' %} 1200w, {% static 'images/banners/banner-mobile.jpg' %} 600w"
-          sizes="(max-width: 600px) 100vw, 1200px"
-          width="1200"
-          height="400"
-        >
-      </picture>
-      <figcaption>Сезонная акция на сухие корма</figcaption>
-    </figure>
+  <picture>
+    <source
+        media="(max-width: 1000px)"
+        srcset="{% static 'images/banners/banner-small.jpg' %}"
+        width="320"
+        height="420"
+    >
+
+    <img
+        src="{% static 'images/banners/banner-big.jpeg' %}"
+        alt="Акция ЗооМаркет: скидки на корма"
+        width="1000"
+        height="400"
+    >
+</picture>
 </aside>
 
 <section id="catalog-preview" aria-labelledby="feat">
@@ -97,14 +98,11 @@
       {% for partner in partners %}
         <li>
           <figure>
-            <a href="{{ partner.url }}" rel="noopener noreferrer" title="Сайт партнёра {{ partner.name }}">
-              {% if partner.logo %}
-                <img src="{{ partner.logo.url }}" alt="Логотип {{ partner.name }}">
-              {% else %}
-                <img src="{% static 'images/partners/partner-placeholder.png' %}" alt="Логотип {{ partner.name }}">
-              {% endif %}
-            </a>
             <figcaption>{{ partner.name }}</figcaption>
+            <a href="{{ partner.url }}" rel="noopener noreferrer" title="Сайт партнёра {{ partner.name }}">
+                <img src="{{ partner.logo.url }}" alt="Логотип {{ partner.name }}"
+                width="400" height="300">
+            </a>
           </figure>
         </li>
       {% endfor %}

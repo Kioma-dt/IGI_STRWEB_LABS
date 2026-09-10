@@ -57,7 +57,7 @@ class Command(BaseCommand):
     help = "Заполнение базы тестовыми данными"
 
     def load_image_partners(self, filename):
-        image_path = settings.BASE_DIR / "media" / "partners" / filename
+        image_path = settings.BASE_DIR / "static" / "images" / "partners" / filename
 
         if not image_path.exists():
             return None
@@ -70,7 +70,7 @@ class Command(BaseCommand):
         )
 
     def load_image_staff(self, filename):
-                image_path = settings.BASE_DIR / "media" / "staff_photos" / filename
+                image_path = settings.BASE_DIR / "static" / "images" / "staff" / filename
         
                 if not image_path.exists():
                     return None
@@ -83,7 +83,7 @@ class Command(BaseCommand):
                 )
 
     def load_image_news(self, filename):
-                    image_path = settings.BASE_DIR / "media" / "news" / filename
+                    image_path = settings.BASE_DIR / "static" / "images" / "news" / filename
             
                     if not image_path.exists():
                         return None
@@ -95,9 +95,21 @@ class Command(BaseCommand):
                             content_type="image/png",
                     )
 
+    def load_image_company(self, filename):
+                        image_path = settings.BASE_DIR / "static"   / "images" / "company" / filename
+                
+                        if not image_path.exists():
+                            return None
+                
+                        with open(image_path, "rb") as file:
+                            return SimpleUploadedFile(
+                                filename,
+                                file.read(),
+                                content_type="image/png",
+                        )
+
     def load_image_placeholder(self):
-        """Загружает изображение из media/images.jpeg"""
-        image_path = settings.BASE_DIR / "media" / "images.jpeg"
+        image_path = settings.BASE_DIR / "static" / "images" / "placeholder.jpeg"
         if image_path.exists():
             with open(image_path, "rb") as f:
                 return SimpleUploadedFile(
@@ -496,7 +508,7 @@ class Command(BaseCommand):
                 "Выдан уполномоченным органом. Действует на территории РБ."
             ),
             is_current=True,
-            logo=image if image else None,
+            logo=self.load_image_company("logo.jpeg"),
         )
 
         CompanyHistoryEntry.objects.create(
@@ -534,7 +546,7 @@ class Command(BaseCommand):
         ):
             Banner.objects.create(
                 title=title,
-                image=image if image else None,
+                image=None,
                 link_url="/shop/catalog/",
                 is_active=True,
                 sort_order=i,
@@ -621,7 +633,7 @@ class Command(BaseCommand):
 
             promo_codes.append(promo)
 
-        # Архивные промокоды (истёкшие / неактивные)
+
         PromoCode.objects.create(
             code="OLD2020",
             discount_percent=Decimal("10.00"),
