@@ -442,7 +442,7 @@ class Command(BaseCommand):
 
         Contact.objects.create(
             type="address",
-            value="г. Минск, ул. Центральная 10",
+            value="г. Минск, ул. Гикало 9",
             is_primary=True,
             photo=image if image else None,
         )
@@ -492,7 +492,7 @@ class Command(BaseCommand):
 
         company = CompanyInfo.objects.create(
             name="ЗооМаркет",
-            legal_address="г. Минск, ул. Ленина 15",
+            legal_address="г. Минск, ул. Гикало 9",
             about="Сеть магазинов товаров для животных.",
             support_email="support@zooshop.by",
             phone="+375 (29) 888-88-88",

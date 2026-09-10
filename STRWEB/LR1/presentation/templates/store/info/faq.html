@@ -19,28 +19,32 @@
     <hr>
   {% endif %}
 
-  {% for row in faq_list %}
-    <article
-      itemscope
-      itemprop="mainEntity"
-      itemtype="https://schema.org/Question"
-      data-faq-id="{{ row.id }}"
-    >
-      <details>
-        <summary>
-          <dfn itemprop="name">{{ row.question }}</dfn>
-          <small>
-            (добавлено:
-            <time datetime="{{ row.created_at|iso8601 }}">{{ row.created_at|date:"d.m.Y" }}</time>)
-          </small>
-        </summary>
-        <div itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer">
-          <div itemprop="text">{{ row.answer|safe }}</div>
-        </div>
-      </details>
-    </article>
-  {% empty %}
-    <p>Раздел пуст.</p>
+  <ol>
+    {% for row in faq_list %}
+    <li>
+      <article
+        itemscope
+        itemprop="mainEntity"
+        itemtype="https://schema.org/Question"
+        data-faq-id="{{ row.id }}"
+      >
+        <details>
+          <summary>
+            <dfn itemprop="name">{{ row.question }}</dfn>
+            <small>
+              (добавлено:
+              <time datetime="{{ row.created_at|iso8601 }}">{{ row.created_at|date:"d.m.Y" }}</time>)
+            </small>
+          </summary>
+          <div itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer">
+            <div itemprop="text">{{ row.answer|safe }}</div>
+          </div>
+        </details>
+      </article>
+    </li>
+    {% empty %}
+      <p>Раздел пуст.</p>
   {% endfor %}
+  </ol>
 </section>
 {% endblock %}

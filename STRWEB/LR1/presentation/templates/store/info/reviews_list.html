@@ -56,10 +56,6 @@
           {{ review_form.rating.errors }}
         </p>
         <p>
-          <label for="id_rating_range">Или ползунок оценки</label>
-          <input type="range" id="id_rating_range" min="1" max="5" step="1" value="5" title="Демо range; отправьте radio-оценку выше">
-        </p>
-        <p>
           <label for="id_title">Заголовок</label>
           <input type="text" name="title" id="id_title" required maxlength="255" minlength="3" value="{{ review_form.title.value|default_if_none:'' }}">
           {{ review_form.title.errors }}

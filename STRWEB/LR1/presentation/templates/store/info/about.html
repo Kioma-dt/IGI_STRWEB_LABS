@@ -12,18 +12,20 @@
 
   <nav id="about-toc" aria-label="Вертикальное оглавление страницы О компании">
     <ol>
-      <li><a href="#about-mission">Миссия</a></li>
-      <li><a href="#about-history">История</a></li>
-      <li><a href="#about-media">Видео и аудио</a></li>
-      <li><a href="#about-requisites">Реквизиты</a></li>
-      <li><a href="#about-certificate">Сертификат</a></li>
-      <li><a href="#about-verse">Слоган в стихах</a></li>
-      <li><a href="#about-code">Пример данных</a></li>
+      <li><a href="#about-mission" accesskey="m">Миссия</a></li>
+      <li><a href="#about-history" accesskey="h">История</a></li>
+      <li><a href="#about-media" accesskey="v">Видео и аудио</a></li>
+      <li><a href="#about-requisites" accesskey="r">Реквизиты</a></li>
+      <li><a href="#about-certificate" accesskey="c">Сертификат</a></li>
+      <li><a href="#about-verse" accesskey="p">Слоган в стихах</a></li>
+      <li><a href="#about-code" accesskey="d">Пример данных</a></li>
     </ol>
   </nav>
 
     <figure>
-      <img src="{% static 'images/company/logo.jpeg' %}" alt="Логотип ЗооМаркет" itemprop="logo">
+      <img src="{% static 'images/company/logo.jpeg' %}" 
+      alt="Логотип ЗооМаркет" itemprop="logo"
+      width="450" height="400">
       <figcaption>Официальный логотип компании</figcaption>
     </figure>
 
@@ -134,18 +136,51 @@
 
   <section id="about-certificate">
     <h2>Сертификат</h2>
-    <figure>
-      <img
-        src="{% if company and company.certificate_image %}{{ company.certificate_image.url }}{% else %}{% static 'images/company/certificate.jpg' %}{% endif %}"
-        alt="Скан сертификата соответствия ЗооМаркет"
-      >
-      <figcaption>Сертификат соответствия на розничную торговлю зоотоварами</figcaption>
-    </figure>
-    {% if company and company.certificate_text %}
-      <div>{{ company.certificate_text|linebreaks }}</div>
-    {% else %}
-      <p>Документ подтверждает право на розничную торговлю кормами и товарами для животных.</p>
-    {% endif %}
+    <div>
+    <header>
+        <p>СЕРТИФИКАТ ЗООМАГАЗИНА</p>
+        <p>ZOOSHOP</p>
+    </header>
+    <main>
+        <h1>ZOOSHOP</h1>
+        <h2>СЕРТИФИКАТ</h2>
+        <p>о предоставлении скидки</p>
+        <p>
+            Настоящим сертификатом подтверждается право
+            на получение скидки в зоомагазине
+        </p>
+        <h3>ZooShop</h3>
+        <p>
+            Номер сертификата: ZS-000001
+        </p>
+        <p>
+            Размер скидки: 10%
+        </p>
+        <p>
+            Дата выдачи: 10 сентября 2026 г.
+        </p>
+        <p>
+            Срок действия: до 10 декабря 2026 г.
+        </p>
+    </main>
+
+    <footer>
+        <p>Зоомагазин «ZooShop»</p>
+        <p>
+            Корма, игрушки и товары для домашних животных
+        </p>
+        <p>
+            Адрес: г. Минск, ул. Гикало, 9
+        </p>
+        <p>
+            Телефон: +375 (29) 888-88-88
+        </p>
+        <p>
+            Email: info@zooshop.by
+        </p>
+        <p>Подпись представителя магазина: __________________</p>
+    </footer>
+</div>
   </section>
 
   <section id="about-verse">
@@ -159,7 +194,10 @@
     </p>
     <p><strong>Вариант с мягким переносом (обычный абзац):</strong></p>
     <p>
-      Корм свежий — миска полна, игрушка ждет у окна, хвост виляет от тепла — ЗооМаркет: забота видна.
+      Корм свежий — миска полна,<wbr>
+      Игрушка ждет у окна,<wbr>
+      Хвост виляет от тепла —<wbr>
+      ЗооМаркет: забота видна.
     </p>
   </section>
 
