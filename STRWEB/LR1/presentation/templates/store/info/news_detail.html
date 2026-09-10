@@ -20,13 +20,23 @@
     <p><a href="{% url 'store:news-list' %}">Все новости</a></p>
   </aside>
 
-    <img
-      src="{{ article.image.url }}"
-      alt="Иллюстрация к статье: {{ article.title }}"        
-      width="400"
-      height="300"
-      itemprop="image"
-    >
+    {% if article.image %}
+      <img
+        src="{{ article.image.url }}"
+        alt="Иллюстрация к статье: {{ article.title }}"
+        width="400"
+        height="300"
+        itemprop="image"
+      >
+    {% else %}
+      <img
+        src="{% static 'images/placeholder.jpeg' %}"
+        alt="Иллюстрация к статье: {{ article.title }}"
+        width="400"
+        height="300"
+        itemprop="image"
+      >
+    {% endif %}
 
   {% if article.summary %}
     <p><strong itemprop="description">{{ article.summary }}</strong></p>

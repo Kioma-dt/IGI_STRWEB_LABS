@@ -9,12 +9,21 @@
   {% for a in articles %}
     <article>
       <h2>{{ a.title }}</h2>
-        <img
-          src="{{ a.image.url }}"
-          alt="Иллюстрация к статье: {{ article.title }}"
-          width="400"
-          height="300"
-        >
+        {% if a.image %}
+          <img
+            src="{{ a.image.url }}"
+            alt="Иллюстрация к статье: {{ a.title }}"
+            width="400"
+            height="300"
+          >
+        {% else %}
+          <img
+            src="{% static 'images/placeholder.jpeg' %}"
+            alt="Иллюстрация к статье: {{ a.title }}"
+            width="400"
+            height="300"
+          >
+        {% endif %}
       <p>
         <time datetime="{{ a.published_at|iso8601 }}">{{ a.published_at|date:"d.m.Y H:i" }}</time>
       </p>

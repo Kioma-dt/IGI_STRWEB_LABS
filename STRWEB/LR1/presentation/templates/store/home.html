@@ -100,8 +100,13 @@
           <figure>
             <figcaption>{{ partner.name }}</figcaption>
             <a href="{{ partner.url }}" rel="noopener noreferrer" title="Сайт партнёра {{ partner.name }}">
-                <img src="{{ partner.logo.url }}" alt="Логотип {{ partner.name }}"
-                width="400" height="300">
+                {% if partner.logo %}
+                  <img src="{{ partner.logo.url }}" alt="Логотип {{ partner.name }}"
+                  width="400" height="300">
+                {% else %}
+                  <img src="{% static 'images/placeholder.jpeg' %}" alt="Логотип {{ partner.name }}"
+                  width="400" height="300">
+                {% endif %}
             </a>
           </figure>
         </li>

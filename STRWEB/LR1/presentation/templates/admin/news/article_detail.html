@@ -28,7 +28,9 @@
 <h3>Изображение</h3>
 {% if article.image %}
   <div>
-    <img src="{{ article.image.url }}" alt="{{ article.title }}" style="max-width: 400px; height: auto;">
+    {% if article.image %}
+      <img src="{{ article.image.url }}" alt="{{ article.title }}" style="max-width: 400px; height: auto;">
+    {% endif %}
   </div>
 {% else %}
   <p>—</p>
