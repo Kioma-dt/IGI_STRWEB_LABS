@@ -51,6 +51,10 @@ DATABASES = {
     },
 }
 
+INSTALLED_APPS.insert(0, "whitenoise.runserver_nostatic")
+MIDDLEWARE.insert(1, "whitenoise.middleware.WhiteNoiseMiddleware")
+STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
+
 SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
 
 # Для локальной разработки отключаем HTTPS требования

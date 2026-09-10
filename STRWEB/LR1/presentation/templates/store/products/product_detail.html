@@ -3,11 +3,6 @@
 {% block title %}{{ product.name }} · ЗооМаркет{% endblock %}
 {% block meta_description %}{{ product.name }} — купить в ЗооМаркет. Артикул {{ product.sku }}, цена {{ product.base_price }} BYN.{% endblock %}
 {% block meta_keywords %}{{ product.name }}, зоотовары, купить корм, {{ product.sku }}{% endblock %}
-{% block og_type %}product{% endblock %}
-{% block og_title %}{{ product.name }} · ЗооМаркет{% endblock %}
-{% block og_description %}{{ product.description|striptags|truncatewords:30 }}{% endblock %}
-{% block og_image %}{% if product.image %}{{ product.image.url }}{% else %}{% static 'images/products/product-placeholder.jpg' %}{% endif %}{% endblock %}
-
 {% block content %}
 <article itemscope itemtype="https://schema.org/Product" data-product-sku="{{ product.sku }}">
   <h1 itemprop="name">{{ product.name }}</h1>
@@ -30,8 +25,8 @@
       </picture>
     {% else %}
       <picture>
-        <source media="(max-width: 600px)" srcset="{% static 'images/products/product-placeholder.jpg' %}">
-        <img src="{% static 'images/products/product-placeholder.jpg' %}" alt="Фото: {{ product.name }}" itemprop="image">
+        <source media="(max-width: 600px)" srcset="{% static 'images/placeholder.jpeg' %}">
+        <img src="{% static 'images/placeholder.jpeg' %}" alt="Фото: {{ product.name }}" itemprop="image">
       </picture>
     {% endif %}
     <figcaption>{{ product.name }}</figcaption>

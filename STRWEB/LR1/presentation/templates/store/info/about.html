@@ -3,8 +3,6 @@
 {% block title %}О компании · ЗооМаркет{% endblock %}
 {% block meta_description %}О компании ЗооМаркет: история, реквизиты, сертификаты и миссия магазина зоотоваров.{% endblock %}
 {% block meta_keywords %}о компании, ЗооМаркет, реквизиты, сертификат, история{% endblock %}
-{% block og_title %}О компании ЗооМаркет{% endblock %}
-{% block og_description %}Узнайте историю сети ЗооМаркет, реквизиты и сертификаты качества.{% endblock %}
 
 {% block content %}
 <section id="about-top" itemscope itemtype="https://schema.org/Organization" data-section="about">
@@ -21,10 +19,10 @@
       <li><a href="#about-code" accesskey="d">Пример данных</a></li>
     </ol>
   </nav>
-
+    <h1 translate="false">ZooShop</h1>
     <figure>
       <img src="{% static 'images/company/logo.jpeg' %}" 
-      alt="Логотип ЗооМаркет" itemprop="logo"
+      alt="Логотип ZooShop" itemprop="logo"
       width="450" height="400">
       <figcaption>Официальный логотип компании</figcaption>
     </figure>
@@ -56,12 +54,15 @@
         опираясь на рекомендации ветеринаров и опыт розничной сети.
       </p>
     {% endif %}
-    <blockquote cite="https://schema.org/Organization">
-      <p>
-        <q>Здоровый питомец — спокойный хозяин.</q>
-        — девиз консультантов зала ЗооМаркет.
-      </p>
-    </blockquote>
+    <p>
+      <b translate="no">ZooShop</b> — это <em>забота о питомцах каждый день</em>,
+      а <i>внимательный подбор товаров</i> помогает сделать жизнь владельца проще.
+      <mark>Все рекомендации имеют информационный характер.</mark>
+    </p>
+      <blockquote>
+        <q cite="Уилл Роджерс">Тот, кто говорит, что счастье не купишь, никогда не покупал щенка</q>
+        <cite>Уилл Роджерс</cite>
+      </blockquote>
     <p>
       Компания сотрудничает с выпускниками
       <abbr title="Белорусский государственный университет информатики и радиоэлектроники">БГУИР</abbr>
@@ -73,7 +74,7 @@
     <h2>История по годам</h2>
     {% if history_entries %}
       <table>
-        <caption>Ключевые этапы развития сети ЗооМаркет</caption>
+        <caption>Ключевые этапы развития сети ZooShop</caption>
         <thead>
           <tr>
             <th id="hist-year" scope="col">Год</th>
@@ -84,7 +85,9 @@
         <tbody>
           {% for entry in history_entries %}
             <tr>
-              <th id="hist-row-{{ entry.year }}" scope="row" headers="hist-year">{{ entry.year }}</th>
+              <th id="hist-row-{{ entry.year }}" scope="row" headers="hist-year">
+                <time datetime="{{ entry.year }}-01-01">{{ entry.year }}</time>
+              </th>
               <td headers="hist-event hist-row-{{ entry.year }}">{{ entry.description }}</td>
               {% if forloop.first %}
                 <td headers="hist-note hist-row-{{ entry.year }}" rowspan="{{ history_entries|length }}">
@@ -107,14 +110,14 @@
   <section id="about-media">
     <h2>Видео и аудио о компании</h2>
     <figure>
-      <video id="company-video" controls preload="metadata" title="Видеоролик о ЗооМаркет">
+      <video id="company-video" controls preload="metadata" title="Видеоролик о ZooShop">
           <source src="{% static 'videos/company.mp4' %}" type="video/mp4">
         Ваш браузер не поддерживает воспроизведение видео.
       </video>
       <figcaption>Короткий ролик о магазине и ассортименте</figcaption>
     </figure>
     <figure>
-      <audio id="company-audio" controls preload="metadata" title="Аудиоприветствие ЗооМаркет">
+      <audio id="company-audio" controls preload="metadata" title="Аудиоприветствие ZooShop">
           <source src="{% static 'audio/company-welcome.mp3' %}" type="audio/mpeg">
         Ваш браузер не поддерживает воспроизведение аудио.
       </audio>
@@ -137,11 +140,8 @@
   <section id="about-certificate">
     <h2>Сертификат</h2>
     <div>
-    <header>
         <p>СЕРТИФИКАТ ЗООМАГАЗИНА</p>
         <p>ZOOSHOP</p>
-    </header>
-    <main>
         <h1>ZOOSHOP</h1>
         <h2>СЕРТИФИКАТ</h2>
         <p>о предоставлении скидки</p>
@@ -157,17 +157,15 @@
             Размер скидки: 10%
         </p>
         <p>
-            Дата выдачи: 10 сентября 2026 г.
+            Дата выдачи: <time datetime="2026-09-10">10 сентября 2026 г.</time>
         </p>
         <p>
-            Срок действия: до 10 декабря 2026 г.
+            Срок действия: до <time datetime="2026-12-10">10 декабря 2026 г.</time>
         </p>
-    </main>
 
-    <footer>
         <p>Зоомагазин «ZooShop»</p>
         <p>
-            Корма, игрушки и товары для домашних животных
+            Корма, игрушки и <u>товары для домашних животных</u>
         </p>
         <p>
             Адрес: г. Минск, ул. Гикало, 9
@@ -176,34 +174,43 @@
             Телефон: +375 (29) 888-88-88
         </p>
         <p>
-            Email: info@zooshop.by
+            Email: <small>info@zooshop.by</small>
         </p>
+        <p><s>Старая скидка: 5%</s></p>
         <p>Подпись представителя магазина: __________________</p>
-    </footer>
 </div>
   </section>
 
   <section id="about-verse">
     <h2>Слоган в четверостишии</h2>
-    <p><strong>Вариант с жёстким переносом (<code>&lt;br&gt;</code>):</strong></p>
+    <p><strong>Вариант с <code>&lt;br&gt;</code>:</strong></p>
     <p>
       Корм свежий — миска полна,<br>
       Игрушка ждет у окна,<br>
       Хвост виляет от тепла —<br>
-      ЗооМаркет: забота видна.
+      ZooShop: забота видна.
     </p>
-    <p><strong>Вариант с мягким переносом (обычный абзац):</strong></p>
-    <p>
-      Корм свежий — миска полна,<wbr>
-      Игрушка ждет у окна,<wbr>
-      Хвост виляет от тепла —<wbr>
-      ЗооМаркет: забота видна.
-    </p>
+    <p><strong>Вариант с <code>&lt;pre&gt;</code>:</strong></p>
+    <pre>
+      Корм свежий — миска полна,
+      Игрушка ждет у окна,
+      Хвост виляет от тепла —
+      ZooShop: забота видна.
+    </pre>
   </section>
 
   <section id="about-code">
     <h2>Пример листинга данных заказа</h2>
     <p>Фрагмент JSON, который витрина передаёт в сервис оформления (учебный пример):</p>
+    <p>
+      Переменная <var>quantity</var> задаёт количество товара,
+      а результат команды отображается как <samp>order_created</samp>.
+      Для отправки формы нажмите <kbd>Ctrl</kbd> + <kbd>Enter</kbd>.
+    </p>
+    <p>
+      <dfn>SKU</dfn> — уникальный код товара.
+      Подробнее термин описан в внутренней инструкции ZooShop.
+    </p>
     <pre><code>{
   "shop": "ZooMarket",
   "currency": "BYN",

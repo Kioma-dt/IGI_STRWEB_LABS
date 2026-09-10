@@ -23,8 +23,8 @@
     <h2 id="staff-title">Сотрудники</h2>
     <ul type="square">
     {% for e in employees %}
+      <li>
       <article data-employee="{{ e.value }}">
-        <li>
           <h3>{{ e.employee_name }}</h3>
             <img
               src="{% if e.photo %}{{ e.photo.url }}{% endif %}"
@@ -39,8 +39,8 @@
           {% if e.email_address %}
             <p>Почта: <a href="mailto:{{ e.email_address }}">{{ e.email_address }}</a></p>
           {% endif %}
-        </li>
       </article>
+      </li>
     {% empty %}
       <p>Нет записей о сотрудниках.</p>
     {% endfor %}
@@ -64,7 +64,7 @@
 
   <section aria-labelledby="fb" id="feedback">
     <h2 id="fb">Написать нам</h2>
-    <form method="post" enctype="multipart/form-data" novalidate>
+    <form method="post" enctype="multipart/form-data">
       {% csrf_token %}
       <fieldset>
         <legend>Обратная связь</legend>
@@ -160,7 +160,14 @@
 
         <p>
           <label for="id_message">Сообщение</label>
-          <textarea name="message" id="id_message" rows="6" cols="60" required minlength="10" maxlength="4000">{{ form.message.value|default_if_none:'' }}</textarea>
+          <textarea name="message" 
+          id="id_message" 
+          rows="6" 
+          cols="60" 
+          required
+          minlength="10" 
+          maxlength="4000"
+          contenteditable spellcheck>{{ form.message.value|default_if_none:'' }}</textarea>
           {{ form.message.errors }}
         </p>
       </fieldset>

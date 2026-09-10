@@ -13,6 +13,7 @@ echo "PostgreSQL is ready!"
 # Запускаем миграции
 echo "Running migrations..."
 python manage.py migrate --noinput
+python manage.py collectstatic --noinput
 
 echo "Creating superuser (if not exists)..."
 python manage.py bootstrap_superuser || true

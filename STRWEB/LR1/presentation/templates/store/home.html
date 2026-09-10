@@ -5,7 +5,7 @@
 {% block meta_keywords %}зоомагазин, главная, корм, игрушки для животных, ЗооМаркет{% endblock %}
 {% block og_title %}ЗооМаркет — зоотовары онлайн{% endblock %}
 {% block og_description %}Добро пожаловать в ЗооМаркет: каталог товаров, новости и партнёры брендов.{% endblock %}
-{% block og_image %}{% static 'images/og-default.jpg' %}{% endblock %}
+{% block og_image %}{% static 'images/placeholder.jpeg' %}{% endblock %}
 
 {% block content %}
 <section id="hero" aria-labelledby="brand" data-page="home">
@@ -53,7 +53,7 @@
           </figure>
         {% else %}
           <figure>
-            <img src="{% static 'images/products/product-placeholder.jpg' %}" alt="Фото товара: {{ p.name }}">
+            <img src="{% static 'images/placeholder.jpeg' %}" alt="Фото товара: {{ p.name }}">
             <figcaption>{{ p.name }} — {{ p.base_price }} BYN</figcaption>
           </figure>
         {% endif %}

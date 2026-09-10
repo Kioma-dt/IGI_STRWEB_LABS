@@ -3,16 +3,12 @@
 {% block title %}{{ article.title }} · Новости{% endblock %}
 {% block meta_description %}{{ article.summary|default:article.title }}{% endblock %}
 {% block meta_keywords %}новости зоомагазина, {{ article.title }}, уход за животными{% endblock %}
-{% block og_type %}article{% endblock %}
-{% block og_title %}{{ article.title }}{% endblock %}
-{% block og_description %}{{ article.summary|default:article.title }}{% endblock %}
-{% block og_image %}{% if article.image %}{{ article.image.url }}{% else %}{% static 'images/news/news-placeholder.jpg' %}{% endif %}{% endblock %}
 
 {% block content %}
 <article itemscope itemtype="https://schema.org/NewsArticle" data-article-slug="{{ article.slug }}">
   <h1 itemprop="headline">{{ article.title }}</h1>
 
-  <aside aria-label="Метаданные статьи">
+  <aside>
     <p>
       Опубликовано:
       {% if article.published_at %}

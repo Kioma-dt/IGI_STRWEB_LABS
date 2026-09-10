@@ -3,3 +3,4 @@
 # Production stack
 psycopg[binary]>=3.2
 gunicorn>=23.0
+whitenoise>=6.9
