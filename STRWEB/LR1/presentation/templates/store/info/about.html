@@ -10,16 +10,16 @@
 
   <nav id="about-toc" aria-label="Вертикальное оглавление страницы О компании">
     <ol>
-      <li><a href="#about-mission" accesskey="m">Миссия</a></li>
-      <li><a href="#about-history" accesskey="h">История</a></li>
-      <li><a href="#about-media" accesskey="v">Видео и аудио</a></li>
-      <li><a href="#about-requisites" accesskey="r">Реквизиты</a></li>
-      <li><a href="#about-certificate" accesskey="c">Сертификат</a></li>
-      <li><a href="#about-verse" accesskey="p">Слоган в стихах</a></li>
-      <li><a href="#about-code" accesskey="d">Пример данных</a></li>
+      <li><a href="#about-mission" skey="m">Миссия</a></li>
+      <li><a href="#about-history" skey="h">История</a></li>
+      <li><a href="#about-media" skey="v">Видео и аудио</a></li>
+      <li><a href="#about-requisites" skey="r">Реквизиты</a></li>
+      <li><a href="#about-certificate" skey="c">Сертификат</a></li>
+      <li><a href="#about-verse" skey="p">Слоган в стихах</a></li>
+      <li><a href="#about-code" skey="d">Пример данных</a></li>
     </ol>
   </nav>
-    <h1 translate="false">ZooShop</h1>
+    <h1 translate="no">ZooShop</h1>
     <figure>
       <img src="{% static 'images/company/logo.jpeg' %}" 
       alt="Логотип ZooShop" itemprop="logo"
@@ -60,7 +60,7 @@
       <mark>Все рекомендации имеют информационный характер.</mark>
     </p>
       <blockquote>
-        <q cite="Уилл Роджерс">Тот, кто говорит, что счастье не купишь, никогда не покупал щенка</q>
+        <q>Тот, кто говорит, что счастье не купишь, никогда не покупал щенка</q>
         <cite>Уилл Роджерс</cite>
       </blockquote>
     <p>
@@ -98,7 +98,7 @@
           {% endfor %}
           <tr>
             <td headers="hist-year" colspan="2"><strong>Итого лет в сети:</strong> {{ history_entries|length }} этапа(ов)</td>
-            <td headers="hist-note">актуально на текущий год</td>
+            <td headers="hist-note">Актуально на 2026 год</td>
           </tr>
         </tbody>
       </table>
@@ -110,7 +110,7 @@
   <section id="about-media">
     <h2>Видео и аудио о компании</h2>
     <figure>
-      <video id="company-video" controls preload="metadata" title="Видеоролик о ZooShop">
+      <video id="company-video" controls preload="metadata" title="Видеоролик о ZooShop" muted autoplay po>
           <source src="{% static 'videos/company.mp4' %}" type="video/mp4">
         Ваш браузер не поддерживает воспроизведение видео.
       </video>
@@ -124,7 +124,6 @@
       <figcaption>Аудиоприветствие консультанта магазина</figcaption>
     </figure>
   </section>
-
   <section id="about-requisites">
     <h2>Реквизиты</h2>
     <dl>
