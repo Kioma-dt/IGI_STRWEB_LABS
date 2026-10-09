@@ -1,0 +1,39 @@
+{% extends "store/base.html" %}
+{% load static %}
+{% block title %}Каталог · ЗооМаркет{% endblock %}
+{% block meta_description %}Каталог зоотоваров ЗооМаркет: корма, игрушки и аксессуары с фильтром по категориям и цене.{% endblock %}
+
+{% block content %}
+<section id="catalog" data-page="catalog">
+  <h1>Каталог товаров</h1>
+
+  <section id="catalog-filter">
+    <h2>Фильтр</h2>
+    <form method="get">
+      <fieldset>
+        <legend>Параметры поиска</legend>
+        {{ filter.form.as_p }}
+        <p><button type="submit">Применить</button></p>
+      </fieldset>
+    </form>
+  </section>
+
+  <section id="catalog-list">
+    <h2>Товары</h2>
+    <ul type="circle">
+    {% for p in products %}
+      <li>
+      <article>
+        <h3><a href="{% url 'store:product-detail' p.pk %}">{{ p.name }}</a></h3>
+          <p>{{ p.base_price }} BYN · {{ p.sku }}</p>
+        <p>{% if p.category %}{{ p.category.name }}{% else %}Без категории{% endif %}</p>
+      </article>
+      </li>
+    {% empty %}
+      <p>Ничего не найдено.</p>
+    {% endfor %}
+    </ul>
+  </section>
+</section>
+{% include "store/includes/pagination.html" %}
+{% endblock %}

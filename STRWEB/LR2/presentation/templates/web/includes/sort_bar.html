@@ -1,0 +1,8 @@
+{% if sort_links %}
+<p class="sort">Sort:
+  {% for value, label in sort_links %}
+    <a href="?{% if non_order_query %}{{ non_order_query }}&amp;{% endif %}ordering={{ value|urlencode }}"
+       {% if current_ordering == value %}style="font-weight:bold"{% endif %}>{{ label }}</a>
+  {% endfor %}
+</p>
+{% endif %}

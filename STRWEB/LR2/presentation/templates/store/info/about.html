@@ -1,0 +1,242 @@
+{% extends "store/base.html" %}
+{% load static store_extras %}
+{% block title %}О компании · ЗооМаркет{% endblock %}
+{% block meta_description %}О компании ЗооМаркет: история, реквизиты, сертификаты и миссия магазина зоотоваров.{% endblock %}
+{% block meta_keywords %}о компании, ЗооМаркет, реквизиты, сертификат, история{% endblock %}
+
+{% block content %}
+<section id="about-top" itemscope itemtype="https://schema.org/Organization" data-section="about">
+  <h1 id="about-title" itemprop="name">{% if company %}{{ company.name }}{% else %}ЗооМаркет{% endif %}</h1>
+
+  <nav id="about-toc" aria-label="Вертикальное оглавление страницы О компании">
+    <ol>
+      <li><a href="#about-mission" skey="m">Миссия</a></li>
+      <li><a href="#about-history" skey="h">История</a></li>
+      <li><a href="#about-media" skey="v">Видео и аудио</a></li>
+      <li><a href="#about-requisites" skey="r">Реквизиты</a></li>
+      <li><a href="#about-certificate" skey="c">Сертификат</a></li>
+      <li><a href="#about-verse" skey="p">Слоган в стихах</a></li>
+      <li><a href="#about-code" skey="d">Пример данных</a></li>
+    </ol>
+  </nav>
+    <h1 translate="no">ZooShop</h1>
+    <figure>
+      <img class="company-logo" src="{% static 'images/company/logo.jpeg' %}" 
+      alt="Логотип ZooShop" itemprop="logo"
+      width="450" height="400">
+      <figcaption>Официальный логотип компании</figcaption>
+    </figure>
+
+  <p>
+    <strong>Юридический адрес:</strong>
+    <span itemprop="address">{% if company %}{{ company.legal_address }}{% else %}г. Минск{% endif %}</span>
+  </p>
+  <p>
+    <strong>Телефон:</strong>
+    <a href="tel:{% if company %}{{ company.phone|tel_href }}{% else %}+375298888888{% endif %}" itemprop="telephone">
+      {% if company %}{{ company.phone }}{% else %}+375 (29) 888-88-88{% endif %}
+    </a>
+  </p>
+  <p>
+    <strong>E-mail поддержки:</strong>
+    <a href="mailto:{% if company %}{{ company.support_email }}{% else %}support@zooshop.by{% endif %}" itemprop="email">
+      {% if company %}{{ company.support_email }}{% else %}support@zooshop.by{% endif %}
+    </a>
+  </p>
+
+  <section id="about-mission">
+    <h2>Миссия</h2>
+    {% if company and company.about %}
+      <div itemprop="description">{{ company.about|linebreaks }}</div>
+    {% else %}
+      <p itemprop="description">
+        Мы помогаем владельцам животных выбирать <strong>безопасный корм</strong> и удобные аксессуары,
+        опираясь на рекомендации ветеринаров и опыт розничной сети.
+      </p>
+    {% endif %}
+    <p>
+      <b translate="no">ZooShop</b> — это <em>забота о питомцах каждый день</em>,
+      а <i>внимательный подбор товаров</i> помогает сделать жизнь владельца проще.
+      <mark>Все рекомендации имеют информационный характер.</mark>
+    </p>
+      <blockquote lang="ru">
+        <q lang="ru">Тот, кто говорит, что счастье не купишь, никогда не покупал щенка</q>
+        <cite>Уилл Роджерс</cite>
+      </blockquote>
+      <blockquote lang="en">
+        <q lang="en">A dog is the only thing on earth that loves you more than he loves himself</q>
+        <cite>Josh Billings</cite>
+      </blockquote>
+    <p>
+      Компания сотрудничает с выпускниками
+      <abbr title="Белорусский государственный университет информатики и радиоэлектроники">БГУИР</abbr>
+      при развитии интернет-витрины и аналитики продаж.
+    </p>
+  </section>
+
+  <section id="about-history">
+    <h2>История по годам</h2>
+    {% if history_entries %}
+      <ol class="history-timeline">
+        {% for entry in history_entries %}
+          <li>
+            <span class="year"><time datetime="{{ entry.year }}-01-01">{{ entry.year }}</time></span>
+            — {{ entry.description }}
+          </li>
+        {% endfor %}
+      </ol>
+      <table>
+        <caption>Ключевые этапы развития сети ZooShop</caption>
+        <thead>
+          <tr>
+            <th id="hist-year" scope="col">Год</th>
+            <th id="hist-event" scope="col">Событие</th>
+            <th id="hist-note" scope="col">Примечание</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for entry in history_entries %}
+            <tr>
+              <th id="hist-row-{{ entry.year }}" scope="row" headers="hist-year">
+                <time datetime="{{ entry.year }}-01-01">{{ entry.year }}</time>
+              </th>
+              <td headers="hist-event hist-row-{{ entry.year }}">{{ entry.description }}</td>
+              {% if forloop.first %}
+                <td headers="hist-note hist-row-{{ entry.year }}" rowspan="{{ history_entries|length }}">
+                  Хронология подтверждена внутренними отчётами сети
+                </td>
+              {% endif %}
+            </tr>
+          {% endfor %}
+          <tr>
+            <td headers="hist-year" colspan="2"><strong>Итого лет в сети:</strong> {{ history_entries|length }} этапа(ов)</td>
+            <td headers="hist-note">Актуально на 2026 год</td>
+          </tr>
+        </tbody>
+      </table>
+    {% else %}
+      <p>История компании будет опубликована позже.</p>
+    {% endif %}
+  </section>
+
+  <section id="about-media">
+    <h2>Видео и аудио о компании</h2>
+    <figure class="media-frame">
+      <video id="company-video" controls preload="metadata" title="Видеоролик о ZooShop" muted autoplay po>
+          <source src="{% static 'videos/company.mp4' %}" type="video/mp4">
+        Ваш браузер не поддерживает воспроизведение видео.
+      </video>
+      <figcaption>Короткий ролик о магазине и ассортименте</figcaption>
+    </figure>
+    <figure class="media-frame">
+      <audio id="company-audio" controls preload="metadata" title="Аудиоприветствие ZooShop">
+          <source src="{% static 'audio/company-welcome.mp3' %}" type="audio/mpeg">
+        Ваш браузер не поддерживает воспроизведение аудио.
+      </audio>
+      <figcaption>Аудиоприветствие консультанта магазина</figcaption>
+    </figure>
+  </section>
+  <section id="about-requisites">
+    <h2>Реквизиты</h2>
+    <dl class="requisites-block">
+      <dt>Наименование</dt>
+      <dd>{% if company %}{{ company.name }}{% else %}ООО «ЗооМаркет»{% endif %}</dd>
+      <dt>Адрес</dt>
+      <dd>{% if company %}{{ company.legal_address }}{% else %}г. Минск{% endif %}</dd>
+      <dt>Полный текст реквизитов</dt>
+      <dd>{% if company and company.requisites %}<div>{{ company.requisites|linebreaks }}</div>{% else %}УНП и банковские реквизиты уточняйте у бухгалтерии.{% endif %}</dd>
+    </dl>
+  </section>
+
+  <section id="about-certificate">
+    <h2>Сертификат</h2>
+
+    <p class="certificate-caption">
+        СЕРТИФИКАТ УЧАСТНИКА ПРОГРАММЫ ЛОЯЛЬНОСТИ ЗООМАГАЗИНА «ZOOSHOP»
+    </p>
+
+    <!-- Фон меняется здесь: --certificate-bg: url("путь/к/картинке.png") -->
+    <div class="certificate" style="--certificate-bg: url('../images/decor/certificate-watermark.png');">
+        <span class="certificate-seal">ЗМ<br>OK</span>
+
+        <p class="certificate-eyebrow">Единый реестр покупателей ZooShop</p>
+        <h1 class="certificate-title">Сертификат</h1>
+        <p class="certificate-subtitle">о предоставлении скидки</p>
+
+        <div class="certificate-meta">
+            <span>г. Минск</span>
+            <time datetime="2026-09-10">10 сентября 2026 г.</time>
+        </div>
+
+        <div class="certificate-main">
+            <p class="certificate-org">Зоомагазин «ZooShop»</p>
+            <p>(УНП 123456789)</p>
+            <p class="certificate-number">Номер сертификата: ZS-000001</p>
+            <p class="certificate-discount">
+                Размер скидки: 10%
+                <s class="certificate-old">Старая скидка: 5%</s>
+            </p>
+            <p>
+                Срок действия: до
+                <time datetime="2026-12-10">10 декабря 2026 г.</time>
+            </p>
+            <p class="certificate-note">
+                Корма, игрушки и <u>товары для домашних животных</u>
+            </p>
+        </div>
+
+        <div class="certificate-sign">
+            <p>Иванов И.И.,<br>Директор зоомагазина «ZooShop»</p>
+            <p class="certificate-line">Подпись представителя магазина: ______________</p>
+        </div>
+
+        <footer class="certificate-footer">
+            <p><strong>Зоомагазин «ZooShop»</strong></p>
+            <p>Адрес: г. Минск, ул. Гикало, 9</p>
+            <p>Телефон: +375 (29) 888-88-88</p>
+            <p>Email: <small>info@zooshop.by</small></p>
+        </footer>
+    </div>
+</section>
+
+  <section id="about-verse">
+    <h2>Слоган в четверостишии</h2>
+    <p><strong>Вариант с <code>&lt;br&gt;</code>:</strong></p>
+    <p>
+      Корм свежий — миска полна,<br>
+      Игрушка ждет у окна,<br>
+      Хвост виляет от тепла —<br>
+      ZooShop: забота видна.
+    </p>
+    <p><strong>Вариант с <code>&lt;pre&gt;</code>:</strong></p>
+    <pre>
+      Корм свежий — миска полна,
+      Игрушка ждет у окна,
+      Хвост виляет от тепла —
+      ZooShop: забота видна.
+    </pre>
+  </section>
+
+  <section id="about-code">
+    <h2>Пример листинга данных заказа</h2>
+    <p>Фрагмент JSON, который витрина передаёт в сервис оформления (учебный пример):</p>
+    <p>
+      Переменная <var>quantity</var> задаёт количество товара,
+      а результат команды отображается как <samp>order_created</samp>.
+      Для отправки формы нажмите <kbd>Ctrl</kbd> + <kbd>Enter</kbd>.
+    </p>
+    <p>
+      <dfn>SKU</dfn> — уникальный код товара.
+      Подробнее термин описан в внутренней инструкции ZooShop.
+    </p>
+    <pre><code>{
+  "shop": "ZooMarket",
+  "currency": "BYN",
+  "lines": [
+    {"sku": "SKU-001", "qty": 2},
+    {"sku": "SKU-008", "qty": 1}
+  ]
+}</code></pre>
+  </section>
+</section>
+{% endblock %}

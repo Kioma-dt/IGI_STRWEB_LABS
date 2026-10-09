@@ -1,0 +1,136 @@
+{% extends "store/base.html" %}
+{% load static store_extras %}
+{% block title %}Главная · ЗооМаркет{% endblock %}
+{% block meta_description %}ЗооМаркет — корма, игрушки и аксессуары для питомцев. Каталог, доставка и советы по уходу.{% endblock %}
+{% block meta_keywords %}зоомагазин, главная, корм, игрушки для животных, ЗооМаркет{% endblock %}
+{% block og_title %}ЗооМаркет — зоотовары онлайн{% endblock %}
+{% block og_description %}Добро пожаловать в ЗооМаркет: каталог товаров, новости и партнёры брендов.{% endblock %}
+{% block og_image %}{% static 'images/placeholder.jpeg' %}{% endblock %}
+
+{% block content %}
+<section id="hero" aria-labelledby="brand" data-page="home">
+  <h1 id="brand" class="brand-name">ЗооМаркет</h1>
+  <p>
+    {% if company %}
+      {{ company.about|truncatewords:40 }}
+    {% else %}
+      Интернет-витрина <strong>ЗооМаркет</strong>: качественный корм, игрушки и аксессуары для ваших питомцев.
+    {% endif %}
+  </p>
+  <p title="Слоган компании">
+    Забота о питомцах — <em lang="en">pet care</em> каждый день.
+    <q lang="en">Happy pets, happy homes</q>
+  </p>
+</section>
+
+{# CSS-аквариум: рыбки, водоросли, название через 3с — без JS #}
+<div class="aquarium-stage" aria-hidden="true">
+  <div class="aquarium-stage__water"></div>
+  <span class="aquarium-weed aquarium-weed--1"></span>
+  <span class="aquarium-weed aquarium-weed--2"></span>
+  <span class="aquarium-weed aquarium-weed--3"></span>
+  <span class="aquarium-weed aquarium-weed--4"></span>
+  <span class="aquarium-fish aquarium-fish--1">🐟</span>
+  <span class="aquarium-fish aquarium-fish--2">🐠</span>
+  <span class="aquarium-fish aquarium-fish--3">🐡</span>
+  <span class="aquarium-fish aquarium-fish--4">🐟</span>
+  <p class="aquarium-title">ЗооМаркет</p>
+</div>
+
+<aside id="promo-banner" aria-labelledby="banner-h">
+  <h2 id="banner-h">Рекламный баннер</h2>
+  <picture>
+    <source
+        media="(max-width: 1000px)"
+        srcset="{% static 'images/banners/banner-small.jpg' %}"
+        width="320"
+        height="420"
+    >
+
+    <img
+        src="{% static 'images/banners/banner-big.jpeg' %}"
+        alt="Акция ЗооМаркет: скидки на корма"
+        width="1000"
+        height="400"
+    >
+</picture>
+</aside>
+
+<section id="catalog-preview" aria-labelledby="feat">
+  <h2 id="feat">Каталог товаров</h2>
+  {% if featured_products %}
+    {% for p in featured_products %}
+      <article data-product-id="{{ p.pk }}" title="{{ p.name }}">
+        <h3><a href="{% url 'store:product-detail' p.pk %}">{{ p.name }}</a></h3>
+        {% if p.image %}
+          <figure>
+            <img src="{{ p.image.url }}" alt="Фото товара: {{ p.name }}">
+            <figcaption>{{ p.name }} — {{ p.base_price }} BYN</figcaption>
+          </figure>
+        {% else %}
+          <figure>
+            <img src="{% static 'images/placeholder.jpeg' %}" alt="Фото товара: {{ p.name }}">
+            <figcaption>{{ p.name }} — {{ p.base_price }} BYN</figcaption>
+          </figure>
+        {% endif %}
+        <p>
+          Арт. <abbr title="Stock Keeping Unit — складской артикул">SKU</abbr> {{ p.sku }}
+          {% if p.category %} · {{ p.category.name }}{% endif %}
+        </p>
+      </article>
+    {% endfor %}
+  {% else %}
+    <p>Пока нет товаров в каталоге.</p>
+  {% endif %}
+  <p><a href="{% url 'store:catalog' %}">Весь каталог</a></p>
+</section>
+
+<section id="latest-news" aria-labelledby="news-h">
+  <h2 id="news-h">Последняя новость</h2>
+  {% if latest_article %}
+    <article>
+      <span class="news-badge">Новое</span>
+      <h3>{{ latest_article.title }}</h3>
+      {% if latest_article.published_at %}
+        <p><time datetime="{{ latest_article.published_at|iso8601 }}">{{ latest_article.published_at|date:"d.m.Y H:i" }}</time></p>
+      {% endif %}
+      <p>
+        {% if latest_article.summary %}
+          {{ latest_article.summary }}
+        {% else %}
+          {{ latest_article.body|striptags|truncatewords:30 }}
+        {% endif %}
+      </p>
+      <p><a href="{% url 'store:news-detail' latest_article.pk %}">Читать далее</a></p>
+    </article>
+  {% else %}
+    <p>Пока нет опубликованных статей.</p>
+  {% endif %}
+</section>
+
+<aside id="partners" aria-labelledby="partners-h">
+  <h2 id="partners-h">Компании-партнёры</h2>
+  {% if partners %}
+    <ul>
+      {% for partner in partners %}
+        <li>
+          <figure>
+            <figcaption>{{ partner.name }}</figcaption>
+            <a href="{{ partner.url }}" rel="noopener noreferrer" title="Сайт партнёра {{ partner.name }}">
+                {% if partner.logo %}
+                  <img src="{{ partner.logo.url }}" alt="Логотип {{ partner.name }}"
+                  width="400" height="300">
+                {% else %}
+                  <img src="{% static 'images/placeholder.jpeg' %}" alt="Логотип {{ partner.name }}"
+                  width="400" height="300">
+                {% endif %}
+            </a>
+          </figure>
+        </li>
+      {% endfor %}
+    </ul>
+  {% else %}
+    <p>Список партнёров скоро появится.</p>
+  {% endif %}
+</aside>
+{% endblock %}

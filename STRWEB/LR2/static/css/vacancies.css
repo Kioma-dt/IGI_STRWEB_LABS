@@ -1,0 +1,31 @@
+#vacancies > ol {
+  list-style: none;
+  padding: 0;
+}
+
+#vacancies article {
+  overflow: hidden;
+  margin-bottom: 1.5rem;
+  padding: 1rem;
+  background: #fff;
+  border: 1px solid var(--color-line);
+  border-radius: var(--radius);
+}
+
+#vacancies article h2 {
+  float: left;
+  width: 38%;
+  margin: 0 1.25rem 0.75rem 0;
+  padding-right: 1rem;
+  border-right: 2px solid var(--color-coral);
+}
+
+#vacancies article [itemprop="description"],
+#vacancies article p {
+  overflow: hidden;
+}
+
+#vacancies article > p:last-of-type {
+  clear: both;
+  padding-top: 0.75rem;
+}

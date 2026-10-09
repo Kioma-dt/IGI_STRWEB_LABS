@@ -1,0 +1,35 @@
+{% extends "admin/index.html" %}
+{% load i18n %}
+
+{% block content %}
+{% if shop_stats %}
+<div class="module" style="margin-bottom: 20px;">
+  <table summary="{% trans 'Shop statistics' %}">
+    <caption><a href="#" class="section">{% trans "Статистика магазина" %}</a></caption>
+    <tbody>
+      <tr><th scope="row">{% trans "Всего заказов" %}</th><td>{{ shop_stats.orders_total_count }}</td></tr>
+      <tr><th scope="row">{% trans "Выручка (оплачено / отгружено / завершено)" %}</th><td>{{ shop_stats.orders_revenue }}</td></tr>
+      <tr><th scope="row">{% trans "Активных товаров" %}</th><td>{{ shop_stats.active_products_count }}</td></tr>
+      <tr><th scope="row">{% trans "Опубликованных отзывов" %}</th><td>{{ shop_stats.published_reviews_count }}</td></tr>
+      <tr><th scope="row">{% trans "Товаров с низким остатком (&lt; 5)" %}</th><td>{{ shop_stats.low_stock_product_count }}</td></tr>
+      <tr><th scope="row">{% trans "Активных поставщиков" %}</th><td>{{ shop_stats.active_suppliers_count }}</td></tr>
+    </tbody>
+  </table>
+</div>
+{% endif %}
+<div class="module" style="margin-bottom: 20px;">
+  <table>
+    <caption><a href="#" class="section">{% trans "Быстрые ссылки" %}</a></caption>
+    <tbody>
+      <tr>
+        <td><a href="{% url 'admin:catalog_product_changelist' %}">{% trans "Товары" %}</a></td>
+        <td><a href="{% url 'admin:catalog_category_changelist' %}">{% trans "Категории" %}</a></td>
+        <td><a href="{% url 'admin:orders_order_changelist' %}">{% trans "Заказы" %}</a></td>
+        <td><a href="{% url 'admin:suppliers_supplier_changelist' %}">{% trans "Поставщики" %}</a></td>
+        <td><a href="{% url 'admin:orders_purchase_changelist' %}">{% trans "Закупки" %}</a></td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+{{ block.super }}
+{% endblock %}

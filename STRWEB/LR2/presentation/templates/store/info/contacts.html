@@ -1,0 +1,209 @@
+{% extends "store/base.html" %}
+{% load static store_extras %}
+{% block title %}Контакты · ЗооМаркет{% endblock %}
+{% block meta_description %}Контакты ЗооМаркет: телефоны сотрудников, e-mail, карта проезда и форма обратной связи.{% endblock %}
+
+{% block content %}
+<section id="contacts-page" data-page="contacts">
+  <h1>Контакты</h1>
+
+  {% if company %}
+    <section aria-labelledby="co">
+      <h2 id="co">{{ company.name }}</h2>
+      <p>
+        Телефон:
+        <a href="tel:{{ company.phone|tel_href }}">{{ company.phone }}</a>,
+        e-mail:
+        <a href="mailto:{{ company.support_email }}">{{ company.support_email }}</a>
+      </p>
+    </section>
+  {% endif %}
+
+  <section aria-labelledby="staff" id="staff">
+    <h2 id="staff-title">Сотрудники</h2>
+    <ul type="square">
+    {% for e in employees %}
+      <li>
+      <article data-employee="{{ e.value }}">
+          <h3>{{ e.employee_name }}</h3>
+            <img
+              src="{% if e.photo %}{{ e.photo.url }}{% endif %}"
+              alt="Фото сотрудника {{ e.employee_name }}"
+              width="400"
+              height="300"
+            >
+          {% if e.job_description %}<div>{{ e.job_description|linebreaks }}</div>{% endif %}
+          {% if e.phone_number %}
+            <p>Телефон: <a href="tel:{{ e.phone_number|tel_href }}">{{ e.phone_number }}</a></p>
+          {% endif %}
+          {% if e.email_address %}
+            <p>Почта: <a href="mailto:{{ e.email_address }}">{{ e.email_address }}</a></p>
+          {% endif %}
+      </article>
+      </li>
+    {% empty %}
+      <p>Нет записей о сотрудниках.</p>
+    {% endfor %}
+    </ul>
+  </section>
+
+
+  <section aria-labelledby="map-h" id="map">
+    <h2 id="map-h">Карта проезда</h2>
+    <p>Пункт выдачи и офис на карте (встроенная карта Яндекс):</p>
+    <iframe
+      id="yandex-map"
+      title="Карта проезда к ЗооМаркет"
+      src="https://yandex.ru/map-widget/v1/?ll=27.594754%2C53.912091&z=16&l=map&pt=27.594754,53.912091,pm2rdm"
+      width="600"
+      height="400"
+      loading="lazy"
+      referrerpolicy="no-referrer-when-downgrade"
+    ></iframe>
+  </section>
+
+  <section aria-labelledby="fb" id="feedback">
+    <h2 id="fb">Написать нам</h2>
+    <form method="post" enctype="multipart/form-data">
+      {% csrf_token %}
+      <fieldset>
+        <legend>Обратная связь</legend>
+
+        <p>
+          <label for="id_name">Ваше имя</label>
+          <input
+            type="text"
+            name="name"
+            id="id_name"
+            required
+            minlength="2"
+            maxlength="120"
+            value="{{ form.name.value|default_if_none:'' }}"
+          >
+          {{ form.name.errors }}
+        </p>
+
+        <p>
+          <label for="id_email">E-mail</label>
+          <input
+            type="email"
+            name="email"
+            id="id_email"
+            required
+            maxlength="254"
+            value="{{ form.email.value|default_if_none:'' }}"
+          >
+          {{ form.email.errors }}
+        </p>
+
+        <p>
+          <label for="id_phone">Телефон</label>
+          <input
+            type="tel"
+            name="phone"
+            id="id_phone"
+            required
+            pattern="\+375\s?\(?(29|33|44|25)\)?\s?\d{3}-?\d{2}-?\d{2}"
+            placeholder="+375 (29) 123-45-67"
+            title="Формат: +375 (29) XXX-XX-XX"
+            value="{{ form.phone.value|default_if_none:'' }}"
+          >
+          {{ form.phone.errors }}
+        </p>
+
+        <p>
+          <label for="id_topic">Тема обращения</label>
+          <select name="topic" id="id_topic" required>
+            <option value="">— выберите —</option>
+            <option value="order" {% if form.topic.value == "order" %}selected{% endif %}>Вопрос по заказу</option>
+            <option value="product" {% if form.topic.value == "product" %}selected{% endif %}>Вопрос по товару</option>
+            <option value="delivery" {% if form.topic.value == "delivery" %}selected{% endif %}>Доставка и самовывоз</option>
+            <option value="other" {% if form.topic.value == "other" %}selected{% endif %}>Другое</option>
+          </select>
+          {{ form.topic.errors }}
+        </p>
+
+        <p>
+          <label for="id_preferred_date">Удобная дата ответа</label>
+          <input type="date" name="preferred_date" id="id_preferred_date" value="{{ form.preferred_date.value|default_if_none:'' }}">
+        </p>
+
+        <p>
+          <label for="id_site_url">Ссылка на страницу с вопросом (если есть)</label>
+          <input type="url" name="site_url" id="id_site_url" placeholder="https://" value="{{ form.site_url.value|default_if_none:'' }}">
+        </p>
+
+        <p>
+          <span>Способ связи:</span><br>
+          <label><input type="radio" name="contact_via" value="email" {% if form.contact_via.value != "phone" %}checked{% endif %} required> E-mail</label>
+          <label><input type="radio" name="contact_via" value="phone" {% if form.contact_via.value == "phone" %}checked{% endif %}> Телефон</label>
+        </p>
+
+        <p>
+          <label><input type="checkbox" name="consent" value="1" required {% if form.consent.value %}checked{% endif %}> Согласен на обработку данных</label>
+        </p>
+
+        <p>
+          <label for="id_urgency">Срочность (1–10)</label>
+          <input type="range" name="urgency" id="id_urgency" min="1" max="10" step="1" value="{{ form.urgency.value|default:'5' }}">
+        </p>
+
+        <p>
+          <label for="id_pets_count">Сколько у вас питомцев (1–15)</label>
+          <input
+            type="number"
+            name="pets_count"
+            id="id_pets_count"
+            min="1"
+            max="15"
+            value="2"
+            title="Введите число от 1 до 15 — вне диапазона сработает :out-of-range"
+          >
+        </p>
+
+        <p>
+          <label for="id_employee_code">Код сотрудника (только для персонала)</label>
+          <input type="text" name="employee_code" id="id_employee_code" value="STAFF" disabled>
+        </p>
+
+        <p>
+          <label for="id_accent">Любимый цвет питомца</label>
+          <input type="color" name="accent" id="id_accent" value="{{ form.accent.value|default:'#2d6a4f' }}">
+        </p>
+
+        <p>
+          <label for="id_attachment">Вложение (фото чека или питомца)</label>
+          <input type="file" name="attachment" id="id_attachment" accept="image/*,.pdf">
+        </p>
+
+        <p>
+          <label for="id_message">Сообщение</label>
+          <textarea name="message" 
+          id="id_message" 
+          rows="6" 
+          cols="60" 
+          required
+          minlength="10" 
+          maxlength="4000"
+          contenteditable spellcheck>{{ form.message.value|default_if_none:'' }}</textarea>
+          {{ form.message.errors }}
+        </p>
+      </fieldset>
+      <p>
+
+        <button type="submit">Отправить
+
+
+
+          
+        </button>
+        <button type="reset">Очистить</button>
+        <button type="button" disabled title="Демонстрация :disabled">Черновик недоступен</button>
+      </p>
+      {% if form.non_field_errors %}
+        <p>{{ form.non_field_errors }}</p>
+      {% endif %}
+    </form>
+  </section>
+</section>
+{% endblock %}

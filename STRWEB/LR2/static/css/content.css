@@ -1,0 +1,119 @@
+q:lang(ru),
+blockquote:lang(ru) q,
+:lang(ru) > q {
+  quotes: "«" "»" "„" "“";
+}
+
+q:lang(en),
+blockquote:lang(en) q,
+:lang(en) > q,
+em[lang="en"] {
+  quotes: "“" "”" "‘" "’";
+}
+
+q::before {
+  content: open-quote;
+}
+
+q::after {
+  content: close-quote;
+}
+
+blockquote {
+  position: relative;
+  margin: 1.5rem 0;
+  padding: 1rem 1.25rem 1rem 2rem;
+  background: var(--color-sand);
+  border-left: 4px solid var(--color-gold);
+  font-style: italic;
+}
+
+blockquote::before {
+  content: "©";
+  position: absolute;
+  left: 0.5rem;
+  top: 0.35rem;
+  color: var(--color-gold);
+  font-style: normal;
+}
+
+blockquote::after {
+  content: " — ЗооМаркет";
+  display: block;
+  margin-top: 0.5rem;
+  font-size: 0.85rem;
+  font-style: normal;
+  color: var(--color-muted);
+}
+
+article[data-article-slug] .article-columns > p:first-of-type::first-letter,
+.article-columns > p:first-of-type::first-letter {
+  font-size: 2.4em;
+  font-weight: 700;
+  float: left;
+  line-height: 0.85;
+  padding-right: 0.12em;
+  color: var(--color-sea);
+  font-family: var(--font-display);
+}
+
+article[data-article-slug] [itemprop="description"]::first-line {
+  font-weight: 700;
+  color: var(--color-sea-deep);
+}
+
+.list-unicode,
+#privacy-data ul,
+#product-benefits {
+  list-style: none;
+  padding-left: 0;
+}
+
+.list-unicode > li::before,
+#privacy-data ul > li::before,
+#product-benefits > li::before {
+  content: "🐠 ";
+}
+
+#about-toc ol {
+  list-style-type: "▸ ";
+  padding-left: 1.25rem;
+}
+
+#privacy-scope p,
+#about-mission > p {
+  text-indent: 1.5em;
+}
+
+[itemprop="articleBody"],
+#privacy p,
+.product-sku,
+code {
+  overflow-wrap: anywhere;
+  word-wrap: break-word;
+  word-break: break-word;
+  hyphens: auto;
+}
+
+#site-main ul,
+#site-main ol {
+  padding-left: 1.5rem;
+  margin: 0.75rem 0 1rem;
+}
+
+#site-main ul ul,
+#site-main ol ol {
+  margin: 0.35rem 0;
+}
+
+#staff > ul {
+  padding-left: 0;
+}
+
+#catalog-list > ul {
+  padding-left: 0;
+}
+
+#partners ul {
+  padding-left: 0;
+}

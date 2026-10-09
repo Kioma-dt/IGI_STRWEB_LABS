@@ -1,0 +1,43 @@
+{% extends "admin/base.html" %}
+{% block title %}{% if object %}Редактирование{% else %}Создание{% endif %} поставщика · Панель администратора{% endblock %}
+{% block content %}
+<h2>{% if object %}Редактирование поставщика: {{ object.name }}{% else %}Создание нового поставщика{% endif %}</h2>
+
+<div class="actions">
+  <a href="{% url 'admin_panel:supplier-list' %}">← К списку поставщиков</a>
+  {% if object %}
+    <a href="{% url 'admin_panel:supplier-detail' object.pk %}">Просмотр</a>
+  {% endif %}
+</div>
+<form method="post">
+  {% csrf_token %}
+
+  {{ form.as_p }}
+
+  <h3>Поставляемые товары</h3>
+
+  {{ formset.management_form }}
+
+  <table>
+    <thead>
+      <tr>
+        <th>Товар</th>
+        <th>Цена</th>
+        <th>Удалить</th>
+      </tr>
+    </thead>
+
+    <tbody>
+      {% for f in formset %}
+        <tr>
+          <td>{{ f.product }}</td>
+          <td>{{ f.last_purchase_price }}</td>
+          <td>{{ f.DELETE }}</td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+
+  <button type="submit">Сохранить</button>
+</form>
+{% endblock %}

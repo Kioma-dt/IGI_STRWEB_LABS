@@ -1,0 +1,30 @@
+{% extends "store/base.html" %}
+{% block title %}Точки самовывоза · Зоомагазин{% endblock %}
+{% block content %}
+<h1>Точки самовывоза</h1>
+<p>Вы можете забрать свой заказ в любом из наших пунктов выдачи.</p>
+{% if pickup_points %}
+  <table>
+    <thead>
+      <tr>
+        <th scope="col">Название</th>
+        <th scope="col">Адрес</th>
+        <th scope="col">Телефон</th>
+        <th scope="col">Часы работы</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for point in pickup_points %}
+        <tr>
+          <td><strong>{{ point.name }}</strong></td>
+          <td>{{ point.address }}</td>
+          <td>{{ point.phone }}</td>
+          <td>{% if point.working_hours %}{{ point.working_hours }}{% else %}—{% endif %}</td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+{% else %}
+  <p>Пока нет доступных точек самовывоза.</p>
+{% endif %}
+{% endblock %}

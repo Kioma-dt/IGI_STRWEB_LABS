@@ -1,0 +1,55 @@
+#site-main table {
+  width: 100%;
+  max-width: 900px;
+  margin: 1.25rem auto;
+  border-collapse: collapse;
+  background: #fff;
+  box-shadow: var(--shadow);
+}
+
+#site-main table caption {
+  caption-side: top;
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 1.05rem;
+  color: var(--color-sea-deep);
+  padding: 0.65rem 0.5rem;
+  text-align: center;
+}
+
+#site-main th,
+#site-main td {
+  border: 1px solid var(--color-line);
+  padding: 0.55rem 0.75rem;
+  text-align: left;
+  vertical-align: middle;
+}
+
+#site-main thead th {
+  background: var(--color-sea);
+  color: #fff;
+  text-align: center;
+  vertical-align: middle;
+}
+
+#site-main tbody tr:nth-child(even) {
+  background: rgba(13, 115, 119, 0.06);
+}
+
+#site-main tbody tr:nth-child(odd) {
+  background: #fff;
+}
+
+#about-history td:nth-child(1),
+#about-history th[scope="row"],
+article[data-product-sku] table td:nth-child(2),
+#promos table td:nth-child(2) {
+  text-align: center;
+  font-weight: 600;
+  background: rgba(201, 162, 39, 0.12);
+}
+
+#site-main td:empty {
+  background: #f0f0f0;
+  min-width: 2rem;
+}

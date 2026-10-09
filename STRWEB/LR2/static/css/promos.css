@@ -1,0 +1,29 @@
+#promos [aria-labelledby="active-h"] table {
+  border: 2px solid var(--color-sea);
+}
+
+#promos [aria-labelledby="arch-h"] table,
+#promos .promo-archived {
+  opacity: 0.65;
+  filter: grayscale(0.35);
+}
+
+#promos [aria-labelledby="arch-h"] td,
+#promos [aria-labelledby="arch-h"] th {
+  text-decoration: line-through;
+  color: var(--color-muted);
+}
+
+#promos [aria-labelledby="arch-h"] caption {
+  text-decoration: none;
+  color: var(--color-muted);
+  font-style: italic;
+}
+
+#promos [aria-labelledby="active-h"] code {
+  background: #d8f3dc;
+  color: var(--color-sea-deep);
+  padding: 0.15rem 0.4rem;
+  border-radius: 4px;
+  font-weight: 700;
+}

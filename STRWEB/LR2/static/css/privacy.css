@@ -1,0 +1,29 @@
+#privacy {
+  background:
+    linear-gradient(90deg, rgba(13, 115, 119, 0.06) 0, transparent 8rem),
+    #fff;
+  padding: 1.5rem;
+  border-left: 6px solid var(--color-sea-deep);
+  border-radius: 0 var(--radius) var(--radius) 0;
+}
+
+#privacy-toc {
+  background: #f0f7f7;
+  border: 1px dashed var(--color-sea);
+  padding: 1rem 1.25rem;
+  border-radius: var(--radius);
+}
+
+#privacy h1 {
+  font-family: var(--font-mono);
+  letter-spacing: 0.06em;
+  border-bottom: 2px solid var(--color-gold);
+  padding-bottom: 0.5rem;
+}
+
+#privacy h2 {
+  text-transform: none;
+  font-size: 1.15rem;
+  color: var(--color-ink);
+  border-bottom: 1px dotted var(--color-line);
+}

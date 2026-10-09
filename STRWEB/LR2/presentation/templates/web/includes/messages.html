@@ -1,0 +1,7 @@
+{% if messages %}
+<ul class="messages" style="padding:0;">
+  {% for message in messages %}
+    <li class="msg {{ message.tags }}">{{ message }}</li>
+  {% endfor %}
+</ul>
+{% endif %}

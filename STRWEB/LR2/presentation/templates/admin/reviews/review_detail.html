@@ -1,0 +1,40 @@
+{% extends "admin/base.html" %}
+{% block title %}{{ review.title }} · Отзывы · Панель администратора{% endblock %}
+
+{% block content %}
+<h2>Отзыв: {{ review.title }}</h2>
+
+<div class="actions">
+  <a href="{% url 'admin_panel:review-list' %}">← К списку</a>
+  <a href="{% url 'admin_panel:review-update' review.pk %}">Изменить</a>
+  <a href="{% url 'admin_panel:review-delete' review.pk %}">Удалить</a>
+</div>
+
+<table>
+  <tr>
+    <th>Товар</th>
+    <td>{{ review.product.name }}</td>
+  </tr>
+
+  <tr>
+    <th>Клиент</th>
+    <td>{{ review.customer.full_name }}</td>
+  </tr>
+
+  <tr>
+    <th>Рейтинг</th>
+    <td>{{ review.rating }}</td>
+  </tr>
+
+  <tr>
+    <th>Опубликован</th>
+    <td>{{ review.is_published|yesno:"Да,Нет" }}</td>
+  </tr>
+</table>
+
+<h3>Текст</h3>
+<div>
+  {{ review.body|linebreaksbr }}
+</div>
+
+{% endblock %}

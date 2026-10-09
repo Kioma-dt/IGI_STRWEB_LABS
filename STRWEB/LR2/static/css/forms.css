@@ -1,0 +1,94 @@
+.btn,
+button,
+input[type="submit"],
+input[type="reset"] {
+  cursor: pointer;
+  font-family: var(--font-body);
+  background: var(--color-sea);
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  padding: 0.55rem 1.1rem;
+  transition: background 0.2s ease, transform 0.15s ease;
+}
+
+button:disabled,
+.btn:disabled,
+input:disabled + .btn-label {
+  cursor: not-allowed;
+  opacity: 0.55;
+}
+
+input[type="email"],
+input[type="url"],
+input[type="tel"],
+input[type="text"],
+input[type="number"],
+input[type="date"],
+input[type="password"],
+textarea,
+select {
+  font: message-box;
+  font-family: var(--font-body);
+  padding: 0.45rem 0.65rem;
+  border: 1px solid var(--color-line);
+  border-radius: 6px;
+  width: min(100%, 28rem);
+  box-sizing: border-box;
+}
+
+a:focus,
+button:focus,
+input:focus,
+textarea:focus,
+select:focus,
+summary:focus {
+  outline: 3px solid #ffbf47;
+  outline-offset: 2px;
+}
+
+input:focus,
+textarea:focus,
+select:focus {
+  border-color: var(--color-sea);
+  box-shadow: 0 0 0 3px rgba(13, 115, 119, 0.2);
+}
+
+input:enabled,
+textarea:enabled,
+select:enabled,
+button:enabled {
+  background-color: #fff;
+}
+
+button:enabled {
+  background-color: var(--color-sea);
+  color: #fff;
+}
+
+input:required,
+textarea:required,
+select:required {
+  border-left: 4px solid var(--color-coral);
+}
+
+input:disabled,
+textarea:disabled,
+select:disabled,
+button:disabled {
+  background-color: #e5e5e5;
+  color: #777;
+  cursor: not-allowed;
+}
+
+input:out-of-range {
+  border-color: #c1121f;
+  background-color: #ffe5e5;
+}
+
+input[type="checkbox"]:checked,
+input[type="radio"]:checked {
+  accent-color: var(--color-sea);
+  outline: 2px solid var(--color-gold);
+  outline-offset: 2px;
+}

@@ -1,0 +1,68 @@
+{% extends "admin/base.html" %}
+{% block title %}{{ product.name }} · Товары · Панель администратора{% endblock %}
+{% block content %}
+<h2>Товар: {{ product.name }}</h2>
+
+<div class="actions">
+  <a href="{% url 'admin_panel:product-list' %}">← К списку товаров</a>
+  <a href="{% url 'admin_panel:product-update' product.pk %}">Изменить</a>
+  <a href="{% url 'admin_panel:product-delete' product.pk %}">Удалить</a>
+</div>
+
+<table>
+  <tr>
+    <th>Артикул (SKU)</th>
+    <td><code>{{ product.sku }}</code></td>
+  </tr>
+  <tr>
+    <th>Название</th>
+    <td><strong>{{ product.name }}</strong></td>
+  </tr>
+  <tr>
+    <th>Категория</th>
+    <td>{% if product.category %}{{ product.category.name }}{% else %}—{% endif %}</td>
+  </tr>
+  <tr>
+    <th>Описание</th>
+    <td>{{ product.description|default:"—" }}</td>
+  </tr>
+  <tr>
+    <th>Цена (базовая)</th>
+    <td>{{ product.base_price }} руб.</td>
+  </tr>
+  <tr>
+    <th>Количество на складе</th>
+    <td>{% if product.stock %}{{ product.stock.quantity_on_hand }} шт.{% else %}0 шт.{% endif %}</td>
+  </tr>
+  <tr>
+    <th>Поставщики</th>
+    <td>
+      {% if product.suppliers.all %}
+        <ul>
+          {% for supplier in product.suppliers.all %}
+            <li><a href="{% url 'admin_panel:supplier-detail' supplier.pk %}">{{ supplier.name }}</a></li>
+          {% endfor %}
+        </ul>
+      {% else %}
+        Нет поставщиков
+      {% endif %}
+    </td>
+  </tr>
+  <tr>
+    <th>Активен</th>
+    <td>{% if product.is_active %}Да{% else %}Нет{% endif %}</td>
+  </tr>
+  <tr>
+    <th>Возрастное ограничение</th>
+    <td>{{ product.get_age_restriction_display }}</td>
+  </tr>
+  <tr>
+    <th>Создан</th>
+    <td>{{ product.created_at|date:"d.m.Y H:i" }}</td>
+  </tr>
+  <tr>
+    <th>Обновлён</th>
+    <td>{{ product.updated_at|date:"d.m.Y H:i" }}</td>
+  </tr>
+</table>
+{% endblock %}

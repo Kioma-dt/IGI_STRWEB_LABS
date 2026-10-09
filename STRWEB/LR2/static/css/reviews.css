@@ -1,0 +1,29 @@
+#reviews-page form select,
+#reviews-page form input[type="text"] {
+  font: menu;
+}
+
+#reviews-page form textarea {
+  font: status-bar;
+  font-family: var(--font-body);
+  width: min(100%, 36rem);
+}
+
+#reviews-page form legend {
+  font: caption;
+  font-weight: 700;
+  color: var(--color-sea-deep);
+}
+
+#reviews-page form button {
+  font: message-box;
+  font-weight: 700;
+}
+
+#reviews-page article blockquote {
+  margin-left: 0;
+}
+
+#reviews-page article blockquote::after {
+  content: none;
+}

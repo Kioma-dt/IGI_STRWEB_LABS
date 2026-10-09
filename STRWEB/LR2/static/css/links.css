@@ -1,0 +1,30 @@
+a[href^="tel:"] {
+  color: var(--color-sea);
+  font-weight: 700;
+}
+
+a[href$=".pdf"] {
+  color: var(--color-coral);
+  text-decoration: underline dotted;
+}
+
+a[rel="noopener noreferrer"] {
+  border-bottom: 1px dashed var(--color-line);
+}
+
+a:link {
+  color: #0a6e72;
+}
+
+a:visited {
+  color: #5c4d7a;
+}
+
+a:hover {
+  color: var(--color-coral);
+  text-decoration: underline;
+}
+
+a:active {
+  color: #9b2226;
+}

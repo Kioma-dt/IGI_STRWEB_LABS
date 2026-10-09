@@ -1,0 +1,60 @@
+{% extends "store/base.html" %}
+{% block title %}Продажи ·{% endblock %}
+{% block content %}
+<h2>Продажи (Заказы)</h2>
+
+<p>Полная информация о всех продажах с указанием даты, количества, цены и стоимости.</p>
+
+<form method="get" class="filter">
+  {{ filter.form.as_p }}
+  <div class="actions">
+    <button type="submit">Фильтр</button>
+    <a href="{% url 'admin_panel:sales-list' %}">Сбросить</a>
+  </div>
+</form>
+
+{% if orders %}
+  <table>
+    <thead>
+      <tr>
+        <th>Номер заказа</th>
+        <th>Дата продажи</th>
+        <th>Покупатель</th>
+        <th>Статус</th>
+        <th>Общая стоимость</th>
+        <th>Действия</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for order in orders %}
+        <tr>
+          <td><code>{{ order.reference_number }}</code></td>
+          <td>{{ order.ordered_at|date:"d.m.Y H:i" }}</td>
+          <td>{% if order.customer %}{{ order.customer.full_name }}{% else %}—{% endif %}</td>
+          <td>{{ order.get_status_display }}</td>
+          <td><strong>{{ order.computed_total|default:0 }}</strong></td>
+          <td>
+            <a href="{% url 'admin_panel:sales-detail' order.pk %}">Просмотр</a>
+          </td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+
+  {% if is_paginated %}
+    <div class="pagination">
+      {% if page_obj.has_previous %}
+        <a href="?page=1">« Первая</a>
+        <a href="?page={{ page_obj.previous_page_number }}">‹ Предыдущая</a>
+      {% endif %}
+      <span>Страница {{ page_obj.number }} из {{ page_obj.paginator.num_pages }}</span>
+      {% if page_obj.has_next %}
+        <a href="?page={{ page_obj.next_page_number }}">Следующая ›</a>
+        <a href="?page={{ page_obj.paginator.num_pages }}">Последняя »</a>
+      {% endif %}
+    </div>
+  {% endif %}
+{% else %}
+  <p>Продажи не найдены.</p>
+{% endif %}
+{% endblock %}

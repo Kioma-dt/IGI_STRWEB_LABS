@@ -1,0 +1,16 @@
+{% load static %}
+<p>
+  <small>
+    © {% now "Y" %} ЗооМаркет.
+    <a href="{% url 'store:contacts' %}">Контакты</a> ·
+    <a href="{% url 'store:privacy' %}">Политика конфиденциальности</a> ·
+    <a href="{% static 'files/catalog.pdf' %}" download="price-list.pdf" title="Скачать кактлог PDF">Каталог (PDF)</a>
+  </small>
+</p>
+<p hidden id="site-tech-note">Служебная пометка: витрина учебного проекта ЛР по HTML5.</p>
+
+{# Демонстрационный прелоадер (вариация «вращение») — статично внизу, без JS #}
+<div class="site-preloader" aria-hidden="true">
+  <div class="site-preloader__spinner" title="Прелоадер ЗооМаркет"></div>
+  <span>ЗооМаркет загружается…</span>
+</div>

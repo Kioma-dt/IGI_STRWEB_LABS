@@ -1,0 +1,74 @@
+:root {
+  --color-sea: #0d7377;
+  --color-sea-deep: #065a5e;
+  --color-foam: #e8f6f5;
+  --color-sand: #f7f3e9;
+  --color-coral: #e07a5f;
+  --color-ink: #1a2b2c;
+  --color-muted: #5a6e70;
+  --color-line: #b8d4d3;
+  --color-gold: #c9a227;
+  --font-body: "Nunito", "Segoe UI", "Trebuchet MS", sans-serif;
+  --font-display: "Fredoka", "Nunito", cursive, sans-serif;
+  --font-mono: "IBM Plex Mono", "Courier New", monospace;
+  --radius: 10px;
+  --shadow: 0 8px 24px rgba(6, 90, 94, 0.12);
+  --max: 1100px;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  color: var(--color-ink);
+  font-family: var(--font-body);
+  font-size: 1rem;
+  line-height: 1.65;
+  background-color: var(--color-foam);
+  background-image:
+    linear-gradient(180deg, rgba(232, 246, 245, 0.92) 0%, rgba(247, 243, 233, 0.85) 100%),
+    url("../images/banners/banner-big.jpeg");
+  background-size: cover;
+  background-attachment: fixed;
+  background-position: center top;
+}
+
+::selection {
+  background: var(--color-sea);
+  color: #fff;
+}
+
+img {
+  max-width: 100%;
+  height: auto;
+  vertical-align: middle;
+}
+
+p,
+li,
+dd,
+td,
+th,
+label {
+  font-family: "Nunito", "Helvetica Neue", "Arial", sans-serif;
+}
+
+h1,
+h2,
+h3,
+h4 {
+  font-family: var(--font-display);
+  font-weight: 600;
+  line-height: 1.25;
+  color: var(--color-sea-deep);
+  margin-top: 0;
+}
+
+h2 {
+  text-transform: capitalize;
+}
+
+#site-main > section > h1,
+#site-main article > h1 {
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}

@@ -1,0 +1,68 @@
+{% extends "admin/base.html" %}
+{% block title %}{{ supplier.name }} · Поставщики · Панель администратора{% endblock %}
+{% block content %}
+<h2>Поставщик: {{ supplier.name }}</h2>
+
+<div class="actions">
+  <a href="{% url 'admin_panel:supplier-list' %}">← К списку поставщиков</a>
+  <a href="{% url 'admin_panel:supplier-update' supplier.pk %}">Изменить</a>
+  <a href="{% url 'admin_panel:supplier-delete' supplier.pk %}">Удалить</a>
+</div>
+
+<table>
+  <tr>
+    <th>Название</th>
+    <td><strong>{{ supplier.name }}</strong></td>
+  </tr>
+  <tr>
+    <th>Адрес</th>
+    <td>{{ supplier.address|default:"—" }}</td>
+  </tr>
+  <tr>
+    <th>Телефон</th>
+    <td>{{ supplier.phone }}</td>
+  </tr>
+  <tr>
+    <th>Email</th>
+    <td>{% if supplier.email %}<a href="mailto:{{ supplier.email }}">{{ supplier.email }}</a>{% else %}—{% endif %}</td>
+  </tr>
+  <tr>
+    <th>Активен</th>
+    <td>{% if supplier.is_active %}Да{% else %}Нет{% endif %}</td>
+  </tr>
+  <tr>
+    <th>Создан</th>
+    <td>{{ supplier.created_at|date:"d.m.Y H:i" }}</td>
+  </tr>
+  <tr>
+    <th>Обновлён</th>
+    <td>{{ supplier.updated_at|date:"d.m.Y H:i" }}</td>
+  </tr>
+</table>
+
+<h3>Поставляемые товары</h3>
+{% if supplier.products.all %}
+  <table>
+    <thead>
+      <tr>
+        <th>Артикул</th>
+        <th>Название</th>
+        <th>Цена</th>
+        <th>Действия</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for product in supplier.products.all %}
+        <tr>
+          <td><code>{{ product.sku }}</code></td>
+          <td>{{ product.name }}</td>
+          <td>{{ product.base_price }} руб.</td>
+          <td><a href="{% url 'admin_panel:product-detail' product.pk %}">Просмотр</a></td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+{% else %}
+  <p>Этот поставщик пока не поставляет товары.</p>
+{% endif %}
+{% endblock %}

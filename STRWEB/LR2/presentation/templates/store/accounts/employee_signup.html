@@ -1,0 +1,23 @@
+{% extends "store/base.html" %}
+{% block title %}Регистрация сотрудника · Зоомагазин{% endblock %}
+{% block content %}
+<h1>Регистрация сотрудника</h1>
+<p>После регистрации вы получите доступ к просмотру продаж и закрепленных поставщиков.</p>
+<form method="post">
+  {% csrf_token %}
+  {{ form.non_field_errors }}
+  {% for field in form %}
+    <div class="form-field">
+      {{ field.label_tag }}
+      {{ field }}
+      {% if field.help_text %}
+        <div class="helptext">{{ field.help_text|safe }}</div>
+      {% endif %}
+      {{ field.errors }}
+    </div>
+  {% endfor %}
+  <p><button type="submit">Создать аккаунт сотрудника</button></p>
+</form>
+<p>Нужен клиентский аккаунт? <a href="{% url 'store:signup' %}">Регистрация клиента</a></p>
+<p>Уже есть аккаунт? <a href="{% url 'store:login' %}">Вход</a></p>
+{% endblock %}

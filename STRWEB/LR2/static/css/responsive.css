@@ -1,0 +1,55 @@
+@media (max-width: 768px) {
+  #main-nav > .nav-groups {
+    flex-direction: column;
+    align-items: flex-start;
+    border-bottom: 1px solid var(--color-line);
+    padding-bottom: 0.5rem;
+  }
+
+  #catalog-list > ul {
+    grid-template-columns: 1fr;
+  }
+
+  #staff article {
+    flex-direction: column;
+  }
+
+  .article-columns,
+  article[data-article-slug] [itemprop="articleBody"] {
+    column-count: 1;
+  }
+
+  #vacancies article h2 {
+    float: none;
+    width: auto;
+    border-right: none;
+    border-bottom: 2px solid var(--color-coral);
+    padding-bottom: 0.5rem;
+    margin-right: 0;
+  }
+
+  #catalog-preview {
+    grid-template-columns: 1fr;
+  }
+
+  #partners img {
+    width: 96px;
+    height: 96px;
+  }
+}
+
+@media (max-height: 500px) {
+  #promo-banner,
+  .aquarium-stage {
+    display: none;
+  }
+
+  #site-header {
+    position: static;
+  }
+
+  .site-preloader {
+    transform: scale(0.7);
+    opacity: 0.7;
+  }
+}

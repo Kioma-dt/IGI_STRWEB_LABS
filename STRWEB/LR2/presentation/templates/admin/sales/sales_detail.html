@@ -1,0 +1,81 @@
+{% extends "admin/base.html" %}
+{% block title %}Продажа {{ order.reference_number }} · Панель администратора{% endblock %}
+{% block content %}
+<h2>Детали продажи: {{ order.reference_number }}</h2>
+
+<div class="actions">
+  <a href="{% url 'admin_panel:sales-list' %}">← К списку продаж</a>
+</div>
+
+<h3>Общая информация</h3>
+<table>
+  <tr>
+    <th>Номер заказа</th>
+    <td><code>{{ order.reference_number }}</code></td>
+  </tr>
+  <tr>
+    <th>Дата продажи</th>
+    <td>{{ order.ordered_at|date:"d.m.Y H:i:s" }}</td>
+  </tr>
+  <tr>
+    <th>Покупатель</th>
+    <td>
+      {% if order.customer %}
+        {{ order.customer.full_name }} ({{ order.customer.phone }})
+      {% else %}
+        —
+      {% endif %}
+    </td>
+  </tr>
+  <tr>
+    <th>Статус</th>
+    <td>{{ order.get_status_display }}</td>
+  </tr>
+  <tr>
+    <th>Промокод</th>
+    <td>{% if order.promo_code %}<code>{{ order.promo_code.code }}</code> (-{{ order.promo_code.discount_percent }}%){% else %}—{% endif %}</td>
+  </tr>
+  <tr>
+    <th>Общая стоимость покупки</th>
+    <td><strong>{{ order.computed_total|default:0 }}</strong></td>
+  </tr>
+</table>
+
+<h3>Проданные товары</h3>
+{% if order.items.all %}
+  <table>
+    <thead>
+      <tr>
+        <th>Артикул</th>
+        <th>Название товара</th>
+        <th>Количество проданных товаров</th>
+        <th>Цена за единицу</th>
+        <th>Закупочная цена за единицу</th>
+        <th>Стоимость (итого по позиции)</th>
+        <th>Закупочная стоимость</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for row in sales_rows %}
+        <tr>
+          <td><code>{{ row.item.product.sku }}</code></td>
+          <td>{{ row.item.product.name }}</td>
+          <td>{{ row.item.quantity }} шт.</td>
+          <td>{{ row.item.unit_price }} руб.</td>
+          <td>{% if row.has_purchase_price %}{{ row.purchase_price }} руб.{% else %}—{% endif %}</td>
+          <td><strong>{{ row.item.line_total }} руб.</strong></td>
+          <td>{% if row.has_purchase_price %}{{ row.purchase_total }} руб.{% else %}—{% endif %}</td>
+        </tr>
+      {% endfor %}
+    </tbody>
+    <tfoot>
+      <tr>
+        <th colspan="6">ИТОГО:</th>
+        <th>{{ order.total_amount }} руб.</th>
+      </tr>
+    </tfoot>
+  </table>
+{% else %}
+  <p>В заказе нет товаров.</p>
+{% endif %}
+{% endblock %}

@@ -1,0 +1,129 @@
+{% extends "store/base.html" %}
+{% load static store_extras %}
+{% block title %}{{ product.name }} · ЗооМаркет{% endblock %}
+{% block meta_description %}{{ product.name }} — купить в ЗооМаркет. Артикул {{ product.sku }}, цена {{ product.base_price }} BYN.{% endblock %}
+{% block meta_keywords %}{{ product.name }}, зоотовары, купить корм, {{ product.sku }}{% endblock %}
+{% block content %}
+<article itemscope itemtype="https://schema.org/Product" data-product-sku="{{ product.sku }}">
+  <h1 itemprop="name">{{ product.name }}</h1>
+  <p>
+    <abbr title="Stock Keeping Unit — складской артикул">SKU</abbr>:
+    <span itemprop="sku">{{ product.sku }}</span>
+    · Цена:
+    <span itemprop="offers" itemscope itemtype="https://schema.org/Offer">
+      <meta itemprop="priceCurrency" content="BYN">
+      <span itemprop="price">{{ product.base_price }}</span> BYN
+    </span>
+  </p>
+  {% if product.category %}<p>Категория: <span itemprop="category">{{ product.category.name }}</span></p>{% endif %}
+
+  <figure>
+    {% if product.image %}
+      <picture>
+        <source media="(max-width: 600px)" srcset="{{ product.image.url }}">
+        <img src="{{ product.image.url }}" alt="Фото: {{ product.name }}" itemprop="image">
+      </picture>
+    {% else %}
+      <picture>
+        <source media="(max-width: 600px)" srcset="{% static 'images/placeholder.jpeg' %}">
+        <img src="{% static 'images/placeholder.jpeg' %}" alt="Фото: {{ product.name }}" itemprop="image">
+      </picture>
+    {% endif %}
+    <figcaption>{{ product.name }}</figcaption>
+  </figure>
+
+  <section aria-labelledby="desc-h">
+    <h2 id="desc-h">Описание</h2>
+    <div itemprop="description">{{ product.description|linebreaksbr }}</div>
+    <ul id="product-benefits" class="list-unicode">
+      <li>Подходит для ежедневного использования дома</li>
+      <li>Совместим с самовывозом из пунктов ЗооМаркет</li>
+      <li>Можно добавить в корзину с выбором поставщика</li>
+    </ul>
+  </section>
+
+  <section aria-labelledby="spec-h">
+    <h2 id="spec-h">Характеристики</h2>
+    <table>
+      <caption>Параметры товара</caption>
+      <thead>
+        <tr>
+          <th id="spec-param" scope="col">Параметр</th>
+          <th id="spec-value" scope="col">Значение</th>
+          <th id="spec-unit" scope="col">Ед.</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <th id="spec-price" scope="row" headers="spec-param">Базовая цена</th>
+          <td headers="spec-value spec-price">{{ product.base_price }}</td>
+          <td headers="spec-unit spec-price">BYN</td>
+        </tr>
+        <tr>
+          <th id="spec-sku" scope="row" headers="spec-param">Артикул</th>
+          <td headers="spec-value spec-sku" colspan="2">{{ product.sku }}</td>
+        </tr>
+        <tr>
+          <th id="spec-age" scope="row" headers="spec-param">Возрастное ограничение</th>
+          <td headers="spec-value spec-age">{{ product.get_age_restriction_display }}</td>
+          <td headers="spec-unit spec-age">лет</td>
+        </tr>
+        <tr>
+          <th id="spec-extra" scope="row" headers="spec-param">Доп. маркировка</th>
+          <td headers="spec-value spec-extra"></td>
+          <td headers="spec-unit spec-extra"></td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+</article>
+
+<section aria-labelledby="cart-h">
+  <h2 id="cart-h">Добавить в корзину</h2>
+  <form method="post">
+    {% csrf_token %}
+    <fieldset>
+      <legend>Параметры позиции</legend>
+      <table>
+        {{ form.as_table }}
+      </table>
+    </fieldset>
+    <p>
+      <button type="submit">Добавить в корзину</button>
+      <button type="button" title="Кнопка без отправки формы">Сбросить выбор</button>
+    </p>
+  </form>
+</section>
+
+<section aria-labelledby="rev-h">
+  <h2 id="rev-h">Отзывы</h2>
+  {% for r in reviews %}
+    <article itemscope itemtype="https://schema.org/Review">
+      <h3 itemprop="name">{{ r.title }} — <span itemprop="reviewRating" itemscope itemtype="https://schema.org/Rating"><span itemprop="ratingValue">{{ r.rating }}</span>/5</span></h3>
+      <p>
+        <small>
+          <span itemprop="author">{{ r.customer.user.username }}</span> ·
+          <time itemprop="datePublished" datetime="{{ r.created_at|iso8601 }}">{{ r.created_at|date:"d.m.Y" }}</time>
+        </small>
+      </p>
+      <p itemprop="reviewBody">{{ r.body|linebreaksbr }}</p>
+    </article>
+  {% empty %}
+    <p>Пока нет отзывов.</p>
+  {% endfor %}
+</section>
+
+<section aria-labelledby="revform-h">
+  <h2 id="revform-h">Оставить отзыв</h2>
+  <form method="post">
+    {% csrf_token %}
+    <fieldset>
+      <legend>Ваш отзыв о товаре</legend>
+      <table>{{ review_form.as_table }}</table>
+    </fieldset>
+    <p><button type="submit" name="submit_review" value="1">Отправить отзыв</button></p>
+  </form>
+</section>
+
+<p><a href="{% url 'store:catalog' %}">Назад в каталог</a></p>
+{% endblock %}
